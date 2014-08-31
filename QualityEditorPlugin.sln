@@ -7,8 +7,6 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "SqaleManager", "SqaleManage
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "SqaleManager.Test", "SqaleManager.Test\SqaleManager.Test.fsproj", "{20F96FA3-8E97-4929-A3AD-6111DDF53462}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "SqaleModelGenerator", "SqaleModelGenerator\SqaleModelGenerator.fsproj", "{AE48DE7B-A1DB-40A2-B345-9CFBB3646038}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqaleUi", "SqaleUi\SqaleUi.csproj", "{6994EF3B-E408-4C5E-B9CF-1BCEE08E58F9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqaleEditor", "SqaleEditor\SqaleEditor.csproj", "{9559A277-FB97-4CEE-B7AC-529EE8D45351}"
@@ -34,10 +32,6 @@ Global
 		{20F96FA3-8E97-4929-A3AD-6111DDF53462}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20F96FA3-8E97-4929-A3AD-6111DDF53462}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20F96FA3-8E97-4929-A3AD-6111DDF53462}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AE48DE7B-A1DB-40A2-B345-9CFBB3646038}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AE48DE7B-A1DB-40A2-B345-9CFBB3646038}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AE48DE7B-A1DB-40A2-B345-9CFBB3646038}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AE48DE7B-A1DB-40A2-B345-9CFBB3646038}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6994EF3B-E408-4C5E-B9CF-1BCEE08E58F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6994EF3B-E408-4C5E-B9CF-1BCEE08E58F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6994EF3B-E408-4C5E-B9CF-1BCEE08E58F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
