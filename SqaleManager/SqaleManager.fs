@@ -23,12 +23,14 @@ type SqaleManager() =
     member x.GetImportLog() = importLog
         
     member x.GetDefaultSqaleModel() = 
-        let assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)
-        let asm = Assembly.GetExecutingAssembly()
-        use stream = asm.GetManifestResourceStream("defaultmodel.xml")
-        let xmldoc = XDocument.Load(stream).ToString()
+
         let model = new SqaleModel()
-        model.LoadSqaleModelFromString(xmldoc)
+        let chars = SqaleDefaultModel.Model
+        for char in chars do
+            let charInModel = model.CreateAChar(char.Key, char.Name)
+            for subchar  in char.Subchars do
+                charInModel.CreateSubChar(subchar.Key, subchar.Name)
+                
         model
 
     member x.CreateModelFromRules(rules : System.Collections.Generic.IEnumerable<Rule>) = 
