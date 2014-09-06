@@ -1,4 +1,4 @@
-﻿namespace SqaleUi.ViewModel
+﻿namespace SqaleUi.helpers
 {
     public interface IFilter
     {

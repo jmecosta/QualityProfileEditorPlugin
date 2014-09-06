@@ -55,21 +55,19 @@
   </Choose>
   <Import Project="$(FSharpTargetsPath)" Condition="Exists('$(FSharpTargetsPath)')" />
   <ItemGroup>
-    <Compile Include="Constants.fs" />
     <Compile Include="TypeProviders.fs" />
     <Compile Include="QualityTypes.fs" />
     <Compile Include="SqaleModel.fs" />
     <Compile Include="SqaleManager.fs" />
     <None Include="App.config" />
-    <EmbeddedResource Include="defaultmodel.xml" />
     <Compile Include="AssemblyInfo.fs">
       <SubType>
       </SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="ExtensionTypes, Version=$(VSSonarExtensionVersion), Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\References\ExtensionTypes.dll</HintPath>
+    <Reference Include="ExtensionTypes">
+      <HintPath>..\..\VSSonarQubeExtension\BuildDrop\ExtensionTypes.dll</HintPath>
     </Reference>
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Private>True</Private>
@@ -87,8 +85,8 @@
     <Reference Include="RestSharp">
       <HintPath>..\References\RestSharp.dll</HintPath>
     </Reference>
-    <Reference Include="SonarRestService, Version=$(VSSonarExtensionVersion), Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\References\SonarRestService.dll</HintPath>
+    <Reference Include="SonarRestService">
+      <HintPath>..\..\VSSonarQubeExtension\BuildDrop\SonarRestService.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -104,5 +102,5 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-   <Import Project="$(MSBuildFolder)\AssemblyPatcherTask.targets" />
+  <Import Project="$(MSBuildFolder)\AssemblyPatcherTask.targets" />
 </Project>

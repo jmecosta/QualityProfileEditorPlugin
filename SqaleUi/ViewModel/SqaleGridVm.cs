@@ -10,31 +10,38 @@ namespace SqaleUi.ViewModel
 {
     using System;
     using System.Collections;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.IO;
+    using System.Linq;
     using System.Windows.Data;
     using System.Windows.Forms;
     using System.Windows.Input;
 
+    using ExtensionTypes;
+
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
 
-    using Microsoft.FSharp.Collections;
-
     using PropertyChanged;
+
+    using SonarRestService;
 
     using SqaleManager;
 
+    using SqaleUi.helpers;
+    using SqaleUi.Menus;
     using SqaleUi.View;
 
-    using MessageBox = System.Windows.MessageBox;
+    using VSSonarPlugins;
 
     /// <summary>
     ///     The filtering sub view model.
     /// </summary>
     [ImplementPropertyChanged]
-    public class SqaleGridVm : ViewModelBase, IFilterOption
+    public class SqaleGridVm : ViewModelBase, IFilterOption, IDataModel
     {
         #region Fields
 
@@ -42,11 +49,6 @@ namespace SqaleUi.ViewModel
         ///     The filter.
         /// </summary>
         private readonly IFilter filter;
-
-        /// <summary>
-        ///     The filter context menus.
-        /// </summary>
-        private readonly IFilter filterContextMenus;
 
         /// <summary>
         ///     The main model.
@@ -64,7 +66,10 @@ namespace SqaleUi.ViewModel
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqaleGridVm"/> class.
-        ///     Initializes a new instance of the <see cref="SqaleGridViewModel"/> class.
+        ///     Initializes a new instance of the <see>
+        ///         <cref>SqaleGridViewModel</cref>
+        ///     </see>
+        ///     class.
         /// </summary>
         /// <param name="mainModel">
         /// The main Model.
@@ -76,9 +81,11 @@ namespace SqaleUi.ViewModel
         {
             this.mainModel = mainModel;
             this.SqaleManager = manager;
-            this.ProfileRules = new ObservableCollection<Rule>();
+            this.ProfileRules = new ItemsChangeObservableCollection<Rule>(this);
             this.Profile = new CollectionViewSource { Source = this.ProfileRules }.View;
+
             this.filter = new RuleFilter(this);
+            this.RestService = new SonarRestService(new JsonSonarConnector());
 
             this.ContextMenuItems = this.CreateGridContextMenu();
 
@@ -98,6 +105,7 @@ namespace SqaleUi.ViewModel
             this.FilterClearKeyCommand = new RelayCommand<object>(this.OnFilterRemoveKey);
             this.FilterClearNameCommand = new RelayCommand<object>(this.OnFilterRemoveName);
             this.FilterClearRepoCommand = new RelayCommand<object>(this.OnFilterRemoveRepo);
+            this.FilterClearTagCommand = new RelayCommand<object>(this.OnFilterRemoveTag);
             this.FilterClearDescriptionCommand = new RelayCommand<object>(this.OnFilterRemoveDescription);
 
             this.FilterClearSeverityCommand = new RelayCommand<object>(this.OnFilterRemoveSeverityKey);
@@ -113,9 +121,10 @@ namespace SqaleUi.ViewModel
                         this.SelectedItems = items;
                         SendItemToWorkAreaMenu.RefreshMenuItemsStatus(this.ContextMenuItems, items != null);
                         SelectKeyMenuItem.RefreshMenuItemsStatus(this.ContextMenuItems, this.SelectedItems.Count == 1);
+                        CreateTagMenuItem.RefreshMenuItemsStatus(
+                            this.ContextMenuItems, 
+                            this.SelectedItems.Count == 1 && this.mainModel.ConnectedToServer);
                     });
-
-            this.DatagridDataChangedCommand = new RelayCommand<object>(item => { this.IsDirty = true; });
 
             this.IsDirty = false;
 
@@ -138,6 +147,12 @@ namespace SqaleUi.ViewModel
             this.ImportProfileCommand = new RelayCommand(this.ExecuteImportProfileCommand, () => this.CanImportProfileCommand);
             this.ImportSqaleModelCommand = new RelayCommand(this.ExecuteImportSqaleModelCommand, () => this.CanImportSqaleModelCommand);
             this.ExportSaqleModelCommand = new RelayCommand(this.ExecuteExportSaqleModelCommand, () => this.CanExportSaqleModelCommand);
+
+            // server imports
+            this.CanImportExportFromServer = true;
+            this.ImportServerQualityProfileCommand = new RelayCommand(
+                this.ExecuteImportServerQualityProfileCommand, 
+                () => this.CanImportExportFromServer);
         }
 
         #endregion
@@ -155,17 +170,22 @@ namespace SqaleUi.ViewModel
         public bool CanAddNewRuleCommand { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether can export saqle model command.
+        ///     Gets or sets a value indicating whether can export saqle model command.
         /// </summary>
         public bool CanExportSaqleModelCommand { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether can import profile command.
+        ///     Gets or sets a value indicating whether can import export from server.
+        /// </summary>
+        public bool CanImportExportFromServer { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether can import profile command.
         /// </summary>
         public bool CanImportProfileCommand { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether can import sqale model command.
+        ///     Gets or sets a value indicating whether can import sqale model command.
         /// </summary>
         public bool CanImportSqaleModelCommand { get; set; }
 
@@ -190,17 +210,17 @@ namespace SqaleUi.ViewModel
         public bool CanSendToWorkAreaCommand { get; set; }
 
         /// <summary>
+        ///     Gets or sets the configuration.
+        /// </summary>
+        public ConnectionConfiguration Configuration { get; set; }
+
+        /// <summary>
         ///     Gets or sets the profile.
         /// </summary>
         public ObservableCollection<IMenuItem> ContextMenuItems { get; set; }
 
         /// <summary>
-        ///     Gets the datagrid data changed command.
-        /// </summary>
-        public RelayCommand<object> DatagridDataChangedCommand { get; private set; }
-
-        /// <summary>
-        /// Gets or sets the export saqle model command.
+        ///     Gets or sets the export saqle model command.
         /// </summary>
         public ICommand ExportSaqleModelCommand { get; set; }
 
@@ -208,11 +228,6 @@ namespace SqaleUi.ViewModel
         ///     Gets or sets a value indicating whether filter active.
         /// </summary>
         public bool FilterActive { get; set; }
-
-        /// <summary>
-        ///     Gets the filter apply.
-        /// </summary>
-        public ICommand FilterApply { get; private set; }
 
         /// <summary>
         ///     Gets or sets the filter apply command.
@@ -265,9 +280,9 @@ namespace SqaleUi.ViewModel
         public ICommand FilterClearSubCategoryCommand { get; set; }
 
         /// <summary>
-        ///     Gets the filter remove.
+        ///     Gets or sets the filter clear tag command.
         /// </summary>
-        public ICommand FilterRemove { get; private set; }
+        public ICommand FilterClearTagCommand { get; set; }
 
         /// <summary>
         ///     Gets or sets the filter term category.
@@ -325,17 +340,27 @@ namespace SqaleUi.ViewModel
         public SubCategory? FilterTermSubCategory { get; set; }
 
         /// <summary>
+        ///     Gets or sets the filter term tag.
+        /// </summary>
+        public string FilterTermTag { get; set; }
+
+        /// <summary>
         ///     Gets or sets the header.
         /// </summary>
         public string Header { get; set; }
 
         /// <summary>
-        /// Gets or sets the import profile command.
+        ///     Gets or sets the import profile command.
         /// </summary>
         public ICommand ImportProfileCommand { get; set; }
 
         /// <summary>
-        /// Gets or sets the import sqale model command.
+        ///     Gets or sets the import server quality profile command.
+        /// </summary>
+        public ICommand ImportServerQualityProfileCommand { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the import sqale model command.
         /// </summary>
         public ICommand ImportSqaleModelCommand { get; set; }
 
@@ -362,17 +387,32 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     Gets or sets the profile.
         /// </summary>
-        public ObservableCollection<Rule> ProfileRules { get; set; }
+        public ItemsChangeObservableCollection<Rule> ProfileRules { get; set; }
 
         /// <summary>
-        /// Gets or sets the project file.
+        ///     Gets or sets the profile selection window.
+        /// </summary>
+        public QualityProfileViewer ProfileSelectionWindow { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the project file.
         /// </summary>
         public string ProjectFile { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the quality viewer model.
+        /// </summary>
+        public QualityViewerViewModel QualityViewerModel { get; set; }
 
         /// <summary>
         ///     Gets or sets the remove rule command.
         /// </summary>
         public ICommand RemoveRuleCommand { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the rest service.
+        /// </summary>
+        public ISonarRestService RestService { get; set; }
 
         /// <summary>
         ///     Gets or sets the selected items.
@@ -391,14 +431,7 @@ namespace SqaleUi.ViewModel
 
             set
             {
-                if (value == null)
-                {
-                    this.CanRemoveRuleCommand = false;
-                }
-                else
-                {
-                    this.CanRemoveRuleCommand = true;
-                }
+                this.CanRemoveRuleCommand = value != null;
 
                 this.selectedRule = value;
             }
@@ -430,9 +463,24 @@ namespace SqaleUi.ViewModel
         public bool ShowContextMenu { get; set; }
 
         /// <summary>
+        ///     Gets or sets the solution.
+        /// </summary>
+        public Resource Solution { get; set; }
+
+        /// <summary>
         ///     Gets or sets the sqale project.
         /// </summary>
         public SqaleManager SqaleManager { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether syncing data with sonar model.
+        /// </summary>
+        public bool SyncingModelWithSonarServer { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the v shelper.
+        /// </summary>
+        public IVsEnvironmentHelper VShelper { get; set; }
 
         #endregion
 
@@ -528,6 +576,15 @@ namespace SqaleUi.ViewModel
         }
 
         /// <summary>
+        ///     The clear repo.
+        /// </summary>
+        public void ClearTag()
+        {
+            this.FilterTermTag = string.Empty;
+            this.FilterActive = this.SetFilterActive();
+        }
+
+        /// <summary>
         ///     The create new key.
         /// </summary>
         /// <returns>
@@ -542,13 +599,10 @@ namespace SqaleUi.ViewModel
                 return string.Empty;
             }
 
-            foreach (Rule profileRule in this.ProfileRules)
+            if (this.ProfileRules.Any(profileRule => profileRule.Key.Equals(key)))
             {
-                if (profileRule.key.Equals(key))
-                {
-                    System.Windows.Forms.MessageBox.Show("Key allready in use");
-                    return string.Empty;
-                }
+                MessageBox.Show("Key allready in use");
+                return string.Empty;
             }
 
             return key;
@@ -565,7 +619,7 @@ namespace SqaleUi.ViewModel
             bool found = false;
             foreach (Rule profileRule in this.ProfileRules)
             {
-                if (rule.key.Equals(profileRule.key))
+                if (rule.Key.Equals(profileRule.Key))
                 {
                     profileRule.MergeRule(rule);
                     found = true;
@@ -575,6 +629,130 @@ namespace SqaleUi.ViewModel
             if (!found)
             {
                 this.ProfileRules.Add(CopyRule(rule));
+            }
+        }
+
+        /// <summary>
+        /// The add rules from sqale mode to work area.
+        /// </summary>
+        /// <param name="rules">
+        /// The rules.
+        /// </param>
+        public void MergeRulesIntoProject(List<Rule> rules)
+        {
+            foreach (Rule rule in rules)
+            {
+                bool found = false;
+                foreach (Rule profileRule in this.ProfileRules)
+                {
+                    if (profileRule.Key.Equals(rule.Key))
+                    {
+                        profileRule.Repo = rule.Repo;
+                        profileRule.RemediationFactorTxt = rule.RemediationFactorTxt;
+                        profileRule.RemediationFactorVal = rule.RemediationFactorVal;
+                        profileRule.RemediationFunction = rule.RemediationFunction;
+                        profileRule.RemediationOffsetTxt = rule.RemediationOffsetTxt;
+                        profileRule.RemediationOffsetVal = rule.RemediationOffsetVal;
+                        profileRule.Category = rule.Category;
+                        profileRule.Subcategory = rule.Subcategory;
+
+                        found = true;
+                    }
+                }
+
+                if (!found)
+                {
+                    this.ProfileRules.Add(rule);
+                }
+            }
+
+            this.RefreshView();
+            this.RefreshMenus();
+        }
+
+        /// <summary>
+        /// The process changes.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="propertyChangedEventArgs">
+        /// The property changed event args.
+        /// </param>
+        public void ProcessChanges(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            this.IsDirty = true;
+            var rule = sender as Rule;
+            if (this.SyncingModelWithSonarServer && rule != null)
+            {
+                if (propertyChangedEventArgs.PropertyName.Equals("Severity"))
+                {
+                    var dic = new Dictionary<string, string> { { "severity", rule.Severity.ToString() } };
+                    this.RestService.UpdateRule(this.Configuration, rule.Repo + ":" + rule.Key, dic);
+                }
+
+                if (propertyChangedEventArgs.PropertyName.Equals("Subcategory"))
+                {
+                    var dic = new Dictionary<string, string>
+                                  {
+                                      {
+                                          "debt_sub_characteristic",
+                                          rule.Subcategory.Equals(SubCategory.UNDEFINED)
+                                              ? string.Empty
+                                              : rule.Subcategory.ToString()
+                                      }
+                                  };
+
+                    List<string> reply = this.RestService.UpdateRule(this.Configuration, rule.Repo + ":" + rule.Key, dic);
+                    if (reply != null &&  reply.Count != 0)
+                    {
+                        MessageBox.Show("Cannot Update Status Of Data in Server: " + reply.Aggregate(this.AggregateErrorStrings));
+                    }
+                }
+
+                if ((propertyChangedEventArgs.PropertyName.Equals("RemediationFunction")
+                     || propertyChangedEventArgs.PropertyName.Equals("RemediationOffsetVal")
+                     || propertyChangedEventArgs.PropertyName.Equals("RemediationOffsetTxt")
+                     || propertyChangedEventArgs.PropertyName.Equals("RemediationFactorVal")
+                     || propertyChangedEventArgs.PropertyName.Equals("RemediationFactorTxt"))
+                    && !rule.RemediationFunction.Equals(RemediationFunction.UNDEFINED))
+                {
+                    var dic = new Dictionary<string, string> { { "debt_remediation_fn_type", rule.RemediationFunction.ToString() } };
+
+                    if (rule.RemediationFactorTxt != RemediationUnit.UNDEFINED)
+                    {
+                        dic.Add(
+                            "debt_remediation_fy_coeff", 
+                            rule.RemediationFactorVal + rule.RemediationFactorTxt.ToString().ToLower().Replace("mn", "min"));
+                    }
+
+                    if (rule.RemediationOffsetTxt != RemediationUnit.UNDEFINED)
+                    {
+                        dic.Add(
+                            "debt_remediation_fn_offset", 
+                            rule.RemediationOffsetVal + rule.RemediationOffsetTxt.ToString().ToLower().Replace("mn", "min"));
+                    }
+
+                    List<string> reply = this.RestService.UpdateRule(this.Configuration, rule.Repo + ":" + rule.Key, dic);
+                    if (reply != null && reply.Count != 0)
+                    {
+                        MessageBox.Show("Cannot Update Status Of Data in Server: " + reply.Aggregate(this.AggregateErrorStrings));
+                        if (propertyChangedEventArgs.PropertyName.Equals("RemediationFunction"))
+                        {
+                            rule.RemediationFunction = RemediationFunction.UNDEFINED;
+                        }
+
+                        if (propertyChangedEventArgs.PropertyName.Equals("RemediationOffsetTxt"))
+                        {
+                            rule.RemediationOffsetTxt = RemediationUnit.UNDEFINED;
+                        }
+
+                        if (propertyChangedEventArgs.PropertyName.Equals("RemediationFactorTxt"))
+                        {
+                            rule.RemediationFactorTxt = RemediationUnit.UNDEFINED;
+                        }
+                    }
+                }
             }
         }
 
@@ -612,6 +790,7 @@ namespace SqaleUi.ViewModel
             }
             catch (Exception ex)
             {
+                Debug.WriteLine(ex.Message);
             }
         }
 
@@ -637,7 +816,7 @@ namespace SqaleUi.ViewModel
                 bool isOk = true;
                 foreach (Rule rule in this.SelectedItems)
                 {
-                    if (string.IsNullOrEmpty(rule.key))
+                    if (string.IsNullOrEmpty(rule.Key))
                     {
                         isOk = false;
                     }
@@ -649,7 +828,7 @@ namespace SqaleUi.ViewModel
 
                 if (!isOk)
                 {
-                    MessageBox.Show("Not all rules have been imported, to import a rule the key must be defined");
+                    System.Windows.MessageBox.Show("Not all rules have been imported, to import a rule the key must be defined");
                 }
 
                 this.RefreshMenus();
@@ -663,23 +842,20 @@ namespace SqaleUi.ViewModel
                     bool isOk = true;
                     foreach (Rule rule in this.SelectedItems)
                     {
-                        if (string.IsNullOrEmpty(rule.key))
+                        if (string.IsNullOrEmpty(rule.Key))
                         {
                             isOk = false;
                         }
                         else
                         {
                             SqaleGridVm sqaleGridVm = tab;
-                            if (sqaleGridVm != null)
-                            {
-                                sqaleGridVm.MergeRule(rule);
-                            }
+                            sqaleGridVm.MergeRule(rule);
                         }
                     }
 
                     if (!isOk)
                     {
-                        MessageBox.Show("Not all rules have been merged, to import a rule the key must be defined");
+                        System.Windows.MessageBox.Show("Not all rules have been merged, to import a rule the key must be defined");
                     }
                 }
             }
@@ -702,43 +878,23 @@ namespace SqaleUi.ViewModel
         /// </returns>
         private static Rule CopyRule(Rule rule)
         {
-            var newrule = new Rule();
-            newrule.category = rule.category;
-            newrule.configKey = rule.configKey;
-            newrule.description = rule.description;
-            newrule.key = rule.key;
-            newrule.name = rule.name;
-            newrule.remediationFactorTxt = rule.remediationFactorTxt;
-            newrule.remediationFactorVal = rule.remediationFactorVal;
-            newrule.remediationFunction = rule.remediationFunction;
-            newrule.remediationOffsetTxt = rule.remediationOffsetTxt;
-            newrule.remediationOffsetVal = rule.remediationOffsetVal;
-            newrule.repo = rule.repo;
-            newrule.severity = rule.severity;
-            newrule.subcategory = rule.subcategory;
+            var newrule = new Rule
+                              {
+                                  Category = rule.Category,
+                                  ConfigKey = rule.ConfigKey,
+                                  Description = rule.Description,
+                                  Key = rule.Key,
+                                  Name = rule.Name,
+                                  RemediationFactorTxt = rule.RemediationFactorTxt,
+                                  RemediationFactorVal = rule.RemediationFactorVal,
+                                  RemediationFunction = rule.RemediationFunction,
+                                  RemediationOffsetTxt = rule.RemediationOffsetTxt,
+                                  RemediationOffsetVal = rule.RemediationOffsetVal,
+                                  Repo = rule.Repo,
+                                  Severity = rule.Severity,
+                                  Subcategory = rule.Subcategory
+                              };
             return newrule;
-        }
-
-        /// <summary>
-        /// The active live filtering.
-        /// </summary>
-        /// <param name="collectionView">
-        /// The collection view.
-        /// </param>
-        private void ActiveLiveFiltering(ICollectionView collectionView)
-        {
-            var collectionViewLiveShaping = collectionView as ICollectionViewLiveShaping;
-            if (collectionViewLiveShaping == null)
-            {
-                return;
-            }
-
-            if (collectionViewLiveShaping.CanChangeLiveFiltering)
-            {
-                // foreach (string propName in involvedProperties)
-                // collectionViewLiveShaping.LiveFilteringProperties.Add(propName);
-                collectionViewLiveShaping.IsLiveFiltering = true;
-            }
         }
 
         /// <summary>
@@ -747,17 +903,17 @@ namespace SqaleUi.ViewModel
         /// <param name="rules">
         /// The rules.
         /// </param>
-        private void AddRulesFromProfileToWorkArea(FSharpList<Rule> rules)
+        private void AddRulesFromProfileToWorkArea(IEnumerable<Rule> rules)
         {
             foreach (Rule rule in rules)
             {
                 bool found = false;
                 foreach (Rule profileRule in this.ProfileRules)
                 {
-                    if (profileRule.key.Equals(rule.key))
+                    if (profileRule.Key.Equals(rule.Key))
                     {
-                        profileRule.repo = rule.repo;
-                        profileRule.severity = rule.severity;
+                        profileRule.Repo = rule.Repo;
+                        profileRule.Severity = rule.Severity;
                         found = true;
                     }
                 }
@@ -778,18 +934,18 @@ namespace SqaleUi.ViewModel
         /// <param name="rules">
         /// The rules.
         /// </param>
-        private void AddRulesFromRulesXmlDefinitionToWorkArea(FSharpList<Rule> rules)
+        private void AddRulesFromRulesXmlDefinitionToWorkArea(IEnumerable<Rule> rules)
         {
             foreach (Rule rule in rules)
             {
                 bool found = false;
                 foreach (Rule profileRule in this.ProfileRules)
                 {
-                    if (profileRule.key.Equals(rule.key))
+                    if (profileRule.Key.Equals(rule.Key))
                     {
-                        profileRule.configKey = rule.configKey;
-                        profileRule.name = rule.name;
-                        profileRule.description = rule.description;
+                        profileRule.ConfigKey = rule.ConfigKey;
+                        profileRule.Name = rule.Name;
+                        profileRule.Description = rule.Description;
                         found = true;
                     }
                 }
@@ -810,23 +966,23 @@ namespace SqaleUi.ViewModel
         /// <param name="rules">
         /// The rules.
         /// </param>
-        private void AddRulesFromSqaleModeToWorkArea(FSharpList<Rule> rules)
+        private void AddRulesFromSqaleModeToWorkArea(IEnumerable<Rule> rules)
         {
             foreach (Rule rule in rules)
             {
                 bool found = false;
                 foreach (Rule profileRule in this.ProfileRules)
                 {
-                    if (profileRule.key.Equals(rule.key))
+                    if (profileRule.Key.Equals(rule.Key))
                     {
-                        profileRule.repo = rule.repo;
-                        profileRule.remediationFactorTxt = rule.remediationFactorTxt;
-                        profileRule.remediationFactorVal = rule.remediationFactorVal;
-                        profileRule.remediationFunction = rule.remediationFunction;
-                        profileRule.remediationOffsetTxt = rule.remediationOffsetTxt;
-                        profileRule.remediationOffsetVal = rule.remediationOffsetVal;
-                        profileRule.category = rule.category;
-                        profileRule.subcategory = rule.subcategory;
+                        profileRule.Repo = rule.Repo;
+                        profileRule.RemediationFactorTxt = rule.RemediationFactorTxt;
+                        profileRule.RemediationFactorVal = rule.RemediationFactorVal;
+                        profileRule.RemediationFunction = rule.RemediationFunction;
+                        profileRule.RemediationOffsetTxt = rule.RemediationOffsetTxt;
+                        profileRule.RemediationOffsetVal = rule.RemediationOffsetVal;
+                        profileRule.Category = rule.Category;
+                        profileRule.Subcategory = rule.Subcategory;
                         found = true;
                     }
                 }
@@ -842,21 +998,38 @@ namespace SqaleUi.ViewModel
         }
 
         /// <summary>
+        /// The aggregate error strings.
+        /// </summary>
+        /// <param name="arg1">
+        /// The arg 1.
+        /// </param>
+        /// <param name="arg2">
+        /// The arg 2.
+        /// </param>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
+        private string AggregateErrorStrings(string arg1, string arg2)
+        {
+            return arg1 + "\r\n" + arg2;
+        }
+
+        /// <summary>
         ///     The cancel any edit.
         /// </summary>
         private void CancelAnyEdit()
         {
             if (this.Profile is IEditableCollectionView)
             {
-                var MyEditableCollectionView = this.Profile as IEditableCollectionView;
-                if (MyEditableCollectionView.IsAddingNew)
+                var myEditableCollectionView = this.Profile as IEditableCollectionView;
+                if (myEditableCollectionView.IsAddingNew)
                 {
-                    MyEditableCollectionView.CommitNew();
+                    myEditableCollectionView.CommitNew();
                 }
 
-                if (MyEditableCollectionView.IsEditingItem)
+                if (myEditableCollectionView.IsEditingItem)
                 {
-                    MyEditableCollectionView.CommitEdit();
+                    myEditableCollectionView.CommitEdit();
                 }
             }
         }
@@ -874,17 +1047,22 @@ namespace SqaleUi.ViewModel
         }
 
         /// <summary>
-        ///     The create grid context menu.
+        /// The create grid context menu.
         /// </summary>
         /// <returns>
-        ///     The <see cref="ObservableCollection" />.
+        /// The <see>
+        ///         <cref>ObservableCollection</cref>
+        ///     </see>
+        ///     .
         /// </returns>
         private ObservableCollection<IMenuItem> CreateGridContextMenu()
         {
-            var menu = new ObservableCollection<IMenuItem>();
-
-            menu.Add(SendItemToWorkAreaMenu.MakeMenu(this, this.mainModel));
-            menu.Add(SelectKeyMenuItem.MakeMenu(this, this.mainModel));
+            var menu = new ObservableCollection<IMenuItem>
+                           {
+                               SendItemToWorkAreaMenu.MakeMenu(this, this.mainModel),
+                               SelectKeyMenuItem.MakeMenu(this, this.mainModel),
+                               CreateTagMenuItem.MakeMenu(this, this.mainModel)
+                           };
 
             return menu;
         }
@@ -900,25 +1078,21 @@ namespace SqaleUi.ViewModel
                 return;
             }
 
-            this.ProfileRules.Add(new Rule { key = key });
+            this.ProfileRules.Add(new Rule { Key = key });
         }
 
         /// <summary>
-        /// The execute export saqle model command.
+        ///     The execute export saqle model command.
         /// </summary>
         private void ExecuteExportSaqleModelCommand()
         {
             if (this.ProfileRules.Count == 0)
             {
-                MessageBox.Show("Current View is Empty, Cannot create model");
+                System.Windows.MessageBox.Show("Current View is Empty, Cannot create model");
                 return;
             }
 
-            var saveFileDialog = new SaveFileDialog();
-
-            saveFileDialog.Filter = "xml files (*.xml)|*.xml";
-            saveFileDialog.FilterIndex = 1;
-            saveFileDialog.RestoreDirectory = true;
+            var saveFileDialog = new SaveFileDialog { Filter = "xml files (*.xml)|*.xml", FilterIndex = 1, RestoreDirectory = true };
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -929,13 +1103,13 @@ namespace SqaleUi.ViewModel
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Cannot Import: " + ex.Message);
+                    System.Windows.MessageBox.Show("Cannot Import: " + ex.Message);
                 }
             }
         }
 
         /// <summary>
-        /// The execute import profile command.
+        ///     The execute import profile command.
         /// </summary>
         private void ExecuteImportProfileCommand()
         {
@@ -957,12 +1131,52 @@ namespace SqaleUi.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Cannot import: ", ex.Message);
+                System.Windows.MessageBox.Show("Cannot import: ", ex.Message);
             }
         }
 
         /// <summary>
-        /// The execute import sqale model command.
+        ///     The execute import server quality profile command.
+        /// </summary>
+        private void ExecuteImportServerQualityProfileCommand()
+        {
+            this.CanImportExportFromServer = false;
+
+            if (this.Configuration == null)
+            {
+                this.mainModel.ConnectToSonar(this);
+            }
+
+            if (this.Configuration == null)
+            {
+                this.CanImportExportFromServer = true;
+                return;
+            }
+
+            if (this.QualityViewerModel == null)
+            {
+                this.QualityViewerModel = new QualityViewerViewModel(this.Configuration, this);
+            }
+
+            if (this.ProfileSelectionWindow == null)
+            {
+                this.ProfileSelectionWindow = new QualityProfileViewer(this.QualityViewerModel);
+            }
+
+            this.CanImportExportFromServer = true;
+            try
+            {
+                this.ProfileSelectionWindow.Show();
+            }
+            catch (Exception)
+            {
+                this.ProfileSelectionWindow = new QualityProfileViewer(this.QualityViewerModel);
+                this.ProfileSelectionWindow.Show();
+            }
+        }
+
+        /// <summary>
+        ///     The execute import sqale model command.
         /// </summary>
         private void ExecuteImportSqaleModelCommand()
         {
@@ -983,7 +1197,7 @@ namespace SqaleUi.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Cannot import: " + ex.Message);
+                System.Windows.MessageBox.Show("Cannot import: " + ex.Message);
             }
         }
 
@@ -1012,7 +1226,7 @@ namespace SqaleUi.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Cannot import file:", ex.Message);
+                System.Windows.MessageBox.Show("Cannot import file:", ex.Message);
             }
         }
 
@@ -1042,7 +1256,7 @@ namespace SqaleUi.ViewModel
                     SqaleGridVm project = this.mainModel.Tabs[0];
                     foreach (Rule ruleinProject in project.ProfileRules)
                     {
-                        if (ruleinProject.key.Equals(rule.key))
+                        if (ruleinProject.Key.Equals(rule.Key))
                         {
                             found = true;
                             ruleinProject.MergeRule(rule);
@@ -1069,7 +1283,7 @@ namespace SqaleUi.ViewModel
             bool errorsFound = false;
             foreach (Rule rule in this.ProfileRules)
             {
-                if (string.IsNullOrEmpty(rule.key))
+                if (string.IsNullOrEmpty(rule.Key))
                 {
                     errorsFound = true;
                     continue;
@@ -1083,7 +1297,7 @@ namespace SqaleUi.ViewModel
 
             if (errorsFound)
             {
-                MessageBox.Show("Some items were not copied, key not defined");
+                System.Windows.MessageBox.Show("Some items were not copied, key not defined");
             }
 
             SendItemToWorkAreaMenu.RefreshMenuItems(this.ContextMenuItems, this.mainModel, this, false);
@@ -1209,6 +1423,18 @@ namespace SqaleUi.ViewModel
         private void OnFilterRemoveSubCategoryKey(object data)
         {
             this.ClearSubCategory();
+            this.ClearFilter();
+        }
+
+        /// <summary>
+        /// The on filter remove tag.
+        /// </summary>
+        /// <param name="data">
+        /// The data.
+        /// </param>
+        private void OnFilterRemoveTag(object data)
+        {
+            this.ClearTag();
             this.ClearFilter();
         }
 

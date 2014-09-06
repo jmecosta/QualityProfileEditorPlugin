@@ -91,10 +91,10 @@
         <description><![CDATA[  Changing pointer instead of value (or unused value of operator*).  ]]></description>
     </rule>
     <rule key="cpplint.readability/namespace-0">
-        <name><![CDATA[ Namespace should be terminated with "// namespace %s"  %self.name]]></name>
+        <name><![CDATA[ Namespace should be terminated with "// namespace %s"  %self.Name]]></name>
         <configKey><![CDATA[cpplint.readability/namespace-0@CPP_LINT]]></configKey>
         <category name="readability" />
-        <description><![CDATA[  Namespace should be terminated with "// namespace %s"  %self.name ]]></description>
+        <description><![CDATA[  Namespace should be terminated with "// namespace %s"  %self.Name ]]></description>
     </rule>
     <rule key="cpplint.readability/namespace-1">
         <name><![CDATA[ Namespace should be terminated with "// namespace" ]]></name>
@@ -103,10 +103,10 @@
         <description><![CDATA[  Namespace should be terminated with "// namespace"  ]]></description>
     </rule>
     <rule key="cpplint.build/class-0">
-        <name><![CDATA[ Failed to find complete declaration of class %s  %obj.name]]></name>
+        <name><![CDATA[ Failed to find complete declaration of class %s  %obj.Name]]></name>
         <configKey><![CDATA[cpplint.build/class-0@CPP_LINT]]></configKey>
         <category name="build" />
-        <description><![CDATA[  Failed to find complete declaration of class %s  %obj.name ]]></description>
+        <description><![CDATA[  Failed to find complete declaration of class %s  %obj.Name ]]></description>
     </rule>
     <rule key="cpplint.runtime/printf_format-0">
         <name><![CDATA[ %q in format strings is deprecated.  Use %ll instead. ]]></name>

@@ -17,6 +17,7 @@ namespace SqaleUi
     using ExtensionTypes;
 
     using SqaleUi.View;
+    using SqaleUi.ViewModel;
 
     using VSSonarPlugins;
 
@@ -116,11 +117,15 @@ namespace SqaleUi
         {
             if (this.Editor == null)
             {
-                this.Editor = new SqaleEditorControl();
+                this.Model = new SqaleEditorControlViewModel(configuration, project, vshelper);
+                this.Model.CreateNewProject(string.Empty, configuration, project, vshelper);
+                this.Editor = new SqaleEditorControl(this.Model);                
             }
 
             return this.Editor;
         }
+
+        public SqaleEditorControlViewModel Model { get; set; }
 
         /// <summary>
         /// The get version.
@@ -147,7 +152,7 @@ namespace SqaleUi
         /// </param>
         public void UpdateConfiguration(ConnectionConfiguration configuration, Resource project, IVsEnvironmentHelper vshelper)
         {
-            this.Editor.UpdateConfiguration(configuration, project, vshelper);
+            this.Model.UpdateConfiguration(configuration, project, vshelper);
         }
 
         #endregion

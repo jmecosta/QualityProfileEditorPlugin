@@ -1,6 +1,9 @@
 ﻿namespace SqaleManager
 
+open System
 open System.IO
+open ExtensionTypes
+open SonarRestService
 
 type SqaleModel() =
     let profile : Profile = new Profile()
@@ -13,13 +16,13 @@ type SqaleModel() =
 
     member x.IsCharPresent(key : Category) =
         let CompareKey(char : Characteristic) =
-            char.key.Equals(key)
+            char.Key.Equals(key)
                                  
         (List.toArray characteristics) |> Array.exists (fun elem ->  CompareKey(elem))
 
     member x.GetChar(key : Category) =
         let CompareKey(char : Characteristic) =
-            char.key.Equals(key)
+            char.Key.Equals(key)
                                  
         (List.toArray characteristics) |> Array.find (fun elem ->  CompareKey(elem))
 
@@ -45,31 +48,31 @@ type SqaleModel() =
 
                 for chc in subchk.GetChcs() do
                     let rule = new Rule()
-                    rule.repo <- chc.RuleRepo
-                    rule.key <- chc.RuleKey
-                    rule.configKey <- chc.RuleKey + "@" + chc.RuleRepo
-                    rule.enableSetDeafaults <- false
+                    rule.Repo <- chc.RuleRepo
+                    rule.Key <- chc.RuleKey
+                    rule.ConfigKey <- chc.RuleKey + "@" + chc.RuleRepo
+                    rule.EnableSetDeafaults <- false
 
                     for prop in chc.GetProps() do
                         if prop.Key.Equals("remediationFactor") then
-                            rule.category <- (EnumHelper.asEnum<Category>(chk.Key)).Value
-                            rule.subcategory <- (EnumHelper.asEnum<SubCategory>(subchk.Key)).Value
+                            rule.Category <- (EnumHelper.asEnum<Category>(chk.Key)).Value
+                            rule.Subcategory <- (EnumHelper.asEnum<SubCategory>(subchk.Key)).Value
                             try
-                                rule.remediationFactorVal <- prop.Val
+                                rule.RemediationFactorVal <- Int32.Parse(prop.Val)
                             with
                             | ex -> ()
                             try
-                                rule.remediationFactorTxt <- (EnumHelper.asEnum<RemediationUnit>(prop.Txt)).Value
+                                rule.RemediationFactorTxt <- (EnumHelper.asEnum<RemediationUnit>(prop.Txt)).Value
                             with
                             | ex -> ()
 
                         if prop.Key.Equals("remediationFunction") then
                             try
-                                rule.remediationFunction <- (EnumHelper.asEnum<RemediationFunction>(prop.Txt)).Value
+                                rule.RemediationFunction <- (EnumHelper.asEnum<RemediationFunction>(prop.Txt)).Value
                             with
                             | ex -> ()
 
-                    rule.enableSetDeafaults <- true
+                    rule.EnableSetDeafaults <- true
                     profile.CreateRule(rule) |> ignore
 
     member x.LoadSqaleModelFromFile(path : string) =
@@ -83,41 +86,41 @@ type SqaleModel() =
 
                 for chc in subchk.GetChcs() do
                     let rule = new Rule()
-                    rule.repo <- chc.RuleRepo
-                    rule.key <- chc.RuleKey
-                    rule.configKey <- chc.RuleKey + "@" + chc.RuleRepo
-                    rule.enableSetDeafaults <- false
+                    rule.Repo <- chc.RuleRepo
+                    rule.Key <- chc.RuleKey
+                    rule.ConfigKey <- chc.RuleKey + "@" + chc.RuleRepo
+                    rule.EnableSetDeafaults <- false
 
                     for prop in chc.GetProps() do
                         if prop.Key.Equals("remediationFactor") then
-                            rule.category <- (EnumHelper.asEnum<Category>(chk.Key)).Value
-                            rule.subcategory <- (EnumHelper.asEnum<SubCategory>(subchk.Key)).Value
+                            rule.Category <- (EnumHelper.asEnum<Category>(chk.Key)).Value
+                            rule.Subcategory <- (EnumHelper.asEnum<SubCategory>(subchk.Key)).Value
                             try
-                                rule.remediationFactorVal <- prop.Val
+                                rule.RemediationFactorVal <- Int32.Parse(prop.Val)
                             with
                             | ex -> ()
                             try
-                                rule.remediationFactorTxt <- (EnumHelper.asEnum<RemediationUnit>(prop.Txt)).Value
+                                rule.RemediationFactorTxt <- (EnumHelper.asEnum<RemediationUnit>(prop.Txt)).Value
                             with
                             | ex -> ()
 
                         if prop.Key.Equals("remediationFunction") then
                             try
-                                rule.remediationFunction <- (EnumHelper.asEnum<RemediationFunction>(prop.Txt)).Value
+                                rule.RemediationFunction <- (EnumHelper.asEnum<RemediationFunction>(prop.Txt)).Value
                             with
                             | ex -> ()
 
                         if prop.Key.Equals("offset") then
                             try
-                                rule.remediationOffsetVal <- prop.Val
+                                rule.RemediationOffsetVal <- Int32.Parse(prop.Val)
                             with
                             | ex -> ()
                             try
-                                rule.remediationOffsetTxt <- (EnumHelper.asEnum<RemediationUnit>(prop.Txt)).Value
+                                rule.RemediationOffsetTxt <- (EnumHelper.asEnum<RemediationUnit>(prop.Txt)).Value
                             with
                             | ex -> ()
 
-                    rule.enableSetDeafaults <- true
+                    rule.EnableSetDeafaults <- true
                     profile.CreateRule(rule) |> ignore
 
 

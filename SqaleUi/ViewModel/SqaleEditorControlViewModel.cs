@@ -18,13 +18,23 @@ namespace SqaleUi.ViewModel
     using System.Windows.Forms;
     using System.Windows.Input;
 
+    using ExtensionHelpers;
+
+    using ExtensionTypes;
+
     using GalaSoft.MvvmLight.Command;
 
     using PropertyChanged;
 
+    using Security.Windows.Forms;
+
+    using SonarRestService;
+
     using SqaleManager;
 
     using SqaleUi.View;
+
+    using VSSonarPlugins;
 
     /// <summary>
     /// The sqale editor control view model.
@@ -39,11 +49,6 @@ namespace SqaleUi.ViewModel
         /// </summary>
         private SqaleGridVm selectedTab;
 
-        /// <summary>
-        /// The tab changed.
-        /// </summary>
-        private PropertyChangingEventHandler tabChanged;
-
         #endregion
 
         #region Constructors and Destructors
@@ -55,6 +60,29 @@ namespace SqaleUi.ViewModel
         {
             this.Tabs = new ObservableCollection<SqaleGridVm>();
 
+            this.RestService = new SonarRestService(new JsonSonarConnector());
+            this.VsHelper = new VsHelper();
+            this.Project = null;
+            this.ConnectedToServer = false;
+
+            this.InitCommanding();
+        }
+
+        public ISonarRestService RestService { get; set; }
+
+        public SqaleEditorControlViewModel(ConnectionConfiguration configuration, Resource project, IVsEnvironmentHelper vshelper)
+        {
+            this.Tabs = new ObservableCollection<SqaleGridVm>();
+            this.InitCommanding();
+
+            this.Configuration = configuration;
+            this.Project = project;
+            this.VsHelper = vshelper;
+            this.ConnectedToServer = false;
+        }
+
+        private void InitCommanding()
+        {
             this.CanExecuteNewProjectCommand = true;
             this.CanExecuteOpenProjectCommand = true;
             this.CanExecuteSaveProjectCommand = false;
@@ -70,8 +98,6 @@ namespace SqaleUi.ViewModel
             this.CreateWorkAreaCommand = new RelayCommand<object>(item => this.CreateNewWorkArea(false));
             this.DeleteWorkAreaCommand = new RelayCommand(this.RemoveCurrentSelectedTab);
         }
-
-
 
         #endregion
 
@@ -255,7 +281,7 @@ namespace SqaleUi.ViewModel
         /// </summary>
         private void ExecuteNewProjectCommand()
         {
-            this.CreateNewProject(string.Empty);
+            this.CreateNewProject(string.Empty, this.Configuration, this.Project, this.VsHelper);
             this.CanExecuteNewProjectCommand = false;
             this.CanExecuteOpenProjectCommand = false;
 
@@ -263,6 +289,77 @@ namespace SqaleUi.ViewModel
             this.CanExecuteSaveAsProjectCommand = true;
             this.CanExecuteCloseProjectCommand = true;
         }
+
+        /// <summary>
+        /// The connect to sonar.
+        /// </summary>
+        public void ConnectToSonar(SqaleGridVm model)
+        {
+            bool userCancel = true;
+            bool resetServer = false;
+            while (userCancel && !this.CreateSonarConnection(resetServer))
+            {
+                DialogResult result = MessageBox.Show("Cannot Connect, try again?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                userCancel = result == DialogResult.Yes;
+                resetServer = true;
+            }
+
+            model.Configuration = this.Configuration;
+        }
+
+        /// <summary>
+        /// The create sonar connection.
+        /// </summary>
+        /// <param name="resetServer">
+        /// The reset server.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        private bool CreateSonarConnection(bool resetServer)
+        {
+            if (this.Configuration == null)
+            {
+                // find server address
+                this.ServerAddress = this.VsHelper.ReadOptionFromApplicationData("QualityEditorPlugin", "ServerAddress");
+
+                if (string.IsNullOrEmpty(this.ServerAddress) || resetServer)
+                {
+                    this.ServerAddress = PromptUserData.Prompt("Server Address", "Insert Server Address", "http://localhost:9000");
+                    if (this.ServerAddress == null)
+                    {
+                        return false;
+                    }
+
+                    this.VsHelper.WriteOptionInApplicationData("QualityEditorPlugin", "ServerAddress", this.ServerAddress);
+                }
+
+                using (var dialog = new UserCredentialsDialog())
+                {
+                    if (dialog.ShowDialog() == DialogResult.OK)
+                    {
+                        if (dialog.SaveChecked)
+                        {
+                            dialog.ConfirmCredentials(true);
+                        }
+
+                        this.Configuration = new ConnectionConfiguration(this.ServerAddress, dialog.User, dialog.PasswordToString());
+                        this.ConnectedToServer = true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return this.RestService.AuthenticateUser(this.Configuration);
+        }
+
+        public bool ConnectedToServer { get; set; }
+
+        public string ServerAddress { get; set; }
 
         public bool CanExecuteSaveAsProjectCommand { get; set; }
 
@@ -282,7 +379,7 @@ namespace SqaleUi.ViewModel
 
             try
             {
-                this.CreateNewProject(filedialog.FileName);
+                this.CreateNewProject(filedialog.FileName, this.Configuration, this.Project, this.VsHelper);
 
                 this.CanExecuteNewProjectCommand = false;
                 this.CanExecuteOpenProjectCommand = false;
@@ -299,14 +396,17 @@ namespace SqaleUi.ViewModel
 
         }
 
-        private void CreateNewProject(string fileName)
+        public void CreateNewProject(string fileName, ConnectionConfiguration configuration, Resource resource, IVsEnvironmentHelper vshelper)
         {
             var project = new SqaleGridVm(this, new SqaleManager())
                               {
                                   Header = "Project",
                                   ShowContextMenu = true,
                                   CanSendToProject = false,
-                                  CanSendToWorkAreaCommand = true
+                                  CanSendToWorkAreaCommand = true,
+                                  Configuration = configuration,
+                                  Solution = resource,
+                                  VShelper = vshelper
                               };
 
             this.Tabs.Add(project);
@@ -402,5 +502,19 @@ namespace SqaleUi.ViewModel
         }
 
         #endregion
+
+
+        public IVsEnvironmentHelper VsHelper { get; set; }
+
+        public Resource Project { get; set; }
+
+        public ConnectionConfiguration Configuration { get; set; }
+
+        public void UpdateConfiguration(ConnectionConfiguration configuration, Resource project, IVsEnvironmentHelper vshelper)
+        {
+            this.Configuration = configuration;
+            this.Project = project;
+            this.VsHelper = vshelper;
+        }
     }
 }

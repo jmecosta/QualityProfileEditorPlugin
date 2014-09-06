@@ -1,6 +1,6 @@
-﻿namespace SqaleUi.ViewModel
+﻿namespace SqaleUi.helpers
 {
-    using SqaleManager;
+    using ExtensionTypes;
 
     public interface IFilterOption
     {
@@ -13,6 +13,8 @@
         string FilterTermRepo { get; set; }
 
         string FilterTermDescription { get; set; }
+
+        string FilterTermTag  { get; set; }
 
         Severity? FilterTermSeverity { get; set; }
 

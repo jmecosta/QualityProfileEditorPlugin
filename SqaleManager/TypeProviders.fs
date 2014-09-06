@@ -2,6 +2,8 @@
 
 open FSharp.Data
 open System.Xml.Linq
+open System
+open System.ComponentModel 
 
 type CxxProjectDefinition = XmlProvider<"""<?xml version="1.0" encoding="ASCII"?>
 <sqaleManager xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="cxx-model-project.xsd">
@@ -95,75 +97,5 @@ type RulesXmlOldType = XmlProvider<"""<?xml version="1.0" encoding="ASCII"?>
   </rule>
  </rules>""">   
 
-type SqaleModelType = XmlProvider<"""<?xml version="1.0"?>
-<sqale>
-    <chc>
-        <key>PORTABILITY</key>
-        <name>Portability</name>
-        <chc>
-            <key>COMPILER_RELATED_PORTABILITY</key>
-            <name>Compiler related portability</name>
-            <chc>
-                <rule-repo>gendarme</rule-repo>
-                <rule-key>DoNotPrefixValuesWithEnumNameRule</rule-key>
-                <prop>
-                    <key>remediationFactor</key>
-                    <val>0.03d</val>
-                    <txt>d</txt>
-                </prop>
-                <prop>
-                    <key>remediationFunction</key>
-                    <txt>linear</txt>
-                </prop>
-            </chc>
-            <chc>
-                <rule-repo>gendarme</rule-repo>
-                <rule-key>DoNotPrefixValuesWithEnumNameRule1</rule-key>
-                <prop>
-                    <key>remediationFactor</key>
-                    <val>0.03d</val>
-                    <txt>d</txt>
-                </prop>
-                <prop>
-                    <key>remediationFunction</key>
-                    <txt>linear</txt>
-                </prop>
-                <prop>
-                    <key>offset</key>
-                    <val>0.0d</val>
-                    <txt>d</txt>
-                </prop>
-            </chc>                          
-        </chc>
-        <chc>
-            <key>HARDWARE_RELATED_PORTABILITY</key>
-            <name>Hardware related portability</name>
-        </chc>
-        <chc>
-            <key>LANGUAGE_RELATED_PORTABILITY</key>
-            <name>Language related portability</name>
-        </chc>
-        <chc>
-            <key>OS_RELATED_PORTABILITY</key>
-            <name>OS related portability</name>
-        </chc>
-        <chc>
-            <key>SOFTWARE_RELATED_PORTABILITY</key>
-            <name>Software related portability</name>
-        </chc>
-        <chc>
-            <key>TIME_ZONE_RELATED_PORTABILITY</key>
-            <name>Time zone related portability</name>
-        </chc>
-    </chc>
-    <chc>
-        <key>PORTABILITY</key>
-        <name>Portability</name>
-        <chc>
-            <key>COMPILER_RELATED_PORTABILITY</key>
-            <name>Compiler related portability</name>
-        </chc>
-    </chc>
-</sqale>""">
 
 

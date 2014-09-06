@@ -11,6 +11,7 @@ open System.Text
 open System.Xml.Linq
 open SonarRestService
 open System.ComponentModel 
+open ExtensionTypes
 
 type SqaleManager() =
     let content = new StringBuilder()
@@ -34,7 +35,7 @@ type SqaleManager() =
         let model = x.GetDefaultSqaleModel()
 
         for rule in rules do
-            model.GetProfile().AddRule(rule)
+            model.GetProfile().Rules.Add(rule)
 
         model
 
@@ -48,9 +49,9 @@ type SqaleManager() =
 
         for rule in model.GetProfile().Rules do
             try
-                Array.find (fun elem -> elem.Equals(rule.repo)) (List.toArray repos) |> ignore
+                Array.find (fun elem -> elem.Equals(rule.Repo)) (List.toArray repos) |> ignore
             with
-            | :? System.Collections.Generic.KeyNotFoundException -> repos <- repos @ [rule.repo]
+            | :? System.Collections.Generic.KeyNotFoundException -> repos <- repos @ [rule.Repo]
 
         repos
 
@@ -58,7 +59,7 @@ type SqaleManager() =
         let mutable rules : Rule list = []
 
         for ruleinprofile in model.GetProfile().Rules do
-            if ruleinprofile.repo.Equals(repo) then
+            if ruleinprofile.Repo.Equals(repo) then
                 rules <- rules @ [ruleinprofile]
 
         x.CreateQualityProfile(fileName, rules)
@@ -70,11 +71,11 @@ type SqaleManager() =
             wr.WriteLine(line)
 
         let writeXmlRule(rule : Rule) =
-            addLine(sprintf """    <rule key="%s">""" rule.key)
-            addLine(sprintf """        <name><![CDATA[%s]]></name>""" rule.name)
-            addLine(sprintf """        <configKey><![CDATA[%s]]></configKey>""" rule.configKey)
-            addLine(sprintf """        <category name="%s" />""" (EnumHelper.getEnumDescription(rule.category)))
-            addLine(sprintf """        <description><![CDATA[  %s  ]]></description>""" rule.description)
+            addLine(sprintf """    <rule key="%s">""" rule.Key)
+            addLine(sprintf """        <name><![CDATA[%s]]></name>""" rule.Name)
+            addLine(sprintf """        <configKey><![CDATA[%s]]></configKey>""" rule.ConfigKey)
+            addLine(sprintf """        <category name="%s" />""" (EnumHelper.getEnumDescription(rule.Category)))
+            addLine(sprintf """        <description><![CDATA[  %s  ]]></description>""" rule.Description)
             addLine(sprintf """    </rule>""")
 
         addLine(sprintf """<?xml version="1.0" encoding="ASCII"?>""")
@@ -95,20 +96,20 @@ type SqaleManager() =
 
             for rule in profile.GetRules() do
                 let createdRule = new Rule()
-                createdRule.enableSetDeafaults <- false
-                createdRule.repo <- repo
+                createdRule.EnableSetDeafaults <- false
+                createdRule.Repo <- repo
                 try
-                    createdRule.configKey <- rule.Configkey
+                    createdRule.ConfigKey <- rule.Configkey
                 with
                 | ex -> ()
                 try
-                    createdRule.category <- (EnumHelper.asEnum<Category>(rule.Category.Value)).Value                   
+                    createdRule.Category <- (EnumHelper.asEnum<Category>(rule.Category.Value)).Value                   
                 with
                 | ex -> ()
-                createdRule.description <- rule.Description
-                createdRule.name <- rule.Name
-                createdRule.enableSetDeafaults <- true
-                createdRule.key <- rule.Key
+                createdRule.Description <- rule.Description
+                createdRule.Name <- rule.Name
+                createdRule.EnableSetDeafaults <- true
+                createdRule.Key <- rule.Key
                 model.CreateRuleInProfile(createdRule) |> ignore
         with
         | ex ->
@@ -116,17 +117,17 @@ type SqaleManager() =
 
             for rule in profile.GetRules() do
                 let createdRule = new Rule()
-                createdRule.enableSetDeafaults <- false
-                createdRule.repo <- repo
-                createdRule.configKey <- rule.ConfigKey.Replace("![CDATA[", "").Replace("]]", "").Trim()
+                createdRule.EnableSetDeafaults <- false
+                createdRule.Repo <- repo
+                createdRule.ConfigKey <- rule.ConfigKey.Replace("![CDATA[", "").Replace("]]", "").Trim()
                 try
-                    createdRule.category <- (EnumHelper.asEnum<Category>(rule.Category.Name)).Value
+                    createdRule.Category <- (EnumHelper.asEnum<Category>(rule.Category.Name)).Value
                 with
                 | ex -> ()
-                createdRule.description <- rule.Description.Replace("![CDATA[", "").Replace("]]", "").Trim()
-                createdRule.name <- rule.Name.Replace("![CDATA[", "").Replace("]]", "").Trim()
-                createdRule.key <- rule.Key
-                createdRule.enableSetDeafaults <- true
+                createdRule.Description <- rule.Description.Replace("![CDATA[", "").Replace("]]", "").Trim()
+                createdRule.Name <- rule.Name.Replace("![CDATA[", "").Replace("]]", "").Trim()
+                createdRule.Key <- rule.Key
+                createdRule.EnableSetDeafaults <- true
                 model.CreateRuleInProfile(createdRule) |> ignore
 
     member x.WriteCharacteristicsFromScaleModelToFile(model : SqaleModel, fileToWrite : string) =
@@ -142,12 +143,12 @@ type SqaleManager() =
         addLine("""<sqale>""", fileToWrite)
         for char in model.GetCharacteristics() do
             addLine(sprintf """    <chc>""", fileToWrite)
-            addLine(sprintf """    <key>%s</key>""" (char.key.ToString()), fileToWrite)
-            addLine(sprintf """    <name>%s</name>""" char.name, fileToWrite)
-            for subchar in char.GetSubChars do
+            addLine(sprintf """    <key>%s</key>""" (char.Key.ToString()), fileToWrite)
+            addLine(sprintf """    <name>%s</name>""" char.Name, fileToWrite)
+            for subchar in char.Subchars do
                 addLine(sprintf """        <chc>""", fileToWrite)
-                addLine(sprintf """            <key>%s</key>""" (subchar.key.ToString()), fileToWrite)
-                addLine(sprintf """            <name>%s</name>""" subchar.name, fileToWrite)
+                addLine(sprintf """            <key>%s</key>""" (subchar.Key.ToString()), fileToWrite)
+                addLine(sprintf """            <name>%s</name>""" subchar.Name, fileToWrite)
                 addLine(sprintf """        </chc>""", fileToWrite)
 
             addLine(sprintf """    </chc>""", fileToWrite)
@@ -179,18 +180,15 @@ type SqaleManager() =
 
         let writeRulesChcToFile (charName : Category, subcharName : SubCategory, file : string) = 
             for rule in model.GetProfile().Rules do
-                if rule.category.Equals(charName) && rule.subcategory.Equals(subcharName) then
+                if rule.Category.Equals(charName) && rule.Subcategory.Equals(subcharName) then
                     addLine(sprintf """            <chc>""", fileToWrite)
-                    addLine(sprintf """                <rule-repo>%s</rule-repo>""" rule.repo, file)
-                    addLine(sprintf """                <rule-key>%s</rule-key>""" rule.key, file)
-                    writePropToFile("remediationFunction", "", EnumHelper.getEnumDescription(rule.remediationFunction), file)
-                    writePropToFile("remediationFactor", rule.remediationFactorVal.Replace(',', '.'), EnumHelper.getEnumDescription(rule.remediationFactorTxt), file)
+                    addLine(sprintf """                <rule-repo>%s</rule-repo>""" rule.Repo, file)
+                    addLine(sprintf """                <rule-key>%s</rule-key>""" rule.Key, file)
+                    writePropToFile("remediationFunction", "", EnumHelper.getEnumDescription(rule.RemediationFunction), file)
+                    writePropToFile("remediationFactor", rule.RemediationFactorVal.ToString().Replace(',', '.'), EnumHelper.getEnumDescription(rule.RemediationFactorTxt), file)
 
-                    if not(rule.remediationFunction.Equals(RemediationFunction.CONSTANT_ISSUE)) then
-                        if String.IsNullOrEmpty(rule.remediationOffsetVal) then                 
-                            writePropToFile("offset", "0.0", "d", file)
-                        else
-                            writePropToFile("offset", rule.remediationOffsetVal.Replace(',', '.'), EnumHelper.getEnumDescription(rule.remediationOffsetTxt), file)
+                    if not(rule.RemediationFunction.Equals(RemediationFunction.CONSTANT_ISSUE)) then
+                        writePropToFile("offset", rule.RemediationOffsetVal.ToString().Replace(',', '.'), EnumHelper.getEnumDescription(rule.RemediationOffsetTxt), file)
 
                     addLine(sprintf """            </chc>""", fileToWrite)
            
@@ -198,13 +196,13 @@ type SqaleManager() =
         addLine("""<sqale>""", fileToWrite)
         for char in model.GetCharacteristics() do
             addLine(sprintf """    <chc>""", fileToWrite)
-            addLine(sprintf """    <key>%s</key>""" (char.key.ToString()), fileToWrite)
-            addLine(sprintf """    <name>%s</name>""" char.name, fileToWrite)
-            for subchar in char.GetSubChars do
+            addLine(sprintf """    <key>%s</key>""" (char.Key.ToString()), fileToWrite)
+            addLine(sprintf """    <name>%s</name>""" char.Name, fileToWrite)
+            for subchar in char.Subchars do
                 addLine(sprintf """        <chc>""", fileToWrite)
-                addLine(sprintf """            <key>%s</key>""" (subchar.key.ToString()), fileToWrite)
-                addLine(sprintf """            <name>%s</name>""" subchar.name, fileToWrite)
-                writeRulesChcToFile(char.key, subchar.key, fileToWrite)
+                addLine(sprintf """            <key>%s</key>""" (subchar.Key.ToString()), fileToWrite)
+                addLine(sprintf """            <name>%s</name>""" subchar.Name, fileToWrite)
+                writeRulesChcToFile(char.Key, subchar.Key, fileToWrite)
                 addLine(sprintf """        </chc>""", fileToWrite)
                 
 
@@ -230,14 +228,14 @@ type SqaleManager() =
         for rule in profile.Rules.GetRules() do
             if not(model.GetProfile().IsRulePresent(rule.Key)) then
                 let ruletoUpdate = new Rule()
-                ruletoUpdate.severity <- (Enum.Parse(typeof<Severity>, rule.Priority) :?> Severity)
-                ruletoUpdate.repo <- rule.RepositoryKey
-                ruletoUpdate.key <- rule.Key
-                model.GetProfile().AddRule(ruletoUpdate)
+                ruletoUpdate.Severity <- (Enum.Parse(typeof<Severity>, rule.Priority) :?> Severity)
+                ruletoUpdate.Repo <- rule.RepositoryKey
+                ruletoUpdate.Key <- rule.Key
+                model.GetProfile().Rules.Add(ruletoUpdate)
             else
                 let ruletoUpdate = model.GetProfile().GetRule(rule.Key)
-                ruletoUpdate.severity <- (Enum.Parse(typeof<Severity>, rule.Priority) :?> Severity)
-                ruletoUpdate.repo <- rule.RepositoryKey
+                ruletoUpdate.Severity <- (Enum.Parse(typeof<Severity>, rule.Priority) :?> Severity)
+                ruletoUpdate.Repo <- rule.RepositoryKey
 
     member x.CombineWithDefaultProfileDefinition(model : SqaleModel, file : string) = 
         let profile = ProfileDefinition.Parse(File.ReadAllText(file))
@@ -246,8 +244,8 @@ type SqaleManager() =
         for rule in profile.Rules.GetRules() do
             if model.GetProfile().IsRulePresent(rule.Key) then
                 let ruletoUpdate = model.GetProfile().GetRule(rule.Key)
-                ruletoUpdate.severity <- (Enum.Parse(typeof<Severity>, rule.Priority) :?> Severity)
-                ruletoUpdate.repo <- rule.RepositoryKey                
+                ruletoUpdate.Severity <- (Enum.Parse(typeof<Severity>, rule.Priority) :?> Severity)
+                ruletoUpdate.Repo <- rule.RepositoryKey                
             
     member x.SaveSqaleModelAsXmlProject(model : SqaleModel, fileToWrite : string) =
 
@@ -263,55 +261,49 @@ type SqaleManager() =
         addLine(sprintf """<sqaleManager xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="cxx-model-project.xsd">""", fileToWrite)
         //for char in model.GetCharacteristics() do
         //    addLine(sprintf """    <characteristic>""", fileToWrite)
-        //    addLine(sprintf """        <key>%s</key>""" char.key, fileToWrite)
-        //    addLine(sprintf """        <name>%s</name>""" char.name, fileToWrite)            
+        //    addLine(sprintf """        <key>%s</key>""" char.Key, fileToWrite)
+        //    addLine(sprintf """        <name>%s</name>""" char.Name, fileToWrite)            
         //    for subchar in char.GetSubChars do
         //        addLine(sprintf """        <subcaracteristic>""", fileToWrite)
-        //        addLine(sprintf """            <key>%s</key>""" subchar.key, fileToWrite)
-        //        addLine(sprintf """            <name>%s</name>""" subchar.name, fileToWrite)                
+        //        addLine(sprintf """            <key>%s</key>""" subchar.Key, fileToWrite)
+        //        addLine(sprintf """            <name>%s</name>""" subchar.Name, fileToWrite)                
          //       addLine(sprintf """        </subcaracteristic>""", fileToWrite)
          //   addLine(sprintf """    </characteristic>""", fileToWrite)
         
         addLine(sprintf """    <rules>""", fileToWrite)
         for rule in model.GetProfile().Rules do
-            addLine(sprintf """    <rule key="%s">""" rule.key, fileToWrite)           
-            addLine(sprintf """        <name>%s</name>""" (EncodeStringAsXml(rule.name)), fileToWrite)
-            if String.IsNullOrEmpty(EnumHelper.getEnumDescription(rule.subcategory)) then
+            addLine(sprintf """    <rule key="%s">""" rule.Key, fileToWrite)           
+            addLine(sprintf """        <name>%s</name>""" (EncodeStringAsXml(rule.Name)), fileToWrite)
+            if String.IsNullOrEmpty(EnumHelper.getEnumDescription(rule.Subcategory)) then
                 addLine(sprintf """        <requirement>undefined</requirement>""", fileToWrite)
             else
-                addLine(sprintf """        <requirement>%s</requirement>""" (EnumHelper.getEnumDescription(rule.subcategory)), fileToWrite)
-            if String.IsNullOrEmpty(rule.remediationFactorVal) then
-                addLine(sprintf """        <remediationFactorVal>0.0</remediationFactorVal>""", fileToWrite)
-            else
-                addLine(sprintf """        <remediationFactorVal>%s</remediationFactorVal>""" (rule.remediationFactorVal.Replace(',', '.')), fileToWrite)
+                addLine(sprintf """        <requirement>%s</requirement>""" (EnumHelper.getEnumDescription(rule.Subcategory)), fileToWrite)
+                addLine(sprintf """        <remediationFactorVal>%s</remediationFactorVal>""" (rule.RemediationFactorVal.ToString().Replace(',', '.')), fileToWrite)
 
-            if String.IsNullOrEmpty(EnumHelper.getEnumDescription(rule.remediationFactorTxt)) then
+            if String.IsNullOrEmpty(EnumHelper.getEnumDescription(rule.RemediationFactorTxt)) then
                 addLine(sprintf """        <remediationFactorUnit>undefined</remediationFactorUnit>""", fileToWrite)
             else 
-                addLine(sprintf """        <remediationFactorUnit>%s</remediationFactorUnit>""" (EnumHelper.getEnumDescription(rule.remediationFactorTxt)), fileToWrite)
+                addLine(sprintf """        <remediationFactorUnit>%s</remediationFactorUnit>""" (EnumHelper.getEnumDescription(rule.RemediationFactorTxt)), fileToWrite)
 
-            if String.IsNullOrEmpty(EnumHelper.getEnumDescription(rule.remediationFunction)) then
+            if String.IsNullOrEmpty(EnumHelper.getEnumDescription(rule.RemediationFunction)) then
                 addLine(sprintf """        <remediationFunction>undefined</remediationFunction>""", fileToWrite)
             else
-                addLine(sprintf """        <remediationFunction>%s</remediationFunction>""" (EnumHelper.getEnumDescription(rule.remediationFunction)), fileToWrite)
+                addLine(sprintf """        <remediationFunction>%s</remediationFunction>""" (EnumHelper.getEnumDescription(rule.RemediationFunction)), fileToWrite)
 
-            if String.IsNullOrEmpty(rule.remediationOffsetVal) then
-                addLine(sprintf """        <remediationOffsetVal>0.0</remediationOffsetVal>""", fileToWrite)
-            else
-                addLine(sprintf """        <remediationOffsetVal>%s</remediationOffsetVal>""" (rule.remediationOffsetVal.Replace(',', '.')), fileToWrite)
+                addLine(sprintf """        <remediationOffsetVal>%s</remediationOffsetVal>""" (rule.RemediationOffsetVal.ToString().Replace(',', '.')), fileToWrite)
 
-            if String.IsNullOrEmpty(EnumHelper.getEnumDescription(rule.remediationOffsetTxt)) then
+            if String.IsNullOrEmpty(EnumHelper.getEnumDescription(rule.RemediationOffsetTxt)) then
                 addLine(sprintf """        <remediationOffsetUnit>undefined</remediationOffsetUnit>""", fileToWrite)
             else
-                addLine(sprintf """        <remediationOffsetUnit>%s</remediationOffsetUnit>""" (EnumHelper.getEnumDescription(rule.remediationOffsetTxt)), fileToWrite)
+                addLine(sprintf """        <remediationOffsetUnit>%s</remediationOffsetUnit>""" (EnumHelper.getEnumDescription(rule.RemediationOffsetTxt)), fileToWrite)
 
-            if String.IsNullOrEmpty(rule.severity.ToString()) then
+            if String.IsNullOrEmpty(rule.Severity.ToString()) then
                 addLine(sprintf """        <severity>undefined</severity>""", fileToWrite)
             else
-                addLine(sprintf """        <severity>%s</severity>""" (EnumHelper.getEnumDescription(rule.severity)), fileToWrite)
+                addLine(sprintf """        <severity>%s</severity>""" (EnumHelper.getEnumDescription(rule.Severity)), fileToWrite)
 
-            addLine(sprintf """        <repo>%s</repo>""" rule.repo, fileToWrite)
-            addLine(sprintf """        <description>%s</description>""" (EncodeStringAsXml(rule.description).Trim()), fileToWrite)            
+            addLine(sprintf """        <repo>%s</repo>""" rule.Repo, fileToWrite)
+            addLine(sprintf """        <description>%s</description>""" (EncodeStringAsXml(rule.Description).Trim()), fileToWrite)            
             addLine(sprintf """    </rule>""", fileToWrite)
         addLine(sprintf """    </rules>""", fileToWrite)
         addLine(sprintf """</sqaleManager>""", fileToWrite)
@@ -324,7 +316,7 @@ type SqaleManager() =
                          
         for char in chars do
             if char.IsSubCharPresent(requirement) then
-                key <- char.key
+                key <- char.Key
         key
 
     member x.ImportSqaleProjectFromFile(fileToRead : string) =
@@ -342,21 +334,21 @@ type SqaleManager() =
                 entryLog.line <- info.LineNumber
             try
                 let rule = new Rule()
-                rule.enableSetDeafaults <- false
-                rule.key <- item.Key
-                rule.name <- item.Name
-                rule.repo <- item.Repo
-                rule.configKey <- item.Name + "@" + item.Repo
-                rule.description <- item.Description
-                rule.category <- x.GetCategoryFromSubcategoryKey(model, EnumHelper.asEnum<SubCategory>(item.Requirement).Value)
-                rule.subcategory <- (EnumHelper.asEnum<SubCategory>(item.Requirement)).Value
-                rule.remediationFactorVal <- item.RemediationFactorVal.ToString()
-                rule.remediationFactorTxt <- (EnumHelper.asEnum<RemediationUnit>(item.RemediationFactorUnit)).Value
-                rule.remediationFunction <- (EnumHelper.asEnum<RemediationFunction>(item.RemediationFunction)).Value
-                rule.remediationOffsetTxt <- (EnumHelper.asEnum<RemediationUnit>(item.RemediationOffsetUnit)).Value
-                rule.remediationOffsetVal <- item.RemediationOffsetVal.ToString()
-                rule.severity <- (EnumHelper.asEnum<Severity>(item.Severity)).Value
-                rule.enableSetDeafaults <- true
+                rule.EnableSetDeafaults <- false
+                rule.Key <- item.Key
+                rule.Name <- item.Name
+                rule.Repo <- item.Repo
+                rule.ConfigKey <- item.Name + "@" + item.Repo
+                rule.Description <- item.Description
+                rule.Category <- x.GetCategoryFromSubcategoryKey(model, EnumHelper.asEnum<SubCategory>(item.Requirement).Value)
+                rule.Subcategory <- (EnumHelper.asEnum<SubCategory>(item.Requirement)).Value
+                rule.RemediationFactorVal <- Int32.Parse(item.RemediationFactorVal.ToString())
+                rule.RemediationFactorTxt <- (EnumHelper.asEnum<RemediationUnit>(item.RemediationFactorUnit)).Value
+                rule.RemediationFunction <- (EnumHelper.asEnum<RemediationFunction>(item.RemediationFunction)).Value
+                rule.RemediationOffsetTxt <- (EnumHelper.asEnum<RemediationUnit>(item.RemediationOffsetUnit)).Value
+                rule.RemediationOffsetVal <- Int32.Parse(item.RemediationOffsetVal.ToString())
+                rule.Severity <- (EnumHelper.asEnum<Severity>(item.Severity)).Value
+                rule.EnableSetDeafaults <- true
                 model.CreateRuleInProfile(rule) |> ignore
             with
              | ex ->
@@ -371,15 +363,15 @@ type SqaleManager() =
 
         for rule in profile.[0].Rules do
             let createdRule = new Rule()
-            createdRule.repo <- rule.Repo            
-            createdRule.key <- rule.Key
-            createdRule.severity <- (Enum.Parse(typeof<Severity>, rule.Severity) :?> Severity)
+            createdRule.Repo <- rule.Repo            
+            createdRule.Key <- rule.Key
+            createdRule.Severity <- rule.Severity
 
             for ruledef in rules do
                 if ruledef.Key.EndsWith(rule.Key, true, Globalization.CultureInfo.InvariantCulture) then
-                    createdRule.description <- ruledef.Description
-                    createdRule.name <- ruledef.Name
-                    createdRule.configKey <- ruledef.ConfigKey                    
+                    createdRule.Description <- ruledef.Description
+                    createdRule.Name <- ruledef.Name
+                    createdRule.ConfigKey <- ruledef.ConfigKey                    
 
             model.CreateRuleInProfile(createdRule) |> ignore
 
@@ -387,16 +379,14 @@ type SqaleManager() =
 
     member x.MergeSqaleDataModels(sourceModel : SqaleModel, externalModel : SqaleModel) = 
         for rule in externalModel.GetProfile().Rules do
-            if not(rule.category.Equals("undefined")) then
-                try
-                    let ruleinModel = sourceModel.GetProfile().Rules |> List.find (fun elem -> elem.key.Equals(rule.key))
-                    ruleinModel.category <- rule.category
-                    ruleinModel.subcategory <- rule.subcategory
-                    ruleinModel.remediationFactorTxt <- rule.remediationFactorTxt
-                    ruleinModel.remediationFactorVal <- rule.remediationFactorVal
-                    ruleinModel.remediationFunction <- rule.remediationFunction
-                with
-                | ex -> ()
+            if not(rule.Category.Equals("undefined")) then
+                let ruleinModel = sourceModel.GetProfile().GetRule(rule.Key)
+                if ruleinModel <> null then
+                    ruleinModel.Category <- rule.Category
+                    ruleinModel.Subcategory <- rule.Subcategory
+                    ruleinModel.RemediationFactorTxt <- rule.RemediationFactorTxt
+                    ruleinModel.RemediationFactorVal <- rule.RemediationFactorVal
+                    ruleinModel.RemediationFunction <- rule.RemediationFunction
 
     member x.LoadSqaleModelFromDsk(fileToRead : string) =
         let ReadFromBytes(file : string)  = 

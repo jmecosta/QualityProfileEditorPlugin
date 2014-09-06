@@ -21,17 +21,10 @@
             this.DataContext = new SqaleEditorControlViewModel();
         }
 
-        public void UpdateConfiguration(ConnectionConfiguration configuration, Resource project, IVsEnvironmentHelper vshelper)
+        public SqaleEditorControl(SqaleEditorControlViewModel model)
         {
-            this.Configuration = configuration;
-            this.Project = project;
-            this.VsHelper = vshelper;
+            InitializeComponent();
+            this.DataContext = model;
         }
-
-        public IVsEnvironmentHelper VsHelper { get; set; }
-
-        public Resource Project { get; set; }
-
-        public ConnectionConfiguration Configuration { get; set; }
     }
 }

@@ -6,7 +6,10 @@
     xmlns:viewModel="clr-namespace:SqaleUi.ViewModel"
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
 
-    xmlns:command="http://www.galasoft.ch/mvvmlight" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="SqaleUi.View.SqaleGrid"
+    xmlns:command="http://www.galasoft.ch/mvvmlight" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:extensionTypes="clr-namespace:ExtensionTypes;assembly=ExtensionTypes"
+    xmlns:helpers="clr-namespace:SqaleUi.helpers"
+    mc:Ignorable="d" x:Class="SqaleUi.View.SqaleGrid"
     d:DataContext="{d:DesignInstance {x:Type viewModel:SqaleGridVm}}" d:DesignHeight="188.209">
     <UserControl.Resources>
 			<Image x:Key="ToWorkArea" Source="/SqaleUi;component/Images/toworkarea.png"/>
@@ -17,41 +20,39 @@
             <Image x:Key="ImportPrioritiesProfile" Source="/SqaleUi;component/Images/importXmlPriorities.png"/>
             <Image x:Key="ImportSqaleDefinition" Source="/SqaleUi;component/Images/imporSqaleDefinition.png"/>
             <Image x:Key="ExportSqaleModel" Source="/SqaleUi;component/Images/exportSqaleModel.png"/>
-
-        
-
-
-        <viewModel:ActivityToBrushConverter x:Key="BrushConverter"/>
+            <Image x:Key="ImportServerQualityProfile" Source="/SqaleUi;component/Images/importQualityProfile.png"/>
+       
+        <helpers:ActivityToBrushConverter x:Key="BrushConverter"/>
 		<BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
         <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type system:Enum}" x:Key="GetCategoryEnumValues">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="sqaleManager:Category"/>
+                <x:Type TypeName="extensionTypes:Category"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
 
         <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type system:Enum}" x:Key="GetSeverityEnumValues">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="sqaleManager:Severity"/>
+                <x:Type TypeName="extensionTypes:Severity"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
 
 
         <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type system:Enum}" x:Key="GetSubCategoryEnumValues">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="sqaleManager:SubCategory"/>
+                <x:Type TypeName="extensionTypes:SubCategory"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
 
         <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type system:Enum}" x:Key="GetRemediationUnitEnumValues">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="sqaleManager:RemediationUnit"/>
+                <x:Type TypeName="extensionTypes:RemediationUnit"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
 
         <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type system:Enum}" x:Key="GetRemediationFunctionEnumValues">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="sqaleManager:RemediationFunction"/>
+                <x:Type TypeName="extensionTypes:RemediationFunction"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
 
@@ -85,6 +86,8 @@
             <Button Margin="0,0,0,0" ToolTip="Import A Quality Profile Definition" Content="{DynamicResource ImportPrioritiesProfile}" Background="Transparent" Command="{Binding ImportProfileCommand}"/>
             <Button Margin="0,0,5,0" ToolTip="Import A Sqale Model" Content="{DynamicResource ImportSqaleDefinition}" Background="Transparent" Command="{Binding ImportSqaleModelCommand}"/>
 
+            <Button Margin="0,0,5,0" ToolTip="Modify Server Profile" Content="{DynamicResource ImportServerQualityProfile}" Background="Transparent" Command="{Binding ImportServerQualityProfileCommand}"/>
+            
             <Button Margin="0,0,0,0" ToolTip="Export Sqale Model" Content="{DynamicResource ExportSqaleModel}" Background="Transparent" Command="{Binding ExportSaqleModelCommand}"/>
             
         </StackPanel>
@@ -97,10 +100,6 @@
 					<command:EventToCommand Command="{Binding SelectionChangedCommand}" CommandParameter="{Binding SelectedItems, ElementName=Datagrid}" />
 				</i:EventTrigger>
 
-                <i:EventTrigger EventName="CurrentCellChanged">
-                    <command:EventToCommand Command="{Binding DatagridDataChangedCommand}" CommandParameter="{Binding SelectedItem, ElementName=Datagrid}" />
-                </i:EventTrigger>
-                
             </i:Interaction.Triggers>
 
 
@@ -109,7 +108,7 @@
 				<DataGridTemplateColumn  x:Name="KeyColumnTempl" Header="Key" CanUserSort="True" SortMemberPath="key" MinWidth="110" >
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-                            <TextBox IsEnabled="false"  Text="{Binding key, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" Foreground="Black" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" ContextMenu="{StaticResource DatagridContextMenu}"/>
+                            <TextBox IsEnabled="false"  Text="{Binding Key, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" Foreground="Black" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" ContextMenu="{StaticResource DatagridContextMenu}"/>
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 					<!--NAME COLUMN-->
@@ -144,7 +143,7 @@
 				<DataGridTemplateColumn  x:Name="NameColumnTempl" Header="Name" CanUserSort="True" SortMemberPath="name" MinWidth="110" >
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-                            <TextBox MaxWidth="300" TextWrapping="Wrap" Text="{Binding name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" Foreground="Black" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" ContextMenu="{StaticResource DatagridContextMenu}" TextAlignment="Justify" />
+                            <TextBox MaxWidth="300" TextWrapping="Wrap" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" Foreground="Black" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" ContextMenu="{StaticResource DatagridContextMenu}" TextAlignment="Justify" />
                         </DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 					<!--NAME COLUMN-->
@@ -179,7 +178,7 @@
 				<DataGridTemplateColumn  x:Name="RepoColumnTempl" Header="Repo" CanUserSort="True" SortMemberPath="repo" MinWidth="110" >
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-                            <TextBox Text="{Binding repo, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" Foreground="Black"  Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" ContextMenu="{StaticResource DatagridContextMenu}"/>
+                            <TextBox Text="{Binding Repo, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" Foreground="Black"  Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" ContextMenu="{StaticResource DatagridContextMenu}"/>
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 					<!--NAME COLUMN-->
@@ -215,7 +214,7 @@
 				<DataGridTemplateColumn x:Name="SeverityTemplateCol" Header="Severity" CanUserSort="True" SortMemberPath="severity" MinWidth="110" >
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<ComboBox ItemsSource="{Binding Source={StaticResource GetSeverityEnumValues}}" Width="Auto" SelectedValue="{Binding severity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Black" />
+							<ComboBox ItemsSource="{Binding Source={StaticResource GetSeverityEnumValues}}" Width="Auto" SelectedValue="{Binding Severity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Black" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 					<!--NAME COLUMN-->
@@ -249,10 +248,47 @@
 					</DataGridTemplateColumn.HeaderTemplate>
 				</DataGridTemplateColumn>
 
-				<DataGridTemplateColumn x:Name="CategotyTemplateCol" Header="Category" CanUserSort="True" SortMemberPath="category" MinWidth="110" >
+                <DataGridTemplateColumn  x:Name="TagsColumnTempl" Header="Tags" CanUserSort="True" SortMemberPath="repo" MinWidth="110" >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ItemsControl ItemsSource="{Binding Tags}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <!--NAME COLUMN-->
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <Grid IsHitTestVisible="True">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{TemplateBinding Content}"/>
+                                <!--FILTER EXPANDER-->
+                                <Expander Grid.Column="1" IsHitTestVisible="True" VerticalAlignment="Top" Margin="60 -3 0 0" ToolTip="RuleFilter">
+                                    <Border IsHitTestVisible="True" BorderThickness="1" Margin="-90 0 0 0" >
+                                        <StackPanel Margin="0 4 0 0">
+                                            <!--FILTER TEXTBOX-->
+                                            <TextBox Text="{Binding DataContext.FilterTermTag, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+												Background="{Binding DataContext.FilterActive, Converter={StaticResource BrushConverter}, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
+												ToolTip="Enter filter term" Width="100" Height="18" FontSize="9" BorderThickness="1" />
+                                            <!--FILTER BUTTONS-->
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <TextBlock Margin="2" FontFamily="Segoe UI"><Hyperlink Command="{Binding DataContext.FilterApplyCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"><Run Text="Apply"/></Hyperlink></TextBlock>
+                                                <TextBlock Margin="2"><Hyperlink Command="{Binding DataContext.FilterClearTagCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"><Run Text="Clear"/></Hyperlink></TextBlock>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </Expander>
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                </DataGridTemplateColumn>
+
+
+                <DataGridTemplateColumn x:Name="CategotyTemplateCol" Header="Category" CanUserSort="True" SortMemberPath="category" MinWidth="110" >
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<ComboBox ItemsSource="{Binding Source={StaticResource GetCategoryEnumValues}}" Width="Auto" SelectedValue="{Binding category, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Black" />
+							<ComboBox ItemsSource="{Binding Source={StaticResource GetCategoryEnumValues}}" Width="Auto" SelectedValue="{Binding Category, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Black" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 					<!--NAME COLUMN-->
@@ -286,10 +322,11 @@
 					</DataGridTemplateColumn.HeaderTemplate>
 				</DataGridTemplateColumn>
 
+                
 				<DataGridTemplateColumn x:Name="SubCategotyTemplateCol" Header="Sub Category" CanUserSort="True" SortMemberPath="subcategory" MinWidth="110" >
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<ComboBox ItemsSource="{Binding SubcategoryValues}" Width="Auto" SelectedValue="{Binding subcategory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Black" />
+							<ComboBox ItemsSource="{Binding SubcategoryValues}" Width="Auto" SelectedValue="{Binding Subcategory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Black" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 					<!--NAME COLUMN-->
@@ -327,7 +364,7 @@
                 <DataGridTemplateColumn x:Name="RemediationFunctionTemplateCol" Header="Remediation Function" CanUserSort="True" SortMemberPath="remediationFunction" MinWidth="110" >
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<ComboBox ItemsSource="{Binding Source={StaticResource GetRemediationFunctionEnumValues}}" Width="Auto" SelectedValue="{Binding remediationFunction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Black" />
+							<ComboBox ItemsSource="{Binding Source={StaticResource GetRemediationFunctionEnumValues}}" Width="Auto" SelectedValue="{Binding RemediationFunction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Black" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 					<!--NAME COLUMN-->
@@ -362,16 +399,21 @@
 				</DataGridTemplateColumn>
 
 
+                
+                <DataGridTextColumn Binding="{Binding RemediationFactorVal, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Header="Remediation Value" MinWidth="100" CanUserSort="True"/>
+                <DataGridComboBoxColumn Header="Remediation Factor Unit" ItemsSource="{Binding Source={StaticResource GetRemediationUnitEnumValues}}" Width="100" SelectedValueBinding="{Binding RemediationFactorTxt, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" CanUserSort="True"/>
 
-                <DataGridTextColumn Binding="{Binding remediationFactorVal, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Header="Remediation Value" MinWidth="100" CanUserSort="True"/>
-                <DataGridComboBoxColumn Header="Remediation Factor Unit" ItemsSource="{Binding Source={StaticResource GetRemediationUnitEnumValues}}" Width="100" SelectedValueBinding="{Binding remediationFactorTxt, Mode=TwoWay}" CanUserSort="True"/>
-                <DataGridTextColumn Binding="{Binding remediationOffsetVal, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Header="Remediation Ofset" MinWidth="100" CanUserSort="True"/>
-                <DataGridComboBoxColumn Header="Remediation Offset Unit" ItemsSource="{Binding Source={StaticResource GetRemediationUnitEnumValues}}" Width="100" SelectedValueBinding="{Binding remediationOffsetTxt, Mode=TwoWay}" CanUserSort="True"/>
+
+                
+                <DataGridTextColumn  Binding="{Binding RemediationOffsetVal, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Header="Remediation Ofset" MinWidth="100" CanUserSort="True"/>
+                <DataGridComboBoxColumn  Header="Remediation Offset Unit" ItemsSource="{Binding Source={StaticResource GetRemediationUnitEnumValues}}" Width="100" SelectedValueBinding="{Binding RemediationOffsetTxt, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" CanUserSort="True"/>
+
+
 
                 <DataGridTemplateColumn Header="Config Key" CanUserSort="True" SortMemberPath="configKey" MinWidth="110" >
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-                            <TextBlock TextAlignment="Justify" MaxWidth="300" TextWrapping="Wrap" Text="{Binding configKey, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" ContextMenu="{StaticResource DatagridContextMenu}"/>
+                            <TextBox TextAlignment="Justify" MaxWidth="300" TextWrapping="Wrap" Text="{Binding ConfigKey, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" ContextMenu="{StaticResource DatagridContextMenu}"/>
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 					<!--NAME COLUMN-->
@@ -403,10 +445,10 @@
 						</DataTemplate>
 					</DataGridTemplateColumn.HeaderTemplate>
 				</DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Description" CanUserSort="True" SortMemberPath="description" MinWidth="110" >
+                <DataGridTemplateColumn Header="Description" CanUserSort="True" SortMemberPath="description" MinWidth="400"  Width="400" MaxWidth="400">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-                            <TextBlock TextAlignment="Justify" MaxWidth="300" TextWrapping="Wrap" Text="{Binding description, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" ContextMenu="{StaticResource DatagridContextMenu}"/>
+                            <TextBox TextAlignment="Justify" MaxHeight="100" MaxWidth="400" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" ContextMenu="{StaticResource DatagridContextMenu}"/>
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 					<!--NAME COLUMN-->

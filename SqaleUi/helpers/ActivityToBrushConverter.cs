@@ -7,7 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace SqaleUi.ViewModel
+namespace SqaleUi.helpers
 {
     using System;
     using System.Globalization;

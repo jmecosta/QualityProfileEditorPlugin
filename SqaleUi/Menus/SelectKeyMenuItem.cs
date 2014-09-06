@@ -1,14 +1,11 @@
-﻿namespace SqaleUi.ViewModel
+﻿namespace SqaleUi.Menus
 {
-    using System;
     using System.Collections.ObjectModel;
-    using System.Windows.Data;
-    using System.Windows.Forms;
     using System.Windows.Input;
 
     using GalaSoft.MvvmLight.Command;
 
-    using SqaleUi.View;
+    using SqaleUi.ViewModel;
 
     /// <summary>
     /// The select key menu item.
@@ -42,7 +39,7 @@
             var key = this.sqaleGridVm.CreateNewKey();
             if (!string.IsNullOrEmpty(key))
             {
-                this.sqaleGridVm.SelectedRule.key = key;
+                this.sqaleGridVm.SelectedRule.Key = key;
             }
             
             this.sqaleGridVm.RefreshView();

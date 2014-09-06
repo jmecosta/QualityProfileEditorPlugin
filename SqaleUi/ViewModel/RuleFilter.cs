@@ -1,8 +1,13 @@
 ﻿namespace SqaleUi.ViewModel
 {
     using System;
+    using System.Linq;
+
+    using ExtensionTypes;
 
     using SqaleManager;
+
+    using SqaleUi.helpers;
 
     public class RuleFilter : IFilter
     {
@@ -15,15 +20,29 @@
 
         public bool FilterFunction(object parameter)
         {
-            return ((Rule)parameter).configKey.IndexOf(this.filterOption.FilterTermConfigKey, StringComparison.InvariantCultureIgnoreCase) >= 0 &&
-                   ((Rule)parameter).description.IndexOf(this.filterOption.FilterTermDescription, StringComparison.InvariantCultureIgnoreCase) >= 0 &&
-                   ((Rule)parameter).key.IndexOf(this.filterOption.FilterTermKey, StringComparison.InvariantCultureIgnoreCase) >= 0 &&
-                   ((Rule)parameter).name.IndexOf(this.filterOption.FilterTermName, StringComparison.InvariantCultureIgnoreCase) >= 0 &&
-                   ((Rule)parameter).repo.IndexOf(this.filterOption.FilterTermRepo, StringComparison.InvariantCultureIgnoreCase) >= 0 &&
-                   (this.filterOption.FilterTermCategory == null || ((Rule)parameter).category.Equals(this.filterOption.FilterTermCategory)) &&
-                   (this.filterOption.FilterTermSubCategory == null || ((Rule)parameter).subcategory.Equals(this.filterOption.FilterTermSubCategory)) &&
-                   (this.filterOption.FilterTermRemediationFunction == null || ((Rule)parameter).remediationFunction.Equals(this.filterOption.FilterTermRemediationFunction)) &&
-                   (this.filterOption.FilterTermSeverity == null || ((Rule)parameter).severity.Equals(this.filterOption.FilterTermSeverity));
+            var isTagPresent = this.IsTagPresent((Rule)parameter);
+
+            var include = ((Rule)parameter).ConfigKey.IndexOf(this.filterOption.FilterTermConfigKey, StringComparison.InvariantCultureIgnoreCase) >= 0 &&
+                   ((Rule)parameter).Description.IndexOf(this.filterOption.FilterTermDescription, StringComparison.InvariantCultureIgnoreCase) >= 0 &&
+                   ((Rule)parameter).Key.IndexOf(this.filterOption.FilterTermKey, StringComparison.InvariantCultureIgnoreCase) >= 0 &&
+                   ((Rule)parameter).Name.IndexOf(this.filterOption.FilterTermName, StringComparison.InvariantCultureIgnoreCase) >= 0 &&
+                   ((Rule)parameter).Repo.IndexOf(this.filterOption.FilterTermRepo, StringComparison.InvariantCultureIgnoreCase) >= 0 &&
+                   (this.filterOption.FilterTermCategory == null || ((Rule)parameter).Category.Equals(this.filterOption.FilterTermCategory)) &&
+                   (this.filterOption.FilterTermSubCategory == null || ((Rule)parameter).Subcategory.Equals(this.filterOption.FilterTermSubCategory)) &&
+                   (this.filterOption.FilterTermRemediationFunction == null || ((Rule)parameter).RemediationFunction.Equals(this.filterOption.FilterTermRemediationFunction)) &&
+                   (this.filterOption.FilterTermSeverity == null || ((Rule)parameter).Severity.Equals(this.filterOption.FilterTermSeverity));
+
+            return include && isTagPresent;
+        }
+
+        private bool IsTagPresent(Rule parameter)
+        {
+            if (string.IsNullOrEmpty(this.filterOption.FilterTermTag))
+            {
+                return true;
+            }
+
+            return parameter.Tags.Any(tag => tag.IndexOf(this.filterOption.FilterTermTag, StringComparison.InvariantCultureIgnoreCase) >= 0);
         }
 
         public bool IsEnabled()
@@ -33,6 +52,7 @@
                     !string.IsNullOrEmpty(this.filterOption.FilterTermKey)         ||
                     !string.IsNullOrEmpty(this.filterOption.FilterTermName)        ||
                     !string.IsNullOrEmpty(this.filterOption.FilterTermRepo)        ||
+                    !string.IsNullOrEmpty(this.filterOption.FilterTermTag) ||
                      this.filterOption.FilterTermCategory                  != null ||
                      this.filterOption.FilterTermSubCategory               != null ||
                      this.filterOption.FilterTermRemediationFunction        != null ||

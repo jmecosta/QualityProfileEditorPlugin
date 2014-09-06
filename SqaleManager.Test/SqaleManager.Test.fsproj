@@ -87,7 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ExtensionTypes">
-      <HintPath>..\References\ExtensionTypes.dll</HintPath>
+      <HintPath>..\..\VSSonarQubeExtension\BuildDrop\ExtensionTypes.dll</HintPath>
     </Reference>
     <Reference Include="Foq">
       <HintPath>..\References\Foq.dll</HintPath>
