@@ -38,6 +38,7 @@
 
         private bool IsRuleEnabled(Rule parameter)
         {
+            if (this.filterOption.FilterTermEnabled == null) return true;
             if (parameter.Enabled && this.filterOption.FilterTermEnabled.Contains("Enabled")) return true;
             if (!parameter.Enabled && this.filterOption.FilterTermEnabled.Contains("Disabled")) return true;
 

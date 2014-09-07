@@ -118,6 +118,7 @@ namespace SqaleUi.ViewModel
 
             this.FilterApplyCommand = new RelayCommand<object>(this.OnFilterApply);
 
+            this.FilterClearAllCommand = new RelayCommand<object>(this.OnFilterRemoveAll);
             this.FilterClearConfigKeyCommand = new RelayCommand<object>(this.OnFilterRemoveConfigKey);
             this.FilterClearKeyCommand = new RelayCommand<object>(this.OnFilterRemoveKey);
             this.FilterClearNameCommand = new RelayCommand<object>(this.OnFilterRemoveName);
@@ -171,6 +172,25 @@ namespace SqaleUi.ViewModel
             this.CanImportExportFromServer = true;
             this.ImportServerQualityProfileFromProjectCommand = new RelayCommand(this.ExecuteImportServerQualityProfileFromProjectCommand, () => this.CanImportExportFromServer);
             this.ImportServerQualityProfileCommand = new RelayCommand(this.ExecuteImportServerQualityProfileCommand, () => this.CanImportExportFromServer);
+        }
+
+        public RelayCommand<object> FilterClearAllCommand { get; set; }
+
+        private void OnFilterRemoveAll(object obj)
+        {
+            this.ClearConfigKey();
+            this.ClearKey();
+            this.ClearCategory();
+            this.ClearDescription();
+            this.ClearEnabled();
+            this.ClearFilter();
+            this.ClearName();
+            this.ClearRemediationFunction();
+            this.ClearRepo();
+            this.ClearSeverity();
+            this.ClearSubCategory();
+            this.ClearTag();
+            this.ClearFilter();
         }
 
         #endregion
