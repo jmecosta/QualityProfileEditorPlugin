@@ -1067,7 +1067,7 @@ namespace SqaleUi.ViewModel
         /// <returns>
         /// The <see cref="string"/>.
         /// </returns>
-        private string AggregateErrorStrings(string arg1, string arg2)
+        public string AggregateErrorStrings(string arg1, string arg2)
         {
             return arg1 + "\r\n" + arg2;
         }
@@ -1130,14 +1130,29 @@ namespace SqaleUi.ViewModel
         /// </summary>
         private void ExecuteAddNewRuleCommand()
         {
-            string key = this.CreateNewKey();
-            if (string.IsNullOrEmpty(key))
+            if (this.SyncingModelWithSonarServer)
             {
-                return;
-            }
+                if (this.CreateRulesModel == null)
+                {
+                    this.CreateRulesModel = new CreateRuleViewModel(this);
+                }
 
-            this.ProfileRules.Add(new Rule { Key = key });
+                var rulecreationWindow = new CreateRuleWindow(this.CreateRulesModel);
+                rulecreationWindow.Show();
+            }
+            else
+            {
+                string key = this.CreateNewKey();
+                if (string.IsNullOrEmpty(key))
+                {
+                    return;
+                }
+
+                this.ProfileRules.Add(new Rule { Key = key });
+            }
         }
+
+        public CreateRuleViewModel CreateRulesModel { get; set; }
 
         /// <summary>
         ///     The execute export saqle model command.
