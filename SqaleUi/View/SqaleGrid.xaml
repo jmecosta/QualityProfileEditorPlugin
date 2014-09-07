@@ -75,6 +75,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
             <RowDefinition Height="3*"/>
+			<RowDefinition Height="25"/>
         </Grid.RowDefinitions>		
 		<StackPanel  Orientation="Horizontal">
 			<Button Margin="0,0,0,0" ToolTip="Send All Content from Grid to New Work Area" Content="{DynamicResource ToWorkArea}" Background="Transparent" Command="{Binding SendToWorkAreaCommand}"/>
@@ -482,6 +483,19 @@
 				</DataGridTemplateColumn>
 			</DataGrid.Columns>
 		</DataGrid>
+        <Grid Grid.Row="2">
+        	<Grid.ColumnDefinitions>
+        		<ColumnDefinition Width="100"/>
+        		<ColumnDefinition Width="100"/>
+        		<ColumnDefinition Width="1931*"/>
+        	</Grid.ColumnDefinitions>
+            <Border Grid.Column="0">
+                <TextBlock TextWrapping="Wrap" Text="#Rules: " HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <Border Grid.Column="1">
+                <TextBlock TextWrapping="Wrap" Text="{Binding RulesCounter}" HorizontalAlignment="Center" VerticalAlignment="Center"/>	
+			</Border>        	
+        </Grid>
 
 	</Grid>
 </UserControl>
