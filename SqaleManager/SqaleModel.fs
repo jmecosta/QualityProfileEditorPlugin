@@ -87,7 +87,7 @@ type SqaleModel() =
                 for chc in subchk.GetChcs() do
                     let rule = new Rule()
                     rule.Repo <- chc.RuleRepo
-                    rule.Key <- chc.RuleKey
+                    rule.Key <- chc.RuleRepo + ":" + chc.RuleKey
                     rule.ConfigKey <- chc.RuleKey + "@" + chc.RuleRepo
                     rule.EnableSetDeafaults <- false
 

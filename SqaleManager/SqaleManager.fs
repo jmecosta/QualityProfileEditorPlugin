@@ -111,7 +111,11 @@ type SqaleManager() =
                 createdRule.Description <- rule.Description
                 createdRule.Name <- rule.Name
                 createdRule.EnableSetDeafaults <- true
-                createdRule.Key <- createdRule.Repo + ":" + rule.Key
+                if rule.Key.StartsWith(repo + ":") then
+                    createdRule.Key <- rule.Key
+                else
+                    createdRule.Key <- createdRule.Repo + ":" + rule.Key
+
                 model.CreateRuleInProfile(createdRule) |> ignore
         with
         | ex ->
@@ -128,7 +132,11 @@ type SqaleManager() =
                 | ex -> ()
                 createdRule.Description <- rule.Description.Replace("![CDATA[", "").Replace("]]", "").Trim()
                 createdRule.Name <- rule.Name.Replace("![CDATA[", "").Replace("]]", "").Trim()
-                createdRule.Key <- repo + ":" + rule.Key
+                if rule.Key.StartsWith(repo + ":") then
+                    createdRule.Key <- rule.Key
+                else
+                    createdRule.Key <- createdRule.Repo + ":" + rule.Key
+
                 createdRule.EnableSetDeafaults <- true
                 model.CreateRuleInProfile(createdRule) |> ignore
 
@@ -244,8 +252,8 @@ type SqaleManager() =
         model.language <- profile.Language
         model.profileName <- profile.Name
         for rule in profile.Rules.GetRules() do
-            if model.GetProfile().IsRulePresent(rule.Key) then
-                let ruletoUpdate = model.GetProfile().GetRule(rule.Key)
+            if model.GetProfile().IsRulePresent(rule.RepositoryKey + ":"+ rule.Key) then
+                let ruletoUpdate = model.GetProfile().GetRule(rule.RepositoryKey + ":"+ rule.Key)
                 ruletoUpdate.Severity <- (Enum.Parse(typeof<Severity>, rule.Priority) :?> Severity)
                 ruletoUpdate.Repo <- rule.RepositoryKey                
             

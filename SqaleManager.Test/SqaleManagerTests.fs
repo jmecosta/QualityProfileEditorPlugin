@@ -36,7 +36,7 @@ type RootConfigurationPropsChecksTests() =
         let def = manager.GetDefaultSqaleModel()
         manager.AddAProfileFromFileToSqaleModel("intel", def, "samples/intel-profile.xml")
         def.GetProfile().Rules.Count |> should equal 22
-        def.GetProfile().Rules.[2].Key |> should equal "intelXe.CrossThreadStackAccess"
+        def.GetProfile().Rules.[2].Key |> should equal "intel:intelXe.CrossThreadStackAccess"
         def.GetProfile().Rules.[2].Name |> should equal "Cross-thread Stack Access"
         def.GetProfile().Rules.[2].Repo |> should equal "intel"
         def.GetProfile().Rules.[2].Category |> should equal Category.RELIABILITY
@@ -59,10 +59,10 @@ type RootConfigurationPropsChecksTests() =
         model.GetProfile().Rules.[0].Category |> should equal Category.PORTABILITY
         model.GetProfile().Rules.[0].Subcategory |> should equal SubCategory.COMPILER_RELATED_PORTABILITY
         model.GetProfile().Rules.[0].Repo |> should equal "common-c++"
-        model.GetProfile().Rules.[0].Key |> should equal "InsufficientBranchCoverage"
+        model.GetProfile().Rules.[0].Key |> should equal "common-c++:InsufficientBranchCoverage"
         model.GetProfile().Rules.[0].RemediationFunction |> should equal RemediationFunction.LINEAR
         model.GetProfile().Rules.[0].RemediationFactorTxt |> should equal RemediationUnit.D
-        model.GetProfile().Rules.[0].RemediationFactorVal |> should equal "0.375"
+        model.GetProfile().Rules.[0].RemediationFactorVal |> should equal 0
 
 
     [<Test>]
@@ -81,7 +81,7 @@ type RootConfigurationPropsChecksTests() =
         let newModel = managerNew.GetDefaultSqaleModel()
         managerNew.AddAProfileFromFileToSqaleModel("fxcop", newModel, rulesinFile)
         newModel.GetProfile().Rules.Count |> should equal 240
-        newModel.GetProfile().Rules.[2].Key |> should equal "EnumStorageShouldBeInt32"
+        newModel.GetProfile().Rules.[2].Key |> should equal "fxcop:EnumStorageShouldBeInt32"
         newModel.GetProfile().Rules.[2].Name |> should equal ""
         newModel.GetProfile().Rules.[2].Repo |> should equal "fxcop"
         newModel.GetProfile().Rules.[2].Category |> should equal Category.PORTABILITY
@@ -94,7 +94,7 @@ type RootConfigurationPropsChecksTests() =
         let def = manager.GetDefaultSqaleModel()
 
         let rule = new Rule()
-        rule.Key <- "RuleKey"
+        rule.Key <- "Example:RuleKey"
         rule.Name <- "Rule Name"
         rule.ConfigKey <- "Rule Name@Example"
         rule.Description <- "this is description"
@@ -102,7 +102,7 @@ type RootConfigurationPropsChecksTests() =
         rule.Subcategory <- SubCategory.READABILITY
         rule.RemediationFactorVal <- 10
         rule.RemediationFactorTxt <- RemediationUnit.MN
-        rule.RemediationFunction <- RemediationFunction.CONSTANT_ISSUE
+        rule.RemediationFunction <- RemediationFunction.LINEAR
         rule.Severity <- Severity.MINOR
         rule.Repo <- "Example"
         
@@ -111,15 +111,13 @@ type RootConfigurationPropsChecksTests() =
 
         let model = manager.ParseSqaleModelFromXmlFile(rulesinFile)
         model.GetProfile().Rules.Count |> should equal 1
-        model.GetProfile().Rules.[0].Key |> should equal "RuleKey"
-        model.GetProfile().Rules.[0].Name |> should equal ""
+        model.GetProfile().Rules.[0].Key |> should equal "Example:RuleKey"
         model.GetProfile().Rules.[0].ConfigKey |> should equal "RuleKey@Example"
-        model.GetProfile().Rules.[0].Description |> should equal ""
         model.GetProfile().Rules.[0].Category |> should equal Category.MAINTAINABILITY
         model.GetProfile().Rules.[0].Subcategory |> should equal SubCategory.READABILITY
-        model.GetProfile().Rules.[0].RemediationFactorVal |> should equal "10.0"
+        model.GetProfile().Rules.[0].RemediationFactorVal |> should equal 10
         model.GetProfile().Rules.[0].RemediationFactorTxt |> should equal RemediationUnit.MN
-        model.GetProfile().Rules.[0].RemediationFunction |> should equal RemediationFunction.CONSTANT_ISSUE
+        model.GetProfile().Rules.[0].RemediationFunction |> should equal RemediationFunction.LINEAR
         model.GetProfile().Rules.[0].Severity |> should equal Severity.UNDEFINED
         model.GetProfile().Rules.[0].Repo |> should equal "Example"
 
@@ -137,7 +135,7 @@ type RootConfigurationPropsChecksTests() =
         rule.Subcategory <- SubCategory.READABILITY
         rule.RemediationFactorVal <- 10
         rule.RemediationFactorTxt <- RemediationUnit.MN
-        rule.RemediationFunction <- RemediationFunction.CONSTANT_ISSUE
+        rule.RemediationFunction <- RemediationFunction.LINEAR
         rule.Severity <- Severity.MINOR
         rule.Repo <- "Example"
         
@@ -152,9 +150,9 @@ type RootConfigurationPropsChecksTests() =
         model.GetProfile().Rules.[0].Description |> should equal "this is description"
         model.GetProfile().Rules.[0].Category |> should equal Category.MAINTAINABILITY
         model.GetProfile().Rules.[0].Subcategory |> should equal SubCategory.READABILITY
-        model.GetProfile().Rules.[0].RemediationFactorVal |> should equal "10.0"
+        model.GetProfile().Rules.[0].RemediationFactorVal |> should equal 10
         model.GetProfile().Rules.[0].RemediationFactorTxt |> should equal RemediationUnit.MN
-        model.GetProfile().Rules.[0].RemediationFunction |> should equal RemediationFunction.CONSTANT_ISSUE
+        model.GetProfile().Rules.[0].RemediationFunction |> should equal RemediationFunction.LINEAR
         model.GetProfile().Rules.[0].Severity |> should equal Severity.MINOR
         model.GetProfile().Rules.[0].Repo |> should equal "Example"
 
