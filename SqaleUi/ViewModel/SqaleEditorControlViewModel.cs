@@ -391,6 +391,7 @@ namespace SqaleUi.ViewModel
             }
             catch (Exception ex)
             {
+                this.Tabs.Clear();
                 MessageBox.Show("Cannot Open Project: " + ex.Message);
             }
 
