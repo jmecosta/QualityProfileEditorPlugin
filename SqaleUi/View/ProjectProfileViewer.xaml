@@ -3,10 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:ViewModel="clr-namespace:SqaleUi.ViewModel" x:Class="SqaleUi.View.QualityProfileViewer" 
+             xmlns:ViewModel="clr-namespace:SqaleUi.ViewModel" x:Class="SqaleUi.View.ProjectProfileViewer" 
 			 xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
 			 xmlns:command="http://www.galasoft.ch/mvvmlight"
-             x:Name="QualityProfileViewerWindow"
+             x:Name="ProjectProfileViewerWindow"
              mc:Ignorable="d" 
              Height="300" Width="790">
 	<Window.Resources>
@@ -35,6 +35,18 @@
             <RowDefinition Height="3*"/>
 			<RowDefinition Height="25"/>
 		</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>			
+						<ColumnDefinition Width="500"/>
+						<ColumnDefinition/>
+					</Grid.ColumnDefinitions>
+
+		<DataGrid IsReadOnly="True" Grid.Row="0" ItemsSource="{Binding Projects}" AutoGenerateColumns="False" SelectionMode="Single" CanUserAddRows="False" CanUserDeleteRows="False" SelectedItem="{Binding SelectedProject}"> 	
+			<DataGrid.Columns>
+				<DataGridTextColumn  Width="50" Binding="{Binding Id}" Header="Id"/>
+				<DataGridTextColumn Width="100" Binding="{Binding Key}" Header="Key"/>
+				<DataGridTextColumn Width="200" Binding="{Binding Name}" Header="Name"/>
+			</DataGrid.Columns>
+		</DataGrid>
 		<StackPanel Orientation="Horizontal" Grid.Row="1" >
             <Button Margin="0,0,5,0" Content="Import" Grid.Row="1" Command="{Binding ImportProfileCommand}" CommandParameter="{Binding ElementName=QualityProfileViewerWindow}" />	
 			<Button Margin="0,0,5,0" Content="Refresh Data" Grid.Row="1" Command="{Binding RefreshDataCommand}"/>

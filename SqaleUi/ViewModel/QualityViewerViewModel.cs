@@ -60,10 +60,11 @@ namespace SqaleUi.ViewModel
         /// <param name="model">
         /// The model.
         /// </param>
-        public QualityViewerViewModel(ConnectionConfiguration config, SqaleGridVm model)
+        public QualityViewerViewModel(ConnectionConfiguration config, SqaleGridVm model, bool showOnlyProfiles = false)
         {
             this.Model = model;
             this.Configuration = config;
+            this.ShowOnlyProfiles = showOnlyProfiles;
 
             this.Service = new SonarRestService(new JsonSonarConnector());
             this.Profiles = new ObservableCollection<Profile>();
@@ -73,6 +74,8 @@ namespace SqaleUi.ViewModel
 
             this.ExecuteRefreshDataCommand();
         }
+
+        public bool ShowOnlyProfiles { get; set; }
 
         #endregion
 
@@ -212,25 +215,37 @@ namespace SqaleUi.ViewModel
 
         private void ExecuteRefreshDataCommand()
         {
-            this.Projects.Clear();
-            List<SonarProject> projects = this.Service.GetProjects(this.Configuration);
-            var profiles = this.Service.GetProfilesUsingRulesApp(this.Configuration);
-            foreach (var sonarProject in projects)
+            if (this.ShowOnlyProfiles)
             {
-                foreach (var profile in this.Service.GetQualityProfilesForProject(this.Configuration, sonarProject.Key))
+                var profiles = this.Service.GetProfilesUsingRulesApp(this.Configuration);
+                foreach (var profile in profiles)
                 {
-                    foreach (var profile1 in profiles)
-                    {
-                        if (profile1.Name.Equals(profile1.Name) && profile1.Language.Equals(profile.Language))
-                        {
-                            profile.Key = profile1.Key;
-                        }
-                    }
-                    sonarProject.Profiles.Add(profile);
+                    this.Profiles.Add(profile);
                 }
+            }
+            else
+            {
+                this.Projects.Clear();
+                List<SonarProject> projects = this.Service.GetProjects(this.Configuration);
+                var profiles = this.Service.GetProfilesUsingRulesApp(this.Configuration);
+                foreach (var sonarProject in projects)
+                {
+                    foreach (var profile in this.Service.GetQualityProfilesForProject(this.Configuration, sonarProject.Key))
+                    {
+                        foreach (var profile1 in profiles)
+                        {
+                            if (profile1.Name.Equals(profile1.Name) && profile1.Language.Equals(profile.Language))
+                            {
+                                profile.Key = profile1.Key;
+                            }
+                        }
+                        sonarProject.Profiles.Add(profile);
+                    }
 
-                this.Projects.Add(sonarProject);
-            }           
+                    this.Projects.Add(sonarProject);
+                }  
+            }
+         
         }
 
         public RelayCommand RefreshDataCommand { get; set; }

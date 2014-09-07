@@ -153,9 +153,8 @@ namespace SqaleUi.ViewModel
 
             // server imports
             this.CanImportExportFromServer = true;
-            this.ImportServerQualityProfileCommand = new RelayCommand(
-                this.ExecuteImportServerQualityProfileCommand, 
-                () => this.CanImportExportFromServer);
+            this.ImportServerQualityProfileFromProjectCommand = new RelayCommand(this.ExecuteImportServerQualityProfileFromProjectCommand, () => this.CanImportExportFromServer);
+            this.ImportServerQualityProfileCommand = new RelayCommand(this.ExecuteImportServerQualityProfileCommand, () => this.CanImportExportFromServer);
         }
 
         #endregion
@@ -360,6 +359,11 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     Gets or sets the import server quality profile command.
         /// </summary>
+        public ICommand ImportServerQualityProfileFromProjectCommand { get; set; }
+
+        /// <summary>
+        /// Gets or sets the import server quality profile command.
+        /// </summary>
         public ICommand ImportServerQualityProfileCommand { get; set; }
 
         /// <summary>
@@ -396,7 +400,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     Gets or sets the profile selection window.
         /// </summary>
-        public QualityProfileViewer ProfileSelectionWindow { get; set; }
+        public ProjectProfileViewer ProjectProfileSelectionWindow { get; set; }
 
         /// <summary>
         ///     Gets or sets the project file.
@@ -1144,11 +1148,22 @@ namespace SqaleUi.ViewModel
             }
         }
 
+
         /// <summary>
         ///     The execute import server quality profile command.
         /// </summary>
         private void ExecuteImportServerQualityProfileCommand()
         {
+            if (this.ProfileRules.Count > 0)
+            {
+                DialogResult result = MessageBox.Show("Will Clear current rules in view?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    this.ProfileRules.Clear();
+                }
+            }
+
             this.CanImportExportFromServer = false;
 
             if (this.Configuration == null)
@@ -1164,10 +1179,10 @@ namespace SqaleUi.ViewModel
 
             if (this.QualityViewerModel == null)
             {
-                this.QualityViewerModel = new QualityViewerViewModel(this.Configuration, this);
+                this.QualityViewerModel = new QualityViewerViewModel(this.Configuration, this, true);
             }
 
-            if (this.ProfileSelectionWindow == null)
+            if (this.ProjectProfileSelectionWindow == null)
             {
                 this.ProfileSelectionWindow = new QualityProfileViewer(this.QualityViewerModel);
             }
@@ -1180,9 +1195,63 @@ namespace SqaleUi.ViewModel
             catch (Exception)
             {
                 this.ProfileSelectionWindow = new QualityProfileViewer(this.QualityViewerModel);
-                this.ProfileSelectionWindow.Show();
+                this.ProjectProfileSelectionWindow.Show();
             }
         }
+
+        public QualityProfileViewer ProfileSelectionWindow { get; set; }
+
+        /// <summary>
+        ///     The execute import server quality profile command.
+        /// </summary>
+        private void ExecuteImportServerQualityProfileFromProjectCommand()
+        {
+            if (this.ProfileRules.Count > 0)
+            {
+                DialogResult result = MessageBox.Show("Will Clear current rules in view?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    this.ProfileRules.Clear();
+                }
+            }
+
+            this.CanImportExportFromServer = false;
+
+            if (this.Configuration == null)
+            {
+                this.mainModel.ConnectToSonar(this);
+            }
+
+            if (this.Configuration == null)
+            {
+                this.CanImportExportFromServer = true;
+                return;
+            }
+
+            if (this.ProjectQualityViewerModel == null)
+            {
+                this.ProjectQualityViewerModel = new QualityViewerViewModel(this.Configuration, this);
+            }
+
+            if (this.ProjectProfileSelectionWindow == null)
+            {
+                this.ProjectProfileSelectionWindow = new ProjectProfileViewer(this.ProjectQualityViewerModel);
+            }
+
+            this.CanImportExportFromServer = true;
+            try
+            {
+                this.ProjectProfileSelectionWindow.Show();
+            }
+            catch (Exception)
+            {
+                this.ProjectProfileSelectionWindow = new ProjectProfileViewer(this.ProjectQualityViewerModel);
+                this.ProjectProfileSelectionWindow.Show();
+            }
+        }
+
+        public QualityViewerViewModel ProjectQualityViewerModel { get; set; }
 
         /// <summary>
         ///     The execute import sqale model command.

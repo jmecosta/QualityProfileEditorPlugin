@@ -117,6 +117,9 @@
     <Compile Include="View\PromptUserData.xaml.cs">
       <DependentUpon>PromptUserData.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ProjectProfileViewer.xaml.cs">
+      <DependentUpon>ProjectProfileViewer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\QualityProfileViewer.xaml.cs">
       <DependentUpon>QualityProfileViewer.xaml</DependentUpon>
     </Compile>
@@ -144,6 +147,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\PromptUserData.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ProjectProfileViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -182,6 +189,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
+    <Resource Include="Images\importQualityProfileFromProject.png" />
     <Resource Include="Images\ToAvailableTags.png" />
     <Resource Include="Images\ToRule.png" />
     <Resource Include="Images\importQualityProfile.png" />

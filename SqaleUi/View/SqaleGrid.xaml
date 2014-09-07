@@ -21,6 +21,7 @@
             <Image x:Key="ImportSqaleDefinition" Source="/SqaleUi;component/Images/imporSqaleDefinition.png"/>
             <Image x:Key="ExportSqaleModel" Source="/SqaleUi;component/Images/exportSqaleModel.png"/>
             <Image x:Key="ImportServerQualityProfile" Source="/SqaleUi;component/Images/importQualityProfile.png"/>
+			<Image x:Key="ImportQualityProfileFromProject" Source="/SqaleUi;component/Images/importQualityProfileFromProject.png"/>
        
         <helpers:ActivityToBrushConverter x:Key="BrushConverter"/>
 		<BooleanToVisibilityConverter x:Key="BoolToVis"/>
@@ -87,7 +88,8 @@
             <Button Margin="0,0,0,0" ToolTip="Import A Quality Profile Definition" Content="{DynamicResource ImportPrioritiesProfile}" Background="Transparent" Command="{Binding ImportProfileCommand}"/>
             <Button Margin="0,0,5,0" ToolTip="Import A Sqale Model" Content="{DynamicResource ImportSqaleDefinition}" Background="Transparent" Command="{Binding ImportSqaleModelCommand}"/>
 
-            <Button Margin="0,0,5,0" ToolTip="Modify Server Profile" Content="{DynamicResource ImportServerQualityProfile}" Background="Transparent" Command="{Binding ImportServerQualityProfileCommand}"/>
+			<Button Margin="0,0,0,0" ToolTip="Modify Server Profile" Content="{DynamicResource ImportServerQualityProfile}" Background="Transparent" Command="{Binding ImportServerQualityProfileCommand}"/>
+            <Button Margin="0,0,5,0" ToolTip="Modify Profile For Project" Content="{DynamicResource ImportQualityProfileFromProject}" Background="Transparent" Command="{Binding ImportServerQualityProfileFromProjectCommand}"/>
             
             <Button Margin="0,0,0,0" ToolTip="Export Sqale Model" Content="{DynamicResource ExportSqaleModel}" Background="Transparent" Command="{Binding ExportSaqleModelCommand}"/>
             
