@@ -111,7 +111,7 @@ type SqaleManager() =
                 createdRule.Description <- rule.Description
                 createdRule.Name <- rule.Name
                 createdRule.EnableSetDeafaults <- true
-                createdRule.Key <- rule.Key
+                createdRule.Key <- createdRule.Repo + ":" + rule.Key
                 model.CreateRuleInProfile(createdRule) |> ignore
         with
         | ex ->
@@ -128,7 +128,7 @@ type SqaleManager() =
                 | ex -> ()
                 createdRule.Description <- rule.Description.Replace("![CDATA[", "").Replace("]]", "").Trim()
                 createdRule.Name <- rule.Name.Replace("![CDATA[", "").Replace("]]", "").Trim()
-                createdRule.Key <- rule.Key
+                createdRule.Key <- repo + ":" + rule.Key
                 createdRule.EnableSetDeafaults <- true
                 model.CreateRuleInProfile(createdRule) |> ignore
 
@@ -185,7 +185,7 @@ type SqaleManager() =
                 if rule.Category.Equals(charName) && rule.Subcategory.Equals(subcharName) then
                     addLine(sprintf """            <chc>""", fileToWrite)
                     addLine(sprintf """                <rule-repo>%s</rule-repo>""" rule.Repo, file)
-                    addLine(sprintf """                <rule-key>%s</rule-key>""" rule.Key, file)
+                    addLine(sprintf """                <rule-key>%s</rule-key>""" (rule.Key.Split(':').[1]), file)
                     writePropToFile("remediationFunction", "", EnumHelper.getEnumDescription(rule.RemediationFunction), file)
                     writePropToFile("remediationFactor", rule.RemediationFactorVal.ToString().Replace(',', '.'), EnumHelper.getEnumDescription(rule.RemediationFactorTxt), file)
 
@@ -274,7 +274,7 @@ type SqaleManager() =
         
         addLine(sprintf """    <rules>""", fileToWrite)
         for rule in model.GetProfile().Rules do
-            addLine(sprintf """    <rule key="%s">""" rule.Key, fileToWrite)           
+            addLine(sprintf """    <rule key="%s">""" (rule.Key.Split(':').[1]), fileToWrite)           
             addLine(sprintf """        <name>%s</name>""" (EncodeStringAsXml(rule.Name)), fileToWrite)
             if String.IsNullOrEmpty(EnumHelper.getEnumDescription(rule.Subcategory)) then
                 addLine(sprintf """        <requirement>undefined</requirement>""", fileToWrite)
@@ -337,10 +337,10 @@ type SqaleManager() =
             try
                 let rule = new Rule()
                 rule.EnableSetDeafaults <- false
-                rule.Key <- item.Key
+                rule.Key <- item.Repo + ":" + item.Key
                 rule.Name <- item.Name
                 rule.Repo <- item.Repo
-                rule.ConfigKey <- item.Name + "@" + item.Repo
+                rule.ConfigKey <- item.Repo + ":" + item.Key
                 rule.Description <- item.Description
                 rule.Category <- x.GetCategoryFromSubcategoryKey(model, EnumHelper.asEnum<SubCategory>(item.Requirement).Value)
                 rule.Subcategory <- (EnumHelper.asEnum<SubCategory>(item.Requirement)).Value

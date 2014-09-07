@@ -688,7 +688,7 @@ namespace SqaleUi.ViewModel
                 if (propertyChangedEventArgs.PropertyName.Equals("Severity"))
                 {
                     var dic = new Dictionary<string, string> { { "severity", rule.Severity.ToString() } };
-                    this.RestService.UpdateRule(this.Configuration, rule.Repo + ":" + rule.Key, dic);
+                    this.RestService.UpdateRule(this.Configuration, rule.Key, dic);
                 }
 
                 if (propertyChangedEventArgs.PropertyName.Equals("Subcategory"))
@@ -703,7 +703,7 @@ namespace SqaleUi.ViewModel
                                       }
                                   };
 
-                    List<string> reply = this.RestService.UpdateRule(this.Configuration, rule.Repo + ":" + rule.Key, dic);
+                    List<string> reply = this.RestService.UpdateRule(this.Configuration, rule.Key, dic);
                     if (reply != null &&  reply.Count != 0)
                     {
                         MessageBox.Show("Cannot Update Status Of Data in Server: " + reply.Aggregate(this.AggregateErrorStrings));
@@ -733,7 +733,7 @@ namespace SqaleUi.ViewModel
                             rule.RemediationOffsetVal + rule.RemediationOffsetTxt.ToString().ToLower().Replace("mn", "min"));
                     }
 
-                    List<string> reply = this.RestService.UpdateRule(this.Configuration, rule.Repo + ":" + rule.Key, dic);
+                    List<string> reply = this.RestService.UpdateRule(this.Configuration, rule.Key, dic);
                     if (reply != null && reply.Count != 0)
                     {
                         MessageBox.Show("Cannot Update Status Of Data in Server: " + reply.Aggregate(this.AggregateErrorStrings));

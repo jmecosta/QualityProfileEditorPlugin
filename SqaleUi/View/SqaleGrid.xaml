@@ -105,7 +105,7 @@
 
 
 			<DataGrid.Columns>
-				<DataGridTemplateColumn  x:Name="KeyColumnTempl" Header="Key" CanUserSort="True" SortMemberPath="key" MinWidth="110" >
+				<DataGridTemplateColumn  x:Name="KeyColumnTempl" Header="Key" CanUserSort="True" SortMemberPath="Key" MinWidth="110" >
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
                             <TextBox IsEnabled="false"  Text="{Binding Key, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" Foreground="Black" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" ContextMenu="{StaticResource DatagridContextMenu}"/>
@@ -140,7 +140,7 @@
 						</DataTemplate>
 					</DataGridTemplateColumn.HeaderTemplate>
 				</DataGridTemplateColumn>
-				<DataGridTemplateColumn  x:Name="NameColumnTempl" Header="Name" CanUserSort="True" SortMemberPath="name" MinWidth="110" >
+				<DataGridTemplateColumn  x:Name="NameColumnTempl" Header="Name" CanUserSort="True" SortMemberPath="Name" MinWidth="110" >
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
                             <TextBox MaxWidth="300" TextWrapping="Wrap" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" Foreground="Black" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" ContextMenu="{StaticResource DatagridContextMenu}" TextAlignment="Justify" />
@@ -175,7 +175,7 @@
 						</DataTemplate>
 					</DataGridTemplateColumn.HeaderTemplate>
 				</DataGridTemplateColumn>
-				<DataGridTemplateColumn  x:Name="RepoColumnTempl" Header="Repo" CanUserSort="True" SortMemberPath="repo" MinWidth="110" >
+				<DataGridTemplateColumn  x:Name="RepoColumnTempl" Header="Repo" CanUserSort="True" SortMemberPath="Repo" MinWidth="110" >
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
                             <TextBox Text="{Binding Repo, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" Foreground="Black"  Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" ContextMenu="{StaticResource DatagridContextMenu}"/>
@@ -211,7 +211,7 @@
 					</DataGridTemplateColumn.HeaderTemplate>
 				</DataGridTemplateColumn>
 
-				<DataGridTemplateColumn x:Name="SeverityTemplateCol" Header="Severity" CanUserSort="True" SortMemberPath="severity" MinWidth="110" >
+				<DataGridTemplateColumn x:Name="SeverityTemplateCol" Header="Severity" CanUserSort="True" SortMemberPath="Severity" MinWidth="110" >
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
 							<ComboBox ItemsSource="{Binding Source={StaticResource GetSeverityEnumValues}}" Width="Auto" SelectedValue="{Binding Severity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Black" />
@@ -248,7 +248,7 @@
 					</DataGridTemplateColumn.HeaderTemplate>
 				</DataGridTemplateColumn>
 
-                <DataGridTemplateColumn  x:Name="TagsColumnTempl" Header="Tags" CanUserSort="True" SortMemberPath="repo" MinWidth="110" >
+                <DataGridTemplateColumn  x:Name="TagsColumnTempl" Header="Tags" CanUserSort="True" SortMemberPath="Tags" MinWidth="110" >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <ItemsControl ItemsSource="{Binding Tags}"/>
@@ -285,7 +285,7 @@
                 </DataGridTemplateColumn>
 
 
-                <DataGridTemplateColumn x:Name="CategotyTemplateCol" Header="Category" CanUserSort="True" SortMemberPath="category" MinWidth="110" >
+                <DataGridTemplateColumn x:Name="CategotyTemplateCol" Header="Category" CanUserSort="True" SortMemberPath="Category" MinWidth="110" >
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
 							<ComboBox ItemsSource="{Binding Source={StaticResource GetCategoryEnumValues}}" Width="Auto" SelectedValue="{Binding Category, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Black" />
@@ -323,7 +323,7 @@
 				</DataGridTemplateColumn>
 
                 
-				<DataGridTemplateColumn x:Name="SubCategotyTemplateCol" Header="Sub Category" CanUserSort="True" SortMemberPath="subcategory" MinWidth="110" >
+				<DataGridTemplateColumn x:Name="SubCategotyTemplateCol" Header="Sub Category" CanUserSort="True" SortMemberPath="Subcategory" MinWidth="110" >
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
 							<ComboBox ItemsSource="{Binding SubcategoryValues}" Width="Auto" SelectedValue="{Binding Subcategory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Black" />
@@ -361,7 +361,7 @@
 				</DataGridTemplateColumn>
 
 
-                <DataGridTemplateColumn x:Name="RemediationFunctionTemplateCol" Header="Remediation Function" CanUserSort="True" SortMemberPath="remediationFunction" MinWidth="110" >
+                <DataGridTemplateColumn x:Name="RemediationFunctionTemplateCol" Header="Remediation Function" CanUserSort="True" SortMemberPath="RemediationFunction" MinWidth="110" >
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
 							<ComboBox ItemsSource="{Binding Source={StaticResource GetRemediationFunctionEnumValues}}" Width="Auto" SelectedValue="{Binding RemediationFunction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Black" />
@@ -410,7 +410,7 @@
 
 
 
-                <DataGridTemplateColumn Header="Config Key" CanUserSort="True" SortMemberPath="configKey" MinWidth="110" >
+                <DataGridTemplateColumn Header="Config Key" CanUserSort="True" SortMemberPath="ConfigKey" MinWidth="110" >
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
                             <TextBox TextAlignment="Justify" MaxWidth="300" TextWrapping="Wrap" Text="{Binding ConfigKey, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" ContextMenu="{StaticResource DatagridContextMenu}"/>
@@ -445,7 +445,7 @@
 						</DataTemplate>
 					</DataGridTemplateColumn.HeaderTemplate>
 				</DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Description" CanUserSort="True" SortMemberPath="description" MinWidth="400"  Width="400" MaxWidth="400">
+                <DataGridTemplateColumn Header="Description" CanUserSort="True" SortMemberPath="Description" MinWidth="400"  Width="400" MaxWidth="400">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
                             <TextBox TextAlignment="Justify" MaxHeight="100" MaxWidth="400" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" ContextMenu="{StaticResource DatagridContextMenu}"/>
