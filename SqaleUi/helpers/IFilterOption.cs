@@ -10,6 +10,8 @@
 
         string FilterTermName { get; set; }
 
+        string FilterTermEnabled { get; set; }
+
         string FilterTermRepo { get; set; }
 
         string FilterTermDescription { get; set; }

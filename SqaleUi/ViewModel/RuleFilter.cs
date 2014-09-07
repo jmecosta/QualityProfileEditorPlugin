@@ -21,6 +21,7 @@
         public bool FilterFunction(object parameter)
         {
             var isTagPresent = this.IsTagPresent((Rule)parameter);
+            var isRuleEnabled = this.IsRuleEnabled((Rule)parameter);
 
             var include = ((Rule)parameter).ConfigKey.IndexOf(this.filterOption.FilterTermConfigKey, StringComparison.InvariantCultureIgnoreCase) >= 0 &&
                    ((Rule)parameter).Description.IndexOf(this.filterOption.FilterTermDescription, StringComparison.InvariantCultureIgnoreCase) >= 0 &&
@@ -32,7 +33,15 @@
                    (this.filterOption.FilterTermRemediationFunction == null || ((Rule)parameter).RemediationFunction.Equals(this.filterOption.FilterTermRemediationFunction)) &&
                    (this.filterOption.FilterTermSeverity == null || ((Rule)parameter).Severity.Equals(this.filterOption.FilterTermSeverity));
 
-            return include && isTagPresent;
+            return include && isTagPresent && isRuleEnabled;
+        }
+
+        private bool IsRuleEnabled(Rule parameter)
+        {
+            if (parameter.Enabled && this.filterOption.FilterTermEnabled.Contains("Enabled")) return true;
+            if (!parameter.Enabled && this.filterOption.FilterTermEnabled.Contains("Disabled")) return true;
+
+            return false;
         }
 
         private bool IsTagPresent(Rule parameter)

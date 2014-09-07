@@ -65,6 +65,18 @@ namespace SqaleUi.ViewModel
 
         #region Constructors and Destructors
 
+        public SqaleGridVm()
+        {
+            this.ProfileRules = new ItemsChangeObservableCollection<Rule>(this);
+            this.Profile = new CollectionViewSource { Source = this.ProfileRules }.View;
+            this.RulesCounter = "0";
+
+            if (IsInDesignMode)
+            {
+                this.ProfileRules.Add(new Rule());
+            }
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SqaleGridVm"/> class.
         ///     Initializes a new instance of the <see>
@@ -86,6 +98,8 @@ namespace SqaleUi.ViewModel
             this.Profile = new CollectionViewSource { Source = this.ProfileRules }.View;
             this.RulesCounter = "0";
 
+
+
             this.filter = new RuleFilter(this);
             this.RestService = new SonarRestService(new JsonSonarConnector());
 
@@ -96,6 +110,7 @@ namespace SqaleUi.ViewModel
             this.FilterTermRepo = string.Empty;
             this.FilterTermName = string.Empty;
             this.FilterTermKey = string.Empty;
+            this.FilterTermEnabled = null;
             this.FilterTermCategory = null;
             this.FilterTermSubCategory = null;
             this.FilterTermSeverity = null;
@@ -110,6 +125,7 @@ namespace SqaleUi.ViewModel
             this.FilterClearTagCommand = new RelayCommand<object>(this.OnFilterRemoveTag);
             this.FilterClearDescriptionCommand = new RelayCommand<object>(this.OnFilterRemoveDescription);
 
+            this.FilterClearEnabledCommand = new RelayCommand<object>(this.OnFilterRemoveEnabledKey);
             this.FilterClearSeverityCommand = new RelayCommand<object>(this.OnFilterRemoveSeverityKey);
             this.FilterClearRemediationFunctionCommand = new RelayCommand<object>(this.OnFilterRemoveRemediationFunctionKey);
             this.FilterClearCategoryCommand = new RelayCommand<object>(this.OnFilterRemoveCategoryKey);
@@ -276,6 +292,9 @@ namespace SqaleUi.ViewModel
         /// </summary>
         public ICommand FilterClearSeverityCommand { get; set; }
 
+        public ICommand FilterClearEnabledCommand { get; set; }
+
+        
         /// <summary>
         ///     Gets or sets the filter clear remediation sub category command.
         /// </summary>
@@ -310,6 +329,11 @@ namespace SqaleUi.ViewModel
         ///     Gets or sets the filter term name.
         /// </summary>
         public string FilterTermName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the filter term enabled.
+        /// </summary>
+        public string FilterTermEnabled { get; set; }
 
         /// <summary>
         ///     Gets or sets the filter term remdiation unit offset.
@@ -1490,6 +1514,18 @@ namespace SqaleUi.ViewModel
         {
             this.ClearSeverity();
             this.ClearFilter();
+        }
+
+        private void OnFilterRemoveEnabledKey(object data)
+        {
+            this.ClearEnabled();
+            this.ClearFilter();
+        }
+
+        private void ClearEnabled()
+        {
+            this.FilterTermEnabled = null;
+            this.FilterActive = this.SetFilterActive();
         }
 
         /// <summary>

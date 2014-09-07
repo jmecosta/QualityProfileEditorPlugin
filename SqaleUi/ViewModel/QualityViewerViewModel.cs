@@ -12,7 +12,6 @@ namespace SqaleUi.ViewModel
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Windows;
-    using System.Windows.Input;
 
     using ExtensionTypes;
 
@@ -33,16 +32,19 @@ namespace SqaleUi.ViewModel
         /// <summary>
         /// The selected profile.
         /// </summary>
-        private SonarProject selectedProject;
-
         private Profile selectedProfile;
+
+        /// <summary>
+        ///     The selected profile.
+        /// </summary>
+        private SonarProject selectedProject;
 
         #endregion
 
         #region Constructors and Destructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="QualityViewerViewModel"/> class.
+        ///     Initializes a new instance of the <see cref="QualityViewerViewModel" /> class.
         /// </summary>
         public QualityViewerViewModel()
         {
@@ -60,6 +62,9 @@ namespace SqaleUi.ViewModel
         /// <param name="model">
         /// The model.
         /// </param>
+        /// <param name="showOnlyProfiles">
+        /// The show Only Profiles.
+        /// </param>
         public QualityViewerViewModel(ConnectionConfiguration config, SqaleGridVm model, bool showOnlyProfiles = false)
         {
             this.Model = model;
@@ -69,35 +74,32 @@ namespace SqaleUi.ViewModel
             this.Service = new SonarRestService(new JsonSonarConnector());
             this.Profiles = new ObservableCollection<Profile>();
             this.Projects = new ObservableCollection<SonarProject>();
-
             this.StartCommand();
 
             this.ExecuteRefreshDataCommand();
         }
-
-        public bool ShowOnlyProfiles { get; set; }
 
         #endregion
 
         #region Public Properties
 
         /// <summary>
-        /// Gets or sets a value indicating whether can execute import profile command.
+        ///     Gets or sets a value indicating whether can execute import profile command.
         /// </summary>
         public bool CanExecuteImportProfileCommand { get; set; }
 
         /// <summary>
-        /// Gets or sets the configuration.
+        ///     Gets or sets the configuration.
         /// </summary>
         public ConnectionConfiguration Configuration { get; set; }
 
         /// <summary>
-        /// Gets or sets the import profile command.
+        ///     Gets or sets the import profile command.
         /// </summary>
         public RelayCommand<Window> ImportProfileCommand { get; set; }
 
         /// <summary>
-        /// Gets or sets the model.
+        ///     Gets or sets the model.
         /// </summary>
         public SqaleGridVm Model { get; set; }
 
@@ -107,7 +109,41 @@ namespace SqaleUi.ViewModel
         public ObservableCollection<Profile> Profiles { get; set; }
 
         /// <summary>
+        /// Gets or sets the projects.
+        /// </summary>
+        public ObservableCollection<SonarProject> Projects { get; set; }
+
+        /// <summary>
+        /// Gets or sets the refresh data command.
+        /// </summary>
+        public RelayCommand RefreshDataCommand { get; set; }
+
+        /// <summary>
         /// Gets or sets the selected profile.
+        /// </summary>
+        public Profile SelectedProfile
+        {
+            get
+            {
+                return this.selectedProfile;
+            }
+
+            set
+            {
+                this.selectedProfile = value;
+                if (value == null)
+                {
+                    this.CanExecuteImportProfileCommand = false;
+                }
+                else
+                {
+                    this.CanExecuteImportProfileCommand = true;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the selected profile.
         /// </summary>
         [AlsoNotifyFor("SelectedProfile")]
         public SonarProject SelectedProject
@@ -123,7 +159,7 @@ namespace SqaleUi.ViewModel
                 this.Profiles.Clear();
                 if (value != null)
                 {
-                    foreach (var profile in value.Profiles)
+                    foreach (Profile profile in value.Profiles)
                     {
                         this.Profiles.Add(profile);
                     }
@@ -132,9 +168,14 @@ namespace SqaleUi.ViewModel
         }
 
         /// <summary>
-        /// Gets or sets the service.
+        ///     Gets or sets the service.
         /// </summary>
         public ISonarRestService Service { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether show only profiles.
+        /// </summary>
+        public bool ShowOnlyProfiles { get; set; }
 
         #endregion
 
@@ -162,11 +203,13 @@ namespace SqaleUi.ViewModel
         /// </param>
         private void ExecuteImportProfileCommand(Window window)
         {
-            if (this.SelectedProfile.Rules == null || this.SelectedProfile.Rules.Count == 0)
+            if (this.SelectedProfile.Rules == null || this.SelectedProfile.Rules.Count == 0 || this.Model.ProfileRules.Count == 0)
             {
                 this.Service.GetRulesForProfileUsingRulesApp(this.Configuration, this.SelectedProfile, true);
+
+                this.Service.GetRulesForProfileUsingRulesApp(this.Configuration, this.SelectedProfile, false);
             }
-            
+
             this.Model.MergeRulesIntoProject(this.SelectedProfile.Rules);
             this.Model.SyncingModelWithSonarServer = true;
             if (window != null)
@@ -175,31 +218,47 @@ namespace SqaleUi.ViewModel
             }
         }
 
-        public Profile SelectedProfile
+        /// <summary>
+        /// The execute refresh data command.
+        /// </summary>
+        private void ExecuteRefreshDataCommand()
         {
-            get
+            this.Projects.Clear();
+            this.Profiles.Clear();
+            if (this.ShowOnlyProfiles)
             {
-                return this.selectedProfile;
-            }
-
-            set
-            {
-                this.selectedProfile = value;
-                if (value == null)
+                List<Profile> profiles = this.Service.GetProfilesUsingRulesApp(this.Configuration);
+                foreach (Profile profile in profiles)
                 {
-                    this.CanExecuteImportProfileCommand = false;
+                    this.Profiles.Add(profile);
                 }
-                else
+            }
+            else
+            {
+                List<SonarProject> projects = this.Service.GetProjects(this.Configuration);
+                List<Profile> profiles = this.Service.GetProfilesUsingRulesApp(this.Configuration);
+                foreach (SonarProject sonarProject in projects)
                 {
-                    this.CanExecuteImportProfileCommand = true;
+                    foreach (Profile profile in this.Service.GetQualityProfilesForProject(this.Configuration, sonarProject.Key))
+                    {
+                        foreach (Profile profile1 in profiles)
+                        {
+                            if (profile1.Name.Equals(profile1.Name) && profile1.Language.Equals(profile.Language))
+                            {
+                                profile.Key = profile1.Key;
+                            }
+                        }
+
+                        sonarProject.Profiles.Add(profile);
+                    }
+
+                    this.Projects.Add(sonarProject);
                 }
             }
         }
 
-
-
         /// <summary>
-        /// The start command.
+        ///     The start command.
         /// </summary>
         private void StartCommand()
         {
@@ -212,45 +271,6 @@ namespace SqaleUi.ViewModel
             {
             }
         }
-
-        private void ExecuteRefreshDataCommand()
-        {
-            if (this.ShowOnlyProfiles)
-            {
-                var profiles = this.Service.GetProfilesUsingRulesApp(this.Configuration);
-                foreach (var profile in profiles)
-                {
-                    this.Profiles.Add(profile);
-                }
-            }
-            else
-            {
-                this.Projects.Clear();
-                List<SonarProject> projects = this.Service.GetProjects(this.Configuration);
-                var profiles = this.Service.GetProfilesUsingRulesApp(this.Configuration);
-                foreach (var sonarProject in projects)
-                {
-                    foreach (var profile in this.Service.GetQualityProfilesForProject(this.Configuration, sonarProject.Key))
-                    {
-                        foreach (var profile1 in profiles)
-                        {
-                            if (profile1.Name.Equals(profile1.Name) && profile1.Language.Equals(profile.Language))
-                            {
-                                profile.Key = profile1.Key;
-                            }
-                        }
-                        sonarProject.Profiles.Add(profile);
-                    }
-
-                    this.Projects.Add(sonarProject);
-                }  
-            }
-         
-        }
-
-        public RelayCommand RefreshDataCommand { get; set; }
-
-        public ObservableCollection<SonarProject> Projects { get; set; }
 
         #endregion
     }

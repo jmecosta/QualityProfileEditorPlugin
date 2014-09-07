@@ -10,7 +10,7 @@
     xmlns:extensionTypes="clr-namespace:ExtensionTypes;assembly=ExtensionTypes"
     xmlns:helpers="clr-namespace:SqaleUi.helpers"
     mc:Ignorable="d" x:Class="SqaleUi.View.SqaleGrid"
-    d:DataContext="{d:DesignInstance {x:Type viewModel:SqaleGridVm}}" d:DesignHeight="188.209">
+    d:DesignHeight="188.209">
     <UserControl.Resources>
 			<Image x:Key="ToWorkArea" Source="/SqaleUi;component/Images/toworkarea.png"/>
 			<Image x:Key="ToProject" Source="/SqaleUi;component/Images/toproject.png"/>
@@ -108,7 +108,40 @@
 
 
 			<DataGrid.Columns>
-				<DataGridTemplateColumn  x:Name="KeyColumnTempl" Header="Key" CanUserSort="True" SortMemberPath="Key" MinWidth="110" >
+                <DataGridTemplateColumn x:Name="EnabledTemplateCol" Header="Enabled" CanUserSort="True" SortMemberPath="Enabled" >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox Width="Auto" IsChecked="{Binding Enabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <!--NAME COLUMN-->
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <Grid IsHitTestVisible="True">
+                                <TextBlock Grid.Column="0" Text="{TemplateBinding Content}"/>
+                                <!--FILTER EXPANDER-->
+                                <Expander Grid.Column="1" IsHitTestVisible="True" VerticalAlignment="Top" Margin="60 -3 0 0" ToolTip="RuleFilter">
+                                    <Border IsHitTestVisible="True" BorderThickness="1" Margin="-50 0 0 0" >
+                                        <StackPanel Margin="0 4 0 0">
+                                            <!--FILTER TEXTBOX-->
+                                            <ComboBox Width="Auto" SelectedValue="{Binding DataContext.FilterTermEnabled, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" Background="{Binding DataContext.FilterActive, Converter={StaticResource BrushConverter}, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" BorderBrush="{x:Null}" Foreground="Black" >
+                                                <ComboBoxItem Content="Enabled"></ComboBoxItem>
+                                                <ComboBoxItem Content="Disabled"></ComboBoxItem>
+                                                </ComboBox>
+                                            <!--FILTER BUTTONS-->
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <TextBlock Margin="2" FontFamily="Segoe UI"><Hyperlink Command="{Binding DataContext.FilterApplyCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"><Run Text="Apply"/></Hyperlink></TextBlock>
+                                                <TextBlock Margin="2"><Hyperlink Command="{Binding DataContext.FilterClearEnabledCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"><Run Text="Clear"/></Hyperlink></TextBlock>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </Expander>
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn  x:Name="KeyColumnTempl" Header="Key" CanUserSort="True" SortMemberPath="Key" MinWidth="110" >
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
                             <TextBox IsEnabled="false"  Text="{Binding Key, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" Foreground="Black" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" ContextMenu="{StaticResource DatagridContextMenu}"/>
