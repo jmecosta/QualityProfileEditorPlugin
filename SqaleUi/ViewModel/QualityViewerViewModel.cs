@@ -210,6 +210,7 @@ namespace SqaleUi.ViewModel
                 this.Service.GetRulesForProfileUsingRulesApp(this.Configuration, this.SelectedProfile, false);
             }
 
+            this.Model.SelectedProfile = this.SelectedProfile.Key;
             this.Model.MergeRulesIntoProject(this.SelectedProfile.Rules);
             this.Model.SyncingModelWithSonarServer = true;
             if (window != null)

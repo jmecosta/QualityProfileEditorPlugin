@@ -522,6 +522,8 @@
         	<Grid.ColumnDefinitions>
         		<ColumnDefinition Width="100"/>
         		<ColumnDefinition Width="100"/>
+        		<ColumnDefinition Width="100"/>
+        		<ColumnDefinition Width="200"/>
         		<ColumnDefinition Width="1931*"/>
         	</Grid.ColumnDefinitions>
             <Border Grid.Column="0">
@@ -529,7 +531,13 @@
             </Border>
             <Border Grid.Column="1">
                 <TextBlock TextWrapping="Wrap" Text="{Binding RulesCounter}" HorizontalAlignment="Center" VerticalAlignment="Center"/>	
-			</Border>        	
+			</Border>      
+            <Border Grid.Column="2">
+                <TextBlock TextWrapping="Wrap" Text="Profile: " HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <Border Grid.Column="3">
+                <TextBlock TextWrapping="Wrap" Text="{Binding SelectedProfile}" HorizontalAlignment="Center" VerticalAlignment="Center"/>	
+			</Border>			  	
         </Grid>
 
 	</Grid>

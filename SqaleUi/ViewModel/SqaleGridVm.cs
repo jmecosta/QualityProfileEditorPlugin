@@ -722,10 +722,31 @@ namespace SqaleUi.ViewModel
             var rule = sender as Rule;
             if (this.SyncingModelWithSonarServer && rule != null)
             {
-                if (propertyChangedEventArgs.PropertyName.Equals("Severity"))
+                if (propertyChangedEventArgs.PropertyName.Equals("Enabled"))
                 {
-                    var dic = new Dictionary<string, string> { { "severity", rule.Severity.ToString() } };
-                    this.RestService.UpdateRule(this.Configuration, rule.Key, dic);
+                    if (rule.Enabled)
+                    {
+                        List<string> reply = this.RestService.ActivateRule(this.Configuration, rule, this.SelectedProfile);
+                        if (reply != null && reply.Count != 0)
+                        {
+                            MessageBox.Show("Cannot Update Status Of Data in Server: " + reply.Aggregate(this.AggregateErrorStrings));
+                        }
+
+                    }
+                    else
+                    {
+                        List<string> reply = this.RestService.DisableRule(this.Configuration, rule, this.SelectedProfile);
+
+                        if (reply != null && reply.Count != 0)
+                        {
+                            MessageBox.Show("Cannot Update Status Of Data in Server: " + reply.Aggregate(this.AggregateErrorStrings));
+                        }
+                    }                    
+                }
+
+                if (propertyChangedEventArgs.PropertyName.Equals("Severity") && rule.Enabled)
+                {
+                    this.RestService.ActivateRule(this.Configuration, rule, this.SelectedProfile);
                 }
 
                 if (propertyChangedEventArgs.PropertyName.Equals("Subcategory"))
@@ -741,7 +762,7 @@ namespace SqaleUi.ViewModel
                                   };
 
                     List<string> reply = this.RestService.UpdateRule(this.Configuration, rule.Key, dic);
-                    if (reply != null &&  reply.Count != 0)
+                    if (reply != null && reply.Count != 0)
                     {
                         MessageBox.Show("Cannot Update Status Of Data in Server: " + reply.Aggregate(this.AggregateErrorStrings));
                     }
@@ -1276,6 +1297,9 @@ namespace SqaleUi.ViewModel
         }
 
         public QualityViewerViewModel ProjectQualityViewerModel { get; set; }
+
+        public string SelectedProfile { get; set; }
+
 
         /// <summary>
         ///     The execute import sqale model command.
