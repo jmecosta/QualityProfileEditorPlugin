@@ -14,6 +14,7 @@ namespace SqaleUi.ViewModel
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Diagnostics;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Windows.Data;
@@ -83,6 +84,7 @@ namespace SqaleUi.ViewModel
             this.SqaleManager = manager;
             this.ProfileRules = new ItemsChangeObservableCollection<Rule>(this);
             this.Profile = new CollectionViewSource { Source = this.ProfileRules }.View;
+            this.RulesCounter = "0";
 
             this.filter = new RuleFilter(this);
             this.RestService = new SonarRestService(new JsonSonarConnector());
@@ -119,6 +121,7 @@ namespace SqaleUi.ViewModel
                 items =>
                     {
                         this.SelectedItems = items;
+                        this.RulesCounter = this.ProfileRules.Count.ToString();
                         SendItemToWorkAreaMenu.RefreshMenuItemsStatus(this.ContextMenuItems, items != null);
                         SelectKeyMenuItem.RefreshMenuItemsStatus(this.ContextMenuItems, this.SelectedItems.Count == 1);
                         CreateTagMenuItem.RefreshMenuItemsStatus(
@@ -387,6 +390,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     Gets or sets the profile.
         /// </summary>
+        [AlsoNotifyFor("RulesCounter")]
         public ItemsChangeObservableCollection<Rule> ProfileRules { get; set; }
 
         /// <summary>
@@ -481,6 +485,11 @@ namespace SqaleUi.ViewModel
         ///     Gets or sets the v shelper.
         /// </summary>
         public IVsEnvironmentHelper VShelper { get; set; }
+
+        /// <summary>
+        /// Gets or sets the rules counter.
+        /// </summary>
+        public string RulesCounter { get; set; }
 
         #endregion
 
