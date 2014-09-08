@@ -1398,6 +1398,16 @@ namespace SqaleUi.ViewModel
         {
             if (this.SelectedRule != null)
             {
+                if (this.SyncingModelWithSonarServer)
+                {
+                    var errors = this.RestService.DeleteRule(this.Configuration, this.SelectedRule);
+                    if (errors != null && errors.Count != 0)
+                    {
+                        MessageBox.Show("Cannot Delete Rule: " + errors.Aggregate(this.AggregateErrorStrings));
+                        return;
+                    }
+                }
+
                 this.ProfileRules.Remove(this.SelectedRule);
             }
         }
