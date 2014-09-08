@@ -1262,21 +1262,9 @@ namespace SqaleUi.ViewModel
                 this.QualityViewerModel = new QualityViewerViewModel(this.Configuration, this, true);
             }
 
-            if (this.ProjectProfileSelectionWindow == null)
-            {
-                this.ProfileSelectionWindow = new QualityProfileViewer(this.QualityViewerModel);
-            }
-
+            var profileSelectionWindow = new QualityProfileViewer(this.QualityViewerModel);
             this.CanImportFromSonarServer = true;
-            try
-            {
-                this.ProfileSelectionWindow.Show();
-            }
-            catch (Exception)
-            {
-                this.ProfileSelectionWindow = new QualityProfileViewer(this.QualityViewerModel);
-                this.ProjectProfileSelectionWindow.Show();
-            }
+            profileSelectionWindow.ShowDialog();
         }
 
         public QualityProfileViewer ProfileSelectionWindow { get; set; }
