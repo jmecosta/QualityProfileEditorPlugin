@@ -169,9 +169,9 @@ namespace SqaleUi.ViewModel
             this.ExportSaqleModelCommand = new RelayCommand(this.ExecuteExportSaqleModelCommand, () => this.CanExportSaqleModelCommand);
 
             // server imports
-            this.CanImportExportFromServer = true;
-            this.ImportServerQualityProfileFromProjectCommand = new RelayCommand(this.ExecuteImportServerQualityProfileFromProjectCommand, () => this.CanImportExportFromServer);
-            this.ImportServerQualityProfileCommand = new RelayCommand(this.ExecuteImportServerQualityProfileCommand, () => this.CanImportExportFromServer);
+            this.CanImportFromSonarServer = true;
+            this.ImportServerQualityProfileFromProjectCommand = new RelayCommand(this.ExecuteImportServerQualityProfileFromProjectCommand, () => this.CanImportFromSonarServer);
+            this.ImportServerQualityProfileCommand = new RelayCommand(this.ExecuteImportServerQualityProfileCommand, () => this.CanImportFromSonarServer);
         }
 
         public RelayCommand<object> FilterClearAllCommand { get; set; }
@@ -215,7 +215,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     Gets or sets a value indicating whether can import export from server.
         /// </summary>
-        public bool CanImportExportFromServer { get; set; }
+        public bool CanImportFromSonarServer { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether can import profile command.
@@ -527,7 +527,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     Gets or sets a value indicating whether syncing data with sonar model.
         /// </summary>
-        public bool SyncingModelWithSonarServer { get; set; }
+        public bool ConnectedToSonarServer { get; set; }
 
         /// <summary>
         ///     Gets or sets the v shelper.
@@ -740,7 +740,7 @@ namespace SqaleUi.ViewModel
         {
             this.IsDirty = true;
             var rule = sender as Rule;
-            if (this.SyncingModelWithSonarServer && rule != null)
+            if (this.ConnectedToSonarServer && rule != null)
             {
                 if (propertyChangedEventArgs.PropertyName.Equals("Enabled"))
                 {
@@ -1150,7 +1150,7 @@ namespace SqaleUi.ViewModel
         /// </summary>
         private void ExecuteAddNewRuleCommand()
         {
-            if (this.SyncingModelWithSonarServer)
+            if (this.ConnectedToSonarServer)
             {
                 if (this.CreateRulesModel == null)
                 {
@@ -1244,7 +1244,7 @@ namespace SqaleUi.ViewModel
                 }
             }
 
-            this.CanImportExportFromServer = false;
+            this.CanImportFromSonarServer = false;
 
             if (this.Configuration == null)
             {
@@ -1253,7 +1253,7 @@ namespace SqaleUi.ViewModel
 
             if (this.Configuration == null)
             {
-                this.CanImportExportFromServer = true;
+                this.CanImportFromSonarServer = true;
                 return;
             }
 
@@ -1267,7 +1267,7 @@ namespace SqaleUi.ViewModel
                 this.ProfileSelectionWindow = new QualityProfileViewer(this.QualityViewerModel);
             }
 
-            this.CanImportExportFromServer = true;
+            this.CanImportFromSonarServer = true;
             try
             {
                 this.ProfileSelectionWindow.Show();
@@ -1296,7 +1296,7 @@ namespace SqaleUi.ViewModel
                 }
             }
 
-            this.CanImportExportFromServer = false;
+            this.CanImportFromSonarServer = false;
 
             if (this.Configuration == null)
             {
@@ -1305,7 +1305,7 @@ namespace SqaleUi.ViewModel
 
             if (this.Configuration == null)
             {
-                this.CanImportExportFromServer = true;
+                this.CanImportFromSonarServer = true;
                 return;
             }
 
@@ -1319,7 +1319,7 @@ namespace SqaleUi.ViewModel
                 this.ProjectProfileSelectionWindow = new ProjectProfileViewer(this.ProjectQualityViewerModel);
             }
 
-            this.CanImportExportFromServer = true;
+            this.CanImportFromSonarServer = true;
             try
             {
                 this.ProjectProfileSelectionWindow.Show();
@@ -1398,7 +1398,7 @@ namespace SqaleUi.ViewModel
         {
             if (this.SelectedRule != null)
             {
-                if (this.SyncingModelWithSonarServer)
+                if (this.ConnectedToSonarServer)
                 {
                     var errors = this.RestService.DeleteRule(this.Configuration, this.SelectedRule);
                     if (errors != null && errors.Count != 0)
@@ -1419,12 +1419,36 @@ namespace SqaleUi.ViewModel
         {
             this.IsDirty = false;
 
+            SqaleGridVm project = this.mainModel.Tabs[0];
+            Rule templateRule = null;
+
+            if (project.ConnectedToSonarServer)
+            {
+                var model = new CustomRuleSectorViewModel();
+                var profile = new Profile();
+                profile.Key = project.QualityViewerModel.SelectedProfile.Key;
+                profile.Name = project.QualityViewerModel.SelectedProfile.Name;
+                project.RestService.GetTemplateRules(project.Configuration, profile);
+
+                foreach (var rule in profile.Rules)
+                {
+                    model.CustomRules.Add(rule);                    
+                }
+
+                var window = new CustomRuleSelector(model);
+                window.ShowDialog();
+
+                templateRule = model.SelectedRule;
+            }
+
+            var importViewerModel = new ImportLogViewModel();
+
             foreach (Rule rule in this.ProfileRules)
             {
                 if (this.filter.FilterFunction(rule))
                 {
                     bool found = false;
-                    SqaleGridVm project = this.mainModel.Tabs[0];
+                    
                     foreach (Rule ruleinProject in project.ProfileRules)
                     {
                         if (ruleinProject.Key.Equals(rule.Key))
@@ -1436,12 +1460,37 @@ namespace SqaleUi.ViewModel
 
                     if (!found)
                     {
-                        project.ProfileRules.Add(CopyRule(rule));
+                        if (templateRule != null)
+                        {
+                            var errors = this.RestService.CreateRule(project.Configuration, rule, templateRule);
+                            if (errors.Count > 0)
+                            {
+                                foreach (var error in errors)
+                                {
+                                    importViewerModel.ImportLog.Add(new ImportLogEntry { exceptionMessage = rule.Key, line = 0, message = error });
+                                }
+                            }
+                            else
+                            {
+                                project.ProfileRules.Add(CopyRule(rule));
+                            }
+                        }
+                        else
+                        {
+                            project.ProfileRules.Add(CopyRule(rule));
+                        }
                     }
 
                     this.RefreshView();
                 }
             }
+
+            if (importViewerModel.ImportLog.Count > 0)
+            {
+                var importLogWindow = new ImportLogView(importViewerModel);
+                importLogWindow.Show();
+            }
+
         }
 
         /// <summary>
@@ -1449,7 +1498,7 @@ namespace SqaleUi.ViewModel
         /// </summary>
         private void ExecuteSendToWorkAreaCommand()
         {
-            SqaleGridVm workArea = this.mainModel.CreateNewWorkArea(false);
+            SqaleGridVm workArea = this.mainModel.CreateNewWorkArea(false, !this.ConnectedToSonarServer);
 
             bool errorsFound = false;
             foreach (Rule rule in this.ProfileRules)
@@ -1647,5 +1696,18 @@ namespace SqaleUi.ViewModel
         }
 
         #endregion
+
+        public void SetConnectedToServer(bool b)
+        {
+            this.ConnectedToSonarServer = b;
+            this.DisableImportXmls();
+        }
+
+        private void DisableImportXmls()
+        {
+            this.CanImportSqaleModelCommand = false;
+            this.CanImportXmlProfileCommand = false;
+            this.CanImportProfileCommand = false;
+        }
     }
 }

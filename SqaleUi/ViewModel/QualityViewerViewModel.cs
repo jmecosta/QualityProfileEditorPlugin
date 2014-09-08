@@ -212,7 +212,8 @@ namespace SqaleUi.ViewModel
 
             this.Model.SelectedProfile = this.SelectedProfile.Key;
             this.Model.MergeRulesIntoProject(this.SelectedProfile.Rules);
-            this.Model.SyncingModelWithSonarServer = true;
+            this.Model.SetConnectedToServer(true);
+
             if (window != null)
             {
                 window.Hide();

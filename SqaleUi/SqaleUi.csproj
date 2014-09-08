@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="..\configuration.props" />
@@ -112,6 +112,10 @@
     <Compile Include="ViewModel\SqaleGridVm.cs" />
     <Compile Include="Menus\IMenuItem.cs" />
     <Compile Include="helpers\ViewModelLocator.cs" />
+    <Compile Include="ViewModel\CustomRuleSectorViewModel.cs" />
+    <Compile Include="View\CustomRuleSelector.xaml.cs">
+      <DependentUpon>CustomRuleSelector.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\CreateRuleWindow.xaml.cs">
       <DependentUpon>CreateRuleWindow.xaml</DependentUpon>
     </Compile>
@@ -146,6 +150,10 @@
     <Compile Include="VsHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="View\CustomRuleSelector.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\CreateRuleWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -212,6 +220,7 @@
   </ItemGroup>
   <ItemGroup>
     <DesignData Include="SampleData\CreateRuleViewModelSampleData.xaml" />
+    <DesignData Include="SampleData\CustomRuleSectorViewModelSampleData.xaml" />
     <DesignData Include="SampleData\TagEditorViewModelSampleData.xaml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

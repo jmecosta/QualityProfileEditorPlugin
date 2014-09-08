@@ -24,7 +24,7 @@
 
 	<Grid x:Name="LayoutRoot" d:DataContext="{d:DesignData /SampleData/CreateRuleViewModelSampleData.xaml}">
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="197*"/>
+			<ColumnDefinition Width="80"/>
 			<ColumnDefinition Width="435*"/>
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
@@ -35,7 +35,8 @@
 			<RowDefinition Height="25"/>
 			<RowDefinition Height="25"/>
 		</Grid.RowDefinitions>
-		<DataGrid Grid.ColumnSpan="2" SelectionMode="Single" SelectedItem="{Binding SelectedRule}" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding TemplateRules}" DataContext="{Binding}" >
+		<TextBlock Grid.Row="0" Grid.Column="0" Text="Custom Rules" HorizontalAlignment="Right" VerticalAlignment="Top" ></TextBlock>
+		<DataGrid Grid.Column="1" SelectionMode="Single" SelectedItem="{Binding SelectedRule}" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding TemplateRules}" DataContext="{Binding}" >
 			<DataGrid.Columns>
 				<DataGridTextColumn Binding="{Binding Key}" Header="Key"/>
                 <DataGridTemplateColumn Header="Description" CanUserSort="True" SortMemberPath="Description" MinWidth="400"  Width="400" MaxWidth="400">

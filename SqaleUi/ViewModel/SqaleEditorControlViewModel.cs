@@ -13,6 +13,7 @@ namespace SqaleUi.ViewModel
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Collections.Specialized;
     using System.ComponentModel;
     using System.IO;
     using System.Windows.Forms;
@@ -59,6 +60,7 @@ namespace SqaleUi.ViewModel
         public SqaleEditorControlViewModel()
         {
             this.Tabs = new ObservableCollection<SqaleGridVm>();
+            this.Tabs.CollectionChanged += TabsHaveChanged;
 
             this.RestService = new SonarRestService(new JsonSonarConnector());
             this.VsHelper = new VsHelper();
@@ -95,7 +97,7 @@ namespace SqaleUi.ViewModel
             this.SaveAsProjectCommand = new RelayCommand(this.ExecuteSaveAsProjectCommand, () => this.CanExecuteSaveAsProjectCommand);
             this.CloseProjectCommand = new RelayCommand(this.ExecuteCloseProjectCommand, () => this.CanExecuteCloseProjectCommand);
 
-            this.CreateWorkAreaCommand = new RelayCommand<object>(item => this.CreateNewWorkArea(false));
+            this.CreateWorkAreaCommand = new RelayCommand<object>(item => this.CreateNewWorkArea(false, !this.Tabs[0].ConnectedToSonarServer));
             this.DeleteWorkAreaCommand = new RelayCommand(this.RemoveCurrentSelectedTab);
         }
 
@@ -141,29 +143,13 @@ namespace SqaleUi.ViewModel
         /// <summary>
         /// Gets a value indicating whether is add tab enabled.
         /// </summary>
-        public bool IsAddTabEnabled
-        {
-            get
-            {
-                return this.Tabs.Count > 0;
-            }
-        }
+        public bool IsAddTabEnabled { get; set; }
 
         /// <summary>
         /// Gets the is remove tab enabled.
         /// </summary>
-        public object IsRemoveTabEnabled
-        {
-            get
-            {
-                if (this.SelectedTab == null)
-                {
-                    return false;
-                }
+        public bool IsRemoveTabEnabled { get; set; }
 
-                return !this.SelectedTab.Header.Equals("Project");
-            }
-        }
 
         /// <summary>
         ///     Gets the new project command.
@@ -204,6 +190,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         /// Gets or sets the tabs.
         /// </summary>
+        [AlsoNotifyFor("IsAddTabEnabled")]
         public ObservableCollection<SqaleGridVm> Tabs { get; set; }
 
         public ICommand SaveAsProjectCommand { get; set; }
@@ -215,20 +202,22 @@ namespace SqaleUi.ViewModel
         /// <summary>
         /// The create new work area.
         /// </summary>
+        /// <param name="contextMenu"></param>
         /// <param name="showContextMenu">
-        /// The show context menu.
+        ///     The show context menu.
         /// </param>
         /// <returns>
         /// The <see cref="SqaleGridVm"/>.
         /// </returns>
-        public SqaleGridVm CreateNewWorkArea(bool showContextMenu)
+        public SqaleGridVm CreateNewWorkArea(bool showContextMenu, bool allowServerConnection = true)
         {
             var newWorkArea = new SqaleGridVm(this, new SqaleManager())
                                   {
                                       Header = "Non Saved Data: " + this.Tabs.Count, 
                                       ShowContextMenu = showContextMenu, 
                                       CanSendToProject = true, 
-                                      CanSendToWorkAreaCommand = true, 
+                                      CanSendToWorkAreaCommand = true,
+                                      CanImportFromSonarServer = allowServerConnection,
                                       IsDirty = false
                                   };
             newWorkArea.CanSendToWorkAreaCommand = false;
@@ -486,6 +475,11 @@ namespace SqaleUi.ViewModel
         /// </summary>
         private void RemoveCurrentSelectedTab()
         {
+            if (this.SelectedTab.Header.Equals("Project"))
+            {
+                return;
+            }
+
             if (!this.SelectedTab.IsDirty)
             {
                 this.Tabs.Remove(this.SelectedTab);
@@ -516,6 +510,26 @@ namespace SqaleUi.ViewModel
             this.Configuration = configuration;
             this.Project = project;
             this.VsHelper = vshelper;
+        }
+
+        private void TabsHaveChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (this.Tabs.Count == 0)
+            {
+                this.IsAddTabEnabled = false;
+                this.IsRemoveTabEnabled = false;
+            }
+            else if (this.Tabs.Count == 1)
+            {
+                this.IsAddTabEnabled = true;
+                this.IsRemoveTabEnabled = false;
+            }
+            else
+            {
+                this.IsAddTabEnabled = true;
+                this.IsRemoveTabEnabled = true;
+            }
+
         }
     }
 }
