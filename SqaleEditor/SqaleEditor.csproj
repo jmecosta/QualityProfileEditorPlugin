@@ -36,6 +36,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FSharp.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -120,9 +121,10 @@
             $(OutputPath)SqaleUi.dll;
             $(OutputPath)System.Windows.Interactivity.dll;
             $(OutputPath)UserCredentialsDialog.dll;
-            $(OutputPath)VSSonarPlugins.dll
+            $(OutputPath)VSSonarPlugins.dll;
+            $(OutputPath)FSharp.Core.dll
     </PackageFiles>
-  </PropertyGroup>  
+  </PropertyGroup>
   <Import Project="$(MSBuildFolder)\CreatePackage.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
