@@ -39,7 +39,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FSharp.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="ExtensionHelpers">
+      <HintPath>..\References\ExtensionHelpers.dll</HintPath>
+    </Reference>
+    <Reference Include="FSharp.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\References\FSharp.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FSharp.Data, Version=1.1.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\References\FSharp.Data.dll</HintPath>
+    </Reference>
     <Reference Include="PropertyChanged">
       <HintPath>..\packages\PropertyChanged.Fody.1.48.4\Lib\portable-net4+sl4+wp8+win8+wpa81+MonoAndroid16+MonoTouch40\PropertyChanged.dll</HintPath>
       <Private>True</Private>
@@ -118,6 +129,7 @@
   <PropertyGroup>
     <PackageFiles>
             $(OutputPath)ExtensionTypes.dll;
+            $(OutputPath)ExtensionHelpers.dll;
             $(OutputPath)FSharp.Data.dll;
             $(OutputPath)GalaSoft.MvvmLight.Extras.WPF45.dll;
             $(OutputPath)GalaSoft.MvvmLight.WPF45.dll;
@@ -127,7 +139,6 @@
             $(OutputPath)Rhino.Licensing.dll;
             $(OutputPath)SonarRestService.dll;
             $(OutputPath)SqaleEditor.exe;
-            $(OutputPath)SqaleEditor.exe.config;
             $(OutputPath)SqaleManager.dll;
             $(OutputPath)SqaleUi.dll;
             $(OutputPath)System.Windows.Interactivity.dll;
