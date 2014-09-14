@@ -65,6 +65,7 @@
       <SubType>
       </SubType>
     </Compile>
+    <None Include="SqaleManager.licenseheader" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ExtensionTypes">

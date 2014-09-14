@@ -84,6 +84,7 @@
     <Content Include="samples\default-profile.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="SqaleManager.Test.licenseheader" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ExtensionTypes">

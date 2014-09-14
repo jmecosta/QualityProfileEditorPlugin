@@ -192,6 +192,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="SqaleUi.licenseheader" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SqaleManager\SqaleManager.fsproj">

@@ -1,5 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="QualityTypes.fs" company="Copyright © 2014 Tekla Corporation. Tekla is a Trimble Company">
+extensions: .g.cs
+extensions: .fs
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="%FileName%" company="Copyright © %CurrentYear% Tekla Corporation. Tekla is a Trimble Company">
 //     Copyright (C) 2013 [Jorge Costa, Jorge.Costa@tekla.com]
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -11,17 +13,3 @@
 // You should have received a copy of the GNU Lesser General Public License along with this program; if not, write to the Free
 // Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // --------------------------------------------------------------------------------------------------------------------
-namespace SqaleManager
-
-open FSharp.Data
-open System.Xml.Linq
-open System.IO
-open System.Reflection
-open System.ComponentModel
-open ExtensionTypes
-
-type ImportLogEntry() = 
-    member val line = -1 with get, set
-    member val message = "" with get, set
-    member val exceptionMessage = "" with get, set
-        
