@@ -3,6 +3,8 @@ VSSonarQubeQualityEditorPlugin
 
 Plugin for VSSonarExtension to manage quality profiles. A standalone version of the plugin is available also.
 
+Download latest binaries from: https://ci.appveyor.com/project/jorgecosta/vssonarqubequalityeditorplugin/build/artifacts
+
 
 License
 ==============================
