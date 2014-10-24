@@ -544,5 +544,11 @@ namespace ExtensionHelpers
 
         [DllImport("kernel32.dll")]
         private static extern uint GetShortPathName(string longpath, StringBuilder sb, int buffer);
+
+
+        string IVsEnvironmentHelper.GetProperFilePathCapitalization(string filename)
+        {
+            return string.Empty;
+        }
     }
 }
