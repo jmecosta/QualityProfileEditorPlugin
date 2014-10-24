@@ -75,7 +75,7 @@ namespace SqaleUi.ViewModel
 
         public ISonarRestService RestService { get; set; }
 
-        public SqaleEditorControlViewModel(ConnectionConfiguration configuration, Resource project, IVsEnvironmentHelper vshelper)
+        public SqaleEditorControlViewModel(ISonarConfiguration configuration, Resource project, IVsEnvironmentHelper vshelper)
         {
             this.Tabs = new ObservableCollection<SqaleGridVm>();
             this.InitCommanding();
@@ -389,7 +389,7 @@ namespace SqaleUi.ViewModel
 
         }
 
-        public void CreateNewProject(string fileName, ConnectionConfiguration configuration, Resource resource, IVsEnvironmentHelper vshelper)
+        public void CreateNewProject(string fileName, ISonarConfiguration configuration, Resource resource, IVsEnvironmentHelper vshelper)
         {
             var project = new SqaleGridVm(this, new SqaleManager())
                               {
@@ -506,9 +506,9 @@ namespace SqaleUi.ViewModel
 
         public Resource Project { get; set; }
 
-        public ConnectionConfiguration Configuration { get; set; }
+        public ISonarConfiguration Configuration { get; set; }
 
-        public void UpdateConfiguration(ConnectionConfiguration configuration, Resource project, IVsEnvironmentHelper vshelper)
+        public void UpdateConfiguration(ISonarConfiguration configuration, Resource project, IVsEnvironmentHelper vshelper)
         {
             this.Configuration = configuration;
             this.Project = project;

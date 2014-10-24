@@ -21,7 +21,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <Tailcalls>false</Tailcalls>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\BuildDrop\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,7 +32,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <Tailcalls>true</Tailcalls>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>b..\BuildDrop\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -68,7 +68,8 @@
     <None Include="SqaleManager.licenseheader" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="ExtensionTypes">
+    <Reference Include="ExtensionTypes, Version=$(VSSonarExtensionVersion)">
+      <SpecificVersion>True</SpecificVersion>
       <HintPath>..\References\ExtensionTypes.dll</HintPath>
     </Reference>
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -87,7 +88,8 @@
     <Reference Include="RestSharp">
       <HintPath>..\References\RestSharp.dll</HintPath>
     </Reference>
-    <Reference Include="SonarRestService">
+    <Reference Include="SonarRestService, Version=$(VSSonarExtensionVersion)">
+      <SpecificVersion>True</SpecificVersion>
       <HintPath>..\References\SonarRestService.dll</HintPath>
     </Reference>
     <Reference Include="System" />

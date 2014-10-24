@@ -39,7 +39,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     The conf.
         /// </summary>
-        private readonly ConnectionConfiguration conf;
+        private readonly ISonarConfiguration conf;
 
         /// <summary>
         ///     The model.
@@ -88,7 +88,7 @@ namespace SqaleUi.ViewModel
         /// <param name="model">
         /// The model.
         /// </param>
-        public TagEditorViewModel(ConnectionConfiguration conf, ISonarRestService service, SqaleGridVm model)
+        public TagEditorViewModel(ISonarConfiguration conf, ISonarRestService service, SqaleGridVm model)
         {
             this.conf = conf;
             this.service = service;

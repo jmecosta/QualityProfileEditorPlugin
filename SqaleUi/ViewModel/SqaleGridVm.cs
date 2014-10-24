@@ -256,7 +256,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     Gets or sets the configuration.
         /// </summary>
-        public ConnectionConfiguration Configuration { get; set; }
+        public ISonarConfiguration Configuration { get; set; }
 
         /// <summary>
         ///     Gets or sets the profile.

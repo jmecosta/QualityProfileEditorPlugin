@@ -71,7 +71,7 @@ namespace SqaleUi.ViewModel
         /// <param name="showOnlyProfiles">
         /// The show Only Profiles.
         /// </param>
-        public QualityViewerViewModel(ConnectionConfiguration config, SqaleGridVm model, bool showOnlyProfiles = false)
+        public QualityViewerViewModel(ISonarConfiguration config, SqaleGridVm model, bool showOnlyProfiles = false)
         {
             this.Model = model;
             this.Configuration = config;
@@ -97,7 +97,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     Gets or sets the configuration.
         /// </summary>
-        public ConnectionConfiguration Configuration { get; set; }
+        public ISonarConfiguration Configuration { get; set; }
 
         /// <summary>
         ///     Gets or sets the import profile command.

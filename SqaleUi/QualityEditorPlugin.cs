@@ -118,7 +118,7 @@ namespace SqaleUi
         /// <returns>
         /// The <see cref="UserControl"/>.
         /// </returns>
-        public UserControl GetUserControl(ConnectionConfiguration configuration, Resource project, IVsEnvironmentHelper vshelper)
+        public UserControl GetUserControl(ISonarConfiguration configuration, Resource project, IVsEnvironmentHelper vshelper)
         {
             if (this.Editor == null)
             {
@@ -155,7 +155,7 @@ namespace SqaleUi
         /// <param name="vshelper">
         /// The vshelper.
         /// </param>
-        public void UpdateConfiguration(ConnectionConfiguration configuration, Resource project, IVsEnvironmentHelper vshelper)
+        public void UpdateConfiguration(ISonarConfiguration configuration, Resource project, IVsEnvironmentHelper vshelper)
         {
             this.Model.UpdateConfiguration(configuration, project, vshelper);
         }

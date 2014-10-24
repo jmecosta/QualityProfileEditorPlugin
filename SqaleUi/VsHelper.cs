@@ -117,6 +117,16 @@ namespace ExtensionHelpers
             return string.Empty;
         }
 
+        public bool AreWeRunningInVisualStudio()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ShowSourceDiff(string resourceInEditorTxt, string documentInViewPath)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// The get environment.
         /// </summary>
@@ -243,6 +253,11 @@ namespace ExtensionHelpers
             {
                 this.WriteOptionInApplicationData(pluginKey, option.Key, option.Value);
             }
+        }
+
+        public void OpenResourceInVisualStudio(string workfolder, string filename, int line, string editorCommandExec = "notepad")
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -407,6 +422,11 @@ namespace ExtensionHelpers
             return this.ApplicationDataUserSettingsFile;
         }
 
+        public void WriteToVisualStudioOutput(string errorMessage)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// The set option.
         /// </summary>
@@ -424,6 +444,11 @@ namespace ExtensionHelpers
         /// </param>
         public void WriteOption(string category, string page, string item, string value)
         {
+        }
+
+        public void RestartVisualStudio()
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
