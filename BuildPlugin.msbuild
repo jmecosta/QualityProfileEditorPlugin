@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
+    <Import Project="configuration.props" Condition="'$(MSBuildFolder)'==''"/>
+    <Import Project="$(MSBuildFolder)\TeklaNuget.tasks" Condition="'$(NugetRestoreTaskIncluded)'!='yes'"/>
+    <ItemGroup>
+        <QualityEditorPlugin Include="QualityEditorPlugin.sln" />
+    </ItemGroup>
+    
+    <Target Name="RestoreNuget"><NugetRestoreTask NugetExe="$(MSBuildFolder)\Nuget.exe" SolutionFile="QualityEditorPlugin.sln"/></Target>
+
+    <Target Name="BuildPlugin" DependsOnTargets="RestoreNuget">
+        <MSBuild Projects="@(QualityEditorPlugin)" Properties="Configuration=Release" BuildInParallel="true" StopOnFirstFailure="true" />
+    </Target>
+    
+    <Target Name="Build" DependsOnTargets="BuildPlugin">
+    </Target>
+</Project>
