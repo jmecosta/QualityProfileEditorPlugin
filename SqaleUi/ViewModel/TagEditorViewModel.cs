@@ -28,6 +28,8 @@ namespace SqaleUi.ViewModel
 
     using SonarRestService;
 
+    using SqaleUi.Menus;
+
     /// <summary>
     ///     The tag editor view model.
     /// </summary>
@@ -44,7 +46,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     The model.
         /// </summary>
-        private readonly SqaleGridVm model;
+        private readonly ISqaleGridVm model;
 
         /// <summary>
         ///     The service.
@@ -88,7 +90,7 @@ namespace SqaleUi.ViewModel
         /// <param name="model">
         /// The model.
         /// </param>
-        public TagEditorViewModel(ISonarConfiguration conf, ISonarRestService service, SqaleGridVm model)
+        public TagEditorViewModel(ISonarConfiguration conf, ISonarRestService service, ISqaleGridVm model)
         {
             this.conf = conf;
             this.service = service;
@@ -101,9 +103,9 @@ namespace SqaleUi.ViewModel
             this.CanExecuteAddSelectedTags = false;
             this.CanExecuteRefreshTags = false;
             this.CanExecuteRemoveSelected = false;
-            this.AddSelectedTagCommand = new RelayCommand(this.ExecuteAddSelectedTags, () => this.CanExecuteAddSelectedTags);
+            this.AddSelectedTagCommand = new RelayCommand(this.ExecuteAddSelectedTags);
             this.RefreshTagsCommand = new RelayCommand(this.RefreshAvailableTagsInServer, () => this.CanExecuteRefreshTags);
-            this.RemoveSelectedCommand = new RelayCommand(this.ExecuteRemoveSelected, () => this.CanExecuteRemoveSelected);
+            this.RemoveSelectedCommand = new RelayCommand(this.ExecuteRemoveSelected);
 
             this.SelectionChangedCommand = new RelayCommand<List<string>>(items => { this.SelectedTags = items; });
 
@@ -236,6 +238,11 @@ namespace SqaleUi.ViewModel
         /// </summary>
         public void RefreshTagsInRule()
         {
+            if (this.model.SelectedRule == null)
+            {
+                return;
+            }
+
             this.TagsInRule.Clear();
             foreach (string tag in this.model.SelectedRule.Tags)
             {

@@ -15,10 +15,12 @@
 namespace SqaleUi.ViewModel
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
     using System.ComponentModel;
     using System.IO;
+    using System.Windows;
     using System.Windows.Forms;
     using System.Windows.Input;
 
@@ -36,9 +38,12 @@ namespace SqaleUi.ViewModel
 
     using SqaleManager;
 
+    using SqaleUi.Menus;
     using SqaleUi.View;
 
     using VSSonarPlugins;
+
+    using MessageBox = System.Windows.Forms.MessageBox;
 
     /// <summary>
     /// The sqale editor control view model.
@@ -102,6 +107,33 @@ namespace SqaleUi.ViewModel
 
             this.CreateWorkAreaCommand = new RelayCommand<object>(item => this.CreateNewWorkArea(false, !this.Tabs[0].ConnectedToSonarServer));
             this.DeleteWorkAreaCommand = new RelayCommand(this.RemoveCurrentSelectedTab);
+
+
+            this.OpenVsWindow = new RelayCommand(this.OnOpenVsWindow);
+        }
+
+        private void OnOpenVsWindow()
+        {
+
+            bool userCancel = true;
+            bool resetServer = false;
+            while (userCancel && !this.CreateSonarConnection(resetServer))
+            {
+                DialogResult result = MessageBox.Show("Cannot Connect, try again?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                userCancel = result == DialogResult.Yes;
+                resetServer = true;
+            }
+
+            List<Resource> projects =
+                this.RestService.GetProjectsList(this.Configuration);
+
+            var window = new Window();
+            var model = new SqaleGridVmVs(projects[0], this.RestService, this.Configuration);
+            var grid = new SqaleGridVs(model);
+            window.Content = grid;
+            window.SizeToContent = SizeToContent.WidthAndHeight;
+            window.ShowDialog();
         }
 
         #endregion
@@ -133,6 +165,7 @@ namespace SqaleUi.ViewModel
         /// </summary>
         public RelayCommand CloseProjectCommand { get; private set; }
 
+        public RelayCommand OpenVsWindow { get; private set; }
         /// <summary>
         /// Gets or sets the create work area command.
         /// </summary>
@@ -285,7 +318,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         /// The connect to sonar.
         /// </summary>
-        public void ConnectToSonar(SqaleGridVm model)
+        public void ConnectToSonar(ISqaleGridVm model)
         {
             bool userCancel = true;
             bool resetServer = false;

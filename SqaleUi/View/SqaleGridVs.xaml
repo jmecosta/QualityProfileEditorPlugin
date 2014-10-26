@@ -3,13 +3,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:sqaleManager="clr-namespace:SqaleManager;assembly=SqaleManager"
+    xmlns:viewModel="clr-namespace:SqaleUi.ViewModel"
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
 
     xmlns:command="http://www.galasoft.ch/mvvmlight" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:extensionTypes="clr-namespace:ExtensionTypes;assembly=ExtensionTypes"
     xmlns:helpers="clr-namespace:SqaleUi.helpers"
-    mc:Ignorable="d" x:Class="SqaleUi.View.SqaleGrid"
+    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+    mc:Ignorable="d" x:Class="SqaleUi.View.SqaleGridVs"
     d:DesignHeight="188.209">
     <UserControl.Resources>
 
@@ -19,14 +21,12 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
-                <ResourceDictionary
-                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
-                <ResourceDictionary Source="/SqaleUi;component/Styles/DatagridStyles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+                <ResourceDictionary Source="/SqaleUi;component/Styles/DatagridStyles.xaml"/>
 
             </ResourceDictionary.MergedDictionaries>
+            <viewModel:SqaleGridVmVs x:Key="SqaleGridVmVsDataSource" d:IsDataSource="True"/>
 
-            <Image x:Key="ToWorkArea" Source="/SqaleUi;component/Images/toworkarea.png" />
-            <Image x:Key="ToProject" Source="/SqaleUi;component/Images/toproject.png" />
             <Image x:Key="AddSign" Source="/SqaleUi;component/Images/addtab.png" />
             <Image x:Key="RemoveSign" Source="/SqaleUi;component/Images/removetab.png" />
             <Image x:Key="ImportXmlProfile" Source="/SqaleUi;component/Images/importXMLProfile.png" />
@@ -91,43 +91,50 @@
                 </ContextMenu.ItemTemplate>
             </ContextMenu>
 
-            <Style x:Key="IssuesGridRowStyle" TargetType="{x:Type DataGridRow}"
-                   BasedOn="{StaticResource RowStyleWithAlternation}" />
+            <DataTemplate x:Key="ProjectSelectionComboBoxDataTemplate">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding Name}"></TextBlock>
+                    <TextBlock Text=" : "></TextBlock>
+                    <TextBlock Text="{Binding Language}"></TextBlock>
+                </StackPanel>
+            </DataTemplate>
+
+            
+            <Style x:Key="IssuesGridRowStyle" TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource RowStyleWithAlternation}">
+            </Style>
+
+            
         </ResourceDictionary>
 
+
     </UserControl.Resources>
+    <UserControl.DataContext>
+        <Binding Source="{StaticResource SqaleGridVmVsDataSource}"/>
+    </UserControl.DataContext>
 
     <Grid x:Name="LayoutRoot">
         <Grid.RowDefinitions>
-            <RowDefinition Height="25" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="3" />
             <RowDefinition Height="3*" />
             <RowDefinition Height="25" />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
-            <Button Margin="0,0,0,0" ToolTip="Send All Content from Grid to New Work Area"
-                    Content="{DynamicResource ToWorkArea}" Background="Transparent"
-                    Command="{Binding SendToWorkAreaCommand}" />
-            <Button Margin="0,0,5,0" ToolTip="Merge Content to Project" Content="{DynamicResource ToProject}"
-                    Background="Transparent" Command="{Binding SendToProject}" />
-            <Button Margin="0,0,0,0" ToolTip="Create New Rule" Content="{DynamicResource AddSign}"
+            <ComboBox Width="200"
+                      Margin="0, 0, 0, 0"
+                      Style="{DynamicResource VirtualisedMetroComboBox}"
+                      TextSearch.TextPath="Name"
+                      controls:TextboxHelper.Watermark="Quality Profile"
+                      IsEditable="True"
+                      SelectedItem="{Binding SelectedProfile}"
+                      ItemsSource="{Binding QualityProfilesForProject}"
+                      MaxDropDownHeight="125"
+                      ItemTemplate="{DynamicResource ProjectSelectionComboBoxDataTemplate}"
+                      />
+            <Button Margin="5,0,0,0" ToolTip="Create New Rule" Content="{DynamicResource AddSign}"
                     Background="Transparent" Command="{Binding AddNewRuleCommand}" />
             <Button Margin="0,0,5,0" ToolTip="Remove Selected Rule" Content="{DynamicResource RemoveSign}"
                     Background="Transparent" Command="{Binding RemoveRuleCommand}" />
-
-            <Button Margin="0,0,0,0" ToolTip="Import Xml Rule Definition" Content="{DynamicResource ImportXmlProfile}"
-                    Background="Transparent" Command="{Binding ImportXmlProfileCommand}" />
-            <Button Margin="0,0,0,0" ToolTip="Import A Quality Profile Definition"
-                    Content="{DynamicResource ImportPrioritiesProfile}" Background="Transparent"
-                    Command="{Binding ImportProfileCommand}" />
-            <Button Margin="0,0,5,0" ToolTip="Import A Sqale Model" Content="{DynamicResource ImportSqaleDefinition}"
-                    Background="Transparent" Command="{Binding ImportSqaleModelCommand}" />
-
-            <Button Margin="0,0,0,0" ToolTip="Modify Server Profile"
-                    Content="{DynamicResource ImportServerQualityProfile}" Background="Transparent"
-                    Command="{Binding ImportServerQualityProfileCommand}" />
-            <Button Margin="0,0,5,0" ToolTip="Modify Profile For Project"
-                    Content="{DynamicResource ImportQualityProfileFromProject}" Background="Transparent"
-                    Command="{Binding ImportServerQualityProfileFromProjectCommand}" />
 
             <Button Margin="0,0,0,0" ToolTip="Export Sqale Model" Content="{DynamicResource ExportSqaleModel}"
                     Background="Transparent" Command="{Binding ExportSaqleModelCommand}" />
@@ -140,10 +147,10 @@
         </StackPanel>
         <DataGrid
             Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}}"
-            ContextMenu="{StaticResource DatagridContextMenu}" x:Name="Datagrid" Grid.Row="1"
+            ContextMenu="{StaticResource DatagridContextMenu}" x:Name="Datagrid" Grid.Row="2"
             SelectedItem="{Binding SelectedRule}" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Profile}"
-            CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="True"
-            RowStyle="{DynamicResource IssuesGridRowStyle}"
+            CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="True"          
+            RowStyle="{DynamicResource IssuesGridRowStyle}"   
             AlternationCount="2" AutoGenerateColumns="False" AlternatingRowBackground="#CCD1E0E6"
             CanUserSortColumns="True">
             <i:Interaction.Triggers>
@@ -159,7 +166,7 @@
 
 
             <DataGrid.Columns>
-
+                
                 <DataGridTemplateColumn x:Name="EnabledTemplateCol" Header="Enabled" CanUserSort="True"
                                         SortMemberPath="Enabled">
                     <DataGridTemplateColumn.CellTemplate>
@@ -174,9 +181,7 @@
                     <DataGridTemplateColumn.HeaderTemplate>
                         <DataTemplate>
                             <Grid IsHitTestVisible="True">
-                                <Expander Header="{TemplateBinding Content}" IsHitTestVisible="True"
-                                          VerticalAlignment="Top" Margin="0 0 0 0" ToolTip="RuleFilter"
-                                          HorizontalAlignment="Left" Width="Auto" Height="Auto">
+                                <Expander Header="{TemplateBinding Content}" IsHitTestVisible="True" VerticalAlignment="Top" Margin="0 0 0 0" ToolTip="RuleFilter" HorizontalAlignment="Left" Width="Auto" Height="Auto">
                                     <Border IsHitTestVisible="True" BorderThickness="1" Margin="0 0 0 0">
                                         <StackPanel Margin="0 2 0 0">
                                             <!--FILTER TEXTBOX-->
@@ -210,8 +215,7 @@
                     </DataGridTemplateColumn.HeaderTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn x:Name="KeyColumnTempl" Header="Key" CanUserSort="True" SortMemberPath="Key"
-                                        MinWidth="110">
+                <DataGridTemplateColumn x:Name="KeyColumnTempl" Header="Key" CanUserSort="True" SortMemberPath="Key" MinWidth="110">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBox IsEnabled="false" Text="{Binding Key, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
@@ -225,8 +229,7 @@
                     <DataGridTemplateColumn.HeaderTemplate>
                         <DataTemplate>
                             <Grid IsHitTestVisible="True">
-                                <Expander Header="{TemplateBinding Content}" IsHitTestVisible="True"
-                                          VerticalAlignment="Top"
+                                <Expander Header="{TemplateBinding Content}" IsHitTestVisible="True" VerticalAlignment="Top"
                                           Margin="0 0 0 0" ToolTip="RuleFilter">
                                     <Border IsHitTestVisible="True" BorderThickness="1" Margin="0 0 0 0">
                                         <StackPanel Margin="0 2 0 0">
@@ -258,7 +261,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.HeaderTemplate>
                 </DataGridTemplateColumn>
-
+                
                 <DataGridTemplateColumn x:Name="NameColumnTempl" Header="Name" CanUserSort="True" SortMemberPath="Name"
                                         MinWidth="110">
                     <DataGridTemplateColumn.CellTemplate>
@@ -276,8 +279,7 @@
                         <DataTemplate>
                             <Grid IsHitTestVisible="True">
                                 <!--FILTER EXPANDER-->
-                                <Expander Header="{TemplateBinding Content}" IsHitTestVisible="True"
-                                          VerticalAlignment="Top"
+                                <Expander Header="{TemplateBinding Content}" IsHitTestVisible="True" VerticalAlignment="Top"
                                           Margin="0 0 0 0" ToolTip="RuleFilter">
                                     <Border IsHitTestVisible="True" BorderThickness="1" Margin="0 0 0 0">
                                         <StackPanel Margin="0 2 0 0">
@@ -309,7 +311,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.HeaderTemplate>
                 </DataGridTemplateColumn>
-
+                
                 <DataGridTemplateColumn x:Name="RepoColumnTempl" Header="Repo" CanUserSort="True" SortMemberPath="Repo"
                                         MinWidth="110">
                     <DataGridTemplateColumn.CellTemplate>
@@ -325,8 +327,7 @@
                     <DataGridTemplateColumn.HeaderTemplate>
                         <DataTemplate>
                             <Grid IsHitTestVisible="True">
-                                <Expander Header="{TemplateBinding Content}" IsHitTestVisible="True"
-                                          VerticalAlignment="Top"
+                                <Expander Header="{TemplateBinding Content}" IsHitTestVisible="True" VerticalAlignment="Top"
                                           Margin="0 0 0 0" ToolTip="RuleFilter">
                                     <Border IsHitTestVisible="True" BorderThickness="1" Margin="0 0 0 0">
                                         <StackPanel Margin="0 2 0 0">
@@ -372,10 +373,9 @@
                     <!--NAME COLUMN-->
                     <DataGridTemplateColumn.HeaderTemplate>
                         <DataTemplate>
-                            <Grid IsHitTestVisible="True">
+                            <Grid IsHitTestVisible="True">                                
                                 <!--FILTER EXPANDER-->
-                                <Expander Header="{TemplateBinding Content}" IsHitTestVisible="True"
-                                          VerticalAlignment="Top"
+                                <Expander Header="{TemplateBinding Content}" IsHitTestVisible="True" VerticalAlignment="Top"
                                           Margin="0 0 0 0" ToolTip="RuleFilter">
                                     <Border IsHitTestVisible="True" BorderThickness="1" Margin="0 0 0 0">
                                         <StackPanel Margin="0 2 0 0">
@@ -423,10 +423,9 @@
                     <DataGridTemplateColumn.HeaderTemplate>
                         <DataTemplate>
                             <Grid IsHitTestVisible="True">
-
+                                
                                 <!--FILTER EXPANDER-->
-                                <Expander Header="{TemplateBinding Content}" IsHitTestVisible="True"
-                                          VerticalAlignment="Top"
+                                <Expander Header="{TemplateBinding Content}" IsHitTestVisible="True" VerticalAlignment="Top"
                                           Margin="0 0 0 0" ToolTip="RuleFilter">
                                     <Border IsHitTestVisible="True" BorderThickness="1" Margin="0 0 0 0">
                                         <StackPanel Margin="0 2 0 0">
@@ -478,10 +477,9 @@
                                     <ColumnDefinition />
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
-
+                                
                                 <!--FILTER EXPANDER-->
-                                <Expander Header="{TemplateBinding Content}" IsHitTestVisible="True"
-                                          VerticalAlignment="Top"
+                                <Expander Header="{TemplateBinding Content}" IsHitTestVisible="True" VerticalAlignment="Top"
                                           Margin="0 0 0 0" ToolTip="RuleFilter">
                                     <Border IsHitTestVisible="True" BorderThickness="1" Margin="0 0 0 0">
                                         <StackPanel Margin="0 2 0 0">
@@ -531,10 +529,9 @@
                     <!--NAME COLUMN-->
                     <DataGridTemplateColumn.HeaderTemplate>
                         <DataTemplate>
-                            <Grid IsHitTestVisible="True">
+                            <Grid IsHitTestVisible="True">                                
                                 <!--FILTER EXPANDER-->
-                                <Expander Header="{TemplateBinding Content}" IsHitTestVisible="True"
-                                          VerticalAlignment="Top"
+                                <Expander Header="{TemplateBinding Content}" IsHitTestVisible="True" VerticalAlignment="Top"
                                           Margin="0 0 0 0" ToolTip="RuleFilter">
                                     <Border IsHitTestVisible="True" BorderThickness="1" Margin="0 0 0 0">
                                         <StackPanel Margin="0 2 0 0">
@@ -586,10 +583,9 @@
                     <DataGridTemplateColumn.HeaderTemplate>
                         <DataTemplate>
                             <Grid IsHitTestVisible="True">
-
+                                
                                 <!--FILTER EXPANDER-->
-                                <Expander Header="{TemplateBinding Content}" IsHitTestVisible="True"
-                                          VerticalAlignment="Top"
+                                <Expander Header="{TemplateBinding Content}" IsHitTestVisible="True" VerticalAlignment="Top"
                                           Margin="0 0 0 0" ToolTip="RuleFilter">
                                     <Border IsHitTestVisible="True" BorderThickness="1" Margin="0 0 0 0">
                                         <StackPanel Margin="0 2 0 0">
@@ -661,10 +657,9 @@
                     <DataGridTemplateColumn.HeaderTemplate>
                         <DataTemplate>
                             <Grid IsHitTestVisible="True">
-
+                                
                                 <!--FILTER EXPANDER-->
-                                <Expander Header="{TemplateBinding Content}" IsHitTestVisible="True"
-                                          VerticalAlignment="Top"
+                                <Expander Header="{TemplateBinding Content}" IsHitTestVisible="True" VerticalAlignment="Top"
                                           Margin="0 0 0 0" ToolTip="RuleFilter">
                                     <Border IsHitTestVisible="True" BorderThickness="1" Margin="0 0 0 0">
                                         <StackPanel Margin="0 2 0 0">
@@ -711,10 +706,9 @@
                     <DataGridTemplateColumn.HeaderTemplate>
                         <DataTemplate>
                             <Grid IsHitTestVisible="True">
-
+                                
                                 <!--FILTER EXPANDER-->
-                                <Expander Header="{TemplateBinding Content}" IsHitTestVisible="True"
-                                          VerticalAlignment="Top"
+                                <Expander Header="{TemplateBinding Content}" IsHitTestVisible="True" VerticalAlignment="Top"
                                           Margin="0 0 0 0" ToolTip="RuleFilter">
                                     <Border IsHitTestVisible="True" BorderThickness="1" Margin="0 0 0 0">
                                         <StackPanel Margin="0 2 0 0">
@@ -748,7 +742,7 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100" />
                 <ColumnDefinition Width="100" />
@@ -767,7 +761,7 @@
                 <TextBlock TextWrapping="Wrap" Text="Profile: " HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Border>
             <Border Grid.Column="3">
-                <TextBlock TextWrapping="Wrap" Text="{Binding SelectedProfile}" HorizontalAlignment="Center"
+                <TextBlock TextWrapping="Wrap" Text="{Binding SelectedProfile.Name}" HorizontalAlignment="Center"
                            VerticalAlignment="Center" />
             </Border>
         </Grid>

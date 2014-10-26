@@ -32,7 +32,7 @@ namespace SqaleUi.Menus
         /// <summary>
         /// The sqale grid vm.
         /// </summary>
-        private readonly SqaleGridVm sqaleGridVm;
+        private readonly ISqaleGridVm sqaleGridVm;
 
         #endregion
 
@@ -44,7 +44,7 @@ namespace SqaleUi.Menus
         /// <param name="sqaleGridVm">
         /// The sqale grid vm.
         /// </param>
-        private SendItemToWorkAreaMenu(SqaleGridVm sqaleGridVm)
+        private SendItemToWorkAreaMenu(ISqaleGridVm sqaleGridVm)
         {
             this.sqaleGridVm = sqaleGridVm;
 
@@ -126,7 +126,7 @@ namespace SqaleUi.Menus
         public static void RefreshMenuItems(
             ObservableCollection<IMenuItem> menus, 
             SqaleEditorControlViewModel model, 
-            SqaleGridVm gridModel, 
+            ISqaleGridVm gridModel, 
             bool isenabled)
         {
             var listOfFilesToRemove = new List<IMenuItem>();

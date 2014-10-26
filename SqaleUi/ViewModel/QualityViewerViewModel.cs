@@ -27,6 +27,8 @@ namespace SqaleUi.ViewModel
 
     using SonarRestService;
 
+    using SqaleUi.Menus;
+
     /// <summary>
     ///     The server project viewer view model.
     /// </summary>
@@ -71,7 +73,7 @@ namespace SqaleUi.ViewModel
         /// <param name="showOnlyProfiles">
         /// The show Only Profiles.
         /// </param>
-        public QualityViewerViewModel(ISonarConfiguration config, SqaleGridVm model, bool showOnlyProfiles = false)
+        public QualityViewerViewModel(ISonarConfiguration config, ISqaleGridVm model, bool showOnlyProfiles = false)
         {
             this.Model = model;
             this.Configuration = config;
@@ -107,7 +109,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     Gets or sets the model.
         /// </summary>
-        public SqaleGridVm Model { get; set; }
+        public ISqaleGridVm Model { get; set; }
 
         /// <summary>
         ///     Gets or sets the projects.
@@ -188,20 +190,6 @@ namespace SqaleUi.ViewModel
         #region Methods
 
         /// <summary>
-        /// The can execute import profile command func.
-        /// </summary>
-        /// <param name="sdas">
-        /// The sdas.
-        /// </param>
-        /// <returns>
-        /// The <see cref="bool"/>.
-        /// </returns>
-        private bool CanExecuteImportProfileCommandFunc(object sdas)
-        {
-            return this.CanExecuteImportProfileCommand;
-        }
-
-        /// <summary>
         /// The execute import profile command.
         /// </summary>
         /// <param name="window">
@@ -216,7 +204,7 @@ namespace SqaleUi.ViewModel
                 this.Service.GetRulesForProfileUsingRulesApp(this.Configuration, this.SelectedProfile, false);
             }
 
-            this.Model.SelectedProfile = this.SelectedProfile.Key;
+            this.Model.SelectedProfile = this.SelectedProfile;
             this.Model.MergeRulesIntoProject(this.SelectedProfile.Rules);
             this.Model.SetConnectedToServer(true);
 
@@ -272,7 +260,7 @@ namespace SqaleUi.ViewModel
         {
             try
             {
-                this.ImportProfileCommand = new RelayCommand<Window>(this.ExecuteImportProfileCommand, this.CanExecuteImportProfileCommandFunc);
+                this.ImportProfileCommand = new RelayCommand<Window>(this.ExecuteImportProfileCommand);
                 this.RefreshDataCommand = new RelayCommand(this.ExecuteRefreshDataCommand);
             }
             catch (Exception)

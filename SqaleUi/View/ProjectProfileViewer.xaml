@@ -48,7 +48,7 @@
 			</DataGrid.Columns>
 		</DataGrid>
 		<StackPanel Orientation="Horizontal" Grid.Row="1" >
-            <Button Margin="0,0,5,0" Content="Import" Grid.Row="1" Command="{Binding ImportProfileCommand}" CommandParameter="{Binding ElementName=QualityProfileViewerWindow}" />	
+            <Button Margin="0,0,5,0" Content="Import" Grid.Row="1" Command="{Binding ImportProfileCommand}" CommandParameter="{Binding ElementName=QualityProfileViewerWindow}" IsEnabled="{Binding CanExecuteImportProfileCommand}"/>	
 			<Button Margin="0,0,5,0" Content="Refresh Data" Grid.Row="1" Command="{Binding RefreshDataCommand}"/>
 		</StackPanel>
 		<DataGrid Grid.Column="1" AutoGenerateColumns="False" ItemsSource="{Binding Profiles}" SelectedItem="{Binding SelectedProfile}" SelectionMode="Single" CanUserAddRows="False" CanUserDeleteRows="False">

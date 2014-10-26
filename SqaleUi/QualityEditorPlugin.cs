@@ -21,6 +21,8 @@ namespace SqaleUi
 
     using ExtensionTypes;
 
+    using SonarRestService;
+
     using SqaleUi.View;
     using SqaleUi.ViewModel;
 
@@ -37,7 +39,7 @@ namespace SqaleUi
         /// <summary>
         /// Gets or sets the editor.
         /// </summary>
-        public SqaleEditorControl Editor { get; set; }
+        public SqaleGridVs Editor { get; set; }
 
         #endregion
 
@@ -122,15 +124,14 @@ namespace SqaleUi
         {
             if (this.Editor == null)
             {
-                this.Model = new SqaleEditorControlViewModel(configuration, project, vshelper);
-                this.Model.CreateNewProject(string.Empty, configuration, project, vshelper);
-                this.Editor = new SqaleEditorControl(this.Model);                
+                this.Model = new SqaleGridVmVs(project, new SonarRestService(new JsonSonarConnector()), configuration);
+                this.Editor = new SqaleGridVs(this.Model);                
             }
 
             return this.Editor;
         }
 
-        public SqaleEditorControlViewModel Model { get; set; }
+        public SqaleGridVmVs Model { get; set; }
 
         /// <summary>
         /// The get version.
