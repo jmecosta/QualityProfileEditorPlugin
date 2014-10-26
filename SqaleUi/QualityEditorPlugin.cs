@@ -18,6 +18,7 @@ namespace SqaleUi
     using System.ComponentModel.Composition;
     using System.Reflection;
     using System.Windows.Controls;
+    using System.Windows.Media;
 
     using ExtensionTypes;
 
@@ -54,6 +55,15 @@ namespace SqaleUi
         public string GetAssemblyPath()
         {
             return Assembly.GetExecutingAssembly().Location;
+        }
+
+        public void UpdateTheme(Color backgroundColor, Color foregroundColor)
+        {
+            if (this.Editor != null)
+            {
+                this.Model.ForeGroundColor = foregroundColor;
+                this.Model.BackgroundColor = backgroundColor;
+            }
         }
 
         /// <summary>

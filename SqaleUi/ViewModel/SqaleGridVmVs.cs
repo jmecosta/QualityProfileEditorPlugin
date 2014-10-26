@@ -19,6 +19,7 @@ namespace SqaleUi.ViewModel
     using System.Windows.Data;
     using System.Windows.Forms;
     using System.Windows.Input;
+    using System.Windows.Media;
 
     using ExtensionTypes;
 
@@ -127,11 +128,24 @@ namespace SqaleUi.ViewModel
             this.ExportSaqleModelCommand = new RelayCommand(this.ExecuteExportSaqleModelCommand, () => this.CanExportSaqleModelCommand);
 
             this.InitProfiles();
+
+            this.BackgroundColor = Colors.Black;
+            this.ForeGroundColor = Colors.White;
         }
 
         #endregion
 
         #region Public Properties
+
+        /// <summary>
+        /// Gets or sets the background color.
+        /// </summary>
+        public Color BackgroundColor { get; set; }
+
+        /// <summary>
+        /// Gets or sets the fore ground color.
+        /// </summary>
+        public Color ForeGroundColor { get; set; }
 
         /// <summary>
         ///     Gets or sets the add new rule command.
