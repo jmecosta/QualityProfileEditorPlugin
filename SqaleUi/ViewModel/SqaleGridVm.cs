@@ -562,7 +562,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     Gets or sets the v shelper.
         /// </summary>
-        public IVsEnvironmentHelper VShelper { get; set; }
+        public IConfigurationHelper VShelper { get; set; }
 
         #endregion
 

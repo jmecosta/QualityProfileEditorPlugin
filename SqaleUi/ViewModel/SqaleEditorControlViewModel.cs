@@ -71,7 +71,7 @@ namespace SqaleUi.ViewModel
             this.Tabs.CollectionChanged += TabsHaveChanged;
 
             this.RestService = new SonarRestService(new JsonSonarConnector());
-            this.VsHelper = new VsHelper();
+            this.VsHelper = new ConfigurationHelper();
             this.Project = null;
             this.ConnectedToServer = false;
 
@@ -80,7 +80,7 @@ namespace SqaleUi.ViewModel
 
         public ISonarRestService RestService { get; set; }
 
-        public SqaleEditorControlViewModel(ISonarConfiguration configuration, Resource project, IVsEnvironmentHelper vshelper)
+        public SqaleEditorControlViewModel(ISonarConfiguration configuration, Resource project, IConfigurationHelper vshelper)
         {
             this.Tabs = new ObservableCollection<SqaleGridVm>();
             this.InitCommanding();
@@ -422,7 +422,7 @@ namespace SqaleUi.ViewModel
 
         }
 
-        public void CreateNewProject(string fileName, ISonarConfiguration configuration, Resource resource, IVsEnvironmentHelper vshelper)
+        public void CreateNewProject(string fileName, ISonarConfiguration configuration, Resource resource, IConfigurationHelper vshelper)
         {
             var project = new SqaleGridVm(this, new SqaleManager())
                               {
@@ -535,13 +535,13 @@ namespace SqaleUi.ViewModel
         #endregion
 
 
-        public IVsEnvironmentHelper VsHelper { get; set; }
+        public IConfigurationHelper VsHelper { get; set; }
 
         public Resource Project { get; set; }
 
         public ISonarConfiguration Configuration { get; set; }
 
-        public void UpdateConfiguration(ISonarConfiguration configuration, Resource project, IVsEnvironmentHelper vshelper)
+        public void UpdateConfiguration(ISonarConfiguration configuration, Resource project, IConfigurationHelper vshelper)
         {
             this.Configuration = configuration;
             this.Project = project;
