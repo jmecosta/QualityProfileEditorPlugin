@@ -1,6 +1,6 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SendItemToWorkAreaMenu.cs" company="Copyright © 2014 Tekla Corporation. Tekla is a Trimble Company">
-//     Copyright (C) 2013 [Jorge Costa, Jorge.Costa@tekla.com]
+// <copyright file="SendItemToWorkAreaMenu.cs" company="Copyright © 2014 jmecsoftware">
+//     Copyright (C) 2014 [jmecsoftware, jmecsoftware2014@tekla.com]
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
