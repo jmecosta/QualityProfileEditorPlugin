@@ -257,7 +257,10 @@ namespace ExtensionHelpers
 
         public void OpenResourceInVisualStudio(string workfolder, string filename, int line, string editorCommandExec = "notepad")
         {
-            throw new NotImplementedException();
+        }
+
+        public void OpenResourceInVisualStudio(string filename, int line, string editorCommandExec = "notepad")
+        {
         }
 
         /// <summary>
@@ -344,6 +347,11 @@ namespace ExtensionHelpers
         public string ReadSavedOption(string category, string page, string item)
         {
             return string.Empty;
+        }
+
+        public void ClearDiffFile(string localFileName, string serverFileName)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -478,19 +486,6 @@ namespace ExtensionHelpers
         /// The url.
         /// </param>
         public void NavigateToResource(string url)
-        {
-        }
-
-        /// <summary>
-        /// The open resource in visual studio.
-        /// </summary>
-        /// <param name="filename">
-        /// The filename.
-        /// </param>
-        /// <param name="line">
-        /// The line.
-        /// </param>
-        public void OpenResourceInVisualStudio(string filename, int line)
         {
         }
 
