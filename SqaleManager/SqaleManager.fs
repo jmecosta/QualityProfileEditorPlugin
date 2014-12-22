@@ -109,7 +109,7 @@ type SqaleManager() =
         try
             let profile = RulesXmlOldType.Parse(File.ReadAllText(fileToRead))
 
-            for rule in profile.GetRules() do
+            for rule in profile.Rules do
                 let createdRule = new Rule()
                 createdRule.EnableSetDeafaults <- false
                 createdRule.Repo <- repo
@@ -134,7 +134,7 @@ type SqaleManager() =
         | ex ->
             let profile = RulesXmlNewType.Parse(File.ReadAllText(fileToRead))
 
-            for rule in profile.GetRules() do
+            for rule in profile.Rules do
                 let createdRule = new Rule()
                 createdRule.EnableSetDeafaults <- false
                 createdRule.Repo <- repo
@@ -248,7 +248,7 @@ type SqaleManager() =
         let profile = ProfileDefinition.Parse(File.ReadAllText(file))
         model.language <- profile.Language
         model.profileName <- profile.Name
-        for rule in profile.Rules.GetRules() do
+        for rule in profile.Rules do
             if not(model.GetProfile().IsRulePresent(rule.Key)) then
                 let ruletoUpdate = new Rule()
                 ruletoUpdate.Severity <- (Enum.Parse(typeof<Severity>, rule.Priority) :?> Severity)
@@ -264,7 +264,7 @@ type SqaleManager() =
         let profile = ProfileDefinition.Parse(File.ReadAllText(file))
         model.language <- profile.Language
         model.profileName <- profile.Name
-        for rule in profile.Rules.GetRules() do
+        for rule in profile.Rules do
             if model.GetProfile().IsRulePresent(rule.RepositoryKey + ":"+ rule.Key) then
                 let ruletoUpdate = model.GetProfile().GetRule(rule.RepositoryKey + ":"+ rule.Key)
                 ruletoUpdate.Severity <- (Enum.Parse(typeof<Severity>, rule.Priority) :?> Severity)
@@ -349,7 +349,7 @@ type SqaleManager() =
         let dskmodel = CxxProjectDefinition.Parse(File.ReadAllText(fileToRead))
 
         importLog.Clear()
-        for item in dskmodel.Rules.GetRules() do
+        for item in dskmodel.Rules do
             let entryLog = new ImportLogEntry()
             let info = item.XElement :> IXmlLineInfo
             entryLog.message <- item.XElement.Value
@@ -394,7 +394,7 @@ type SqaleManager() =
                 if ruledef.Key.EndsWith(rule.Key, true, Globalization.CultureInfo.InvariantCulture) then
                     createdRule.Description <- ruledef.Description
                     createdRule.Name <- ruledef.Name
-                    createdRule.ConfigKey <- ruledef.ConfigKey                    
+                    createdRule.ConfigKey <- ruledef.ConfigKey
 
             model.CreateRuleInProfile(createdRule) |> ignore
 

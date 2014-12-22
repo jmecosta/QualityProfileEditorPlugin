@@ -202,7 +202,7 @@ type RootConfigurationPropsChecksTests() =
         model.GetCharacteristics().Length |> should equal 8
         manager.WriteSqaleModelToFile(model, "cxx-model.xml")
 
-    //[<Test>]
+    [<Test>]
     member test.``Get C++ Profile`` () = 
         let manager = new SqaleManager()
         let model = manager.GetDefaultSqaleModel()

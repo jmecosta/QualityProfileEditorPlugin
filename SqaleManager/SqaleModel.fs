@@ -53,25 +53,25 @@ type SqaleModel() =
     member x.LoadSqaleModelFromString(str : string) =
         let sqale = SqaleModelType.Parse(str)
 
-        for chk in sqale.GetChcs() do
+        for chk in sqale.Chcs do
             let char = x.CreateAChar(EnumHelper.asEnum<Category>(chk.Key).Value, chk.Name)            
 
-            for subchk in chk.GetChcs() do
+            for subchk in chk.Chcs do
                 char.CreateSubChar(EnumHelper.asEnum<SubCategory>(subchk.Key).Value, subchk.Name)
 
-                for chc in subchk.GetChcs() do
+                for chc in subchk.Chcs do
                     let rule = new Rule()
                     rule.Repo <- chc.RuleRepo
                     rule.Key <- chc.RuleKey
                     rule.ConfigKey <- chc.RuleKey + "@" + chc.RuleRepo
                     rule.EnableSetDeafaults <- false
 
-                    for prop in chc.GetProps() do
+                    for prop in chc.Props do
                         if prop.Key.Equals("remediationFactor") then
                             rule.Category <- (EnumHelper.asEnum<Category>(chk.Key)).Value
                             rule.Subcategory <- (EnumHelper.asEnum<SubCategory>(subchk.Key)).Value
                             try
-                                rule.RemediationFactorVal <- Int32.Parse(prop.Val)
+                                rule.RemediationFactorVal <- Int32.Parse(prop.Val.Value)
                             with
                             | ex -> ()
                             try
@@ -91,25 +91,25 @@ type SqaleModel() =
     member x.LoadSqaleModelFromFile(path : string) =
         let sqale = SqaleModelType.Parse(File.ReadAllText(path))
 
-        for chk in sqale.GetChcs() do
+        for chk in sqale.Chcs do
             let char = x.CreateAChar(EnumHelper.asEnum<Category>(chk.Key).Value, chk.Name)            
 
-            for subchk in chk.GetChcs() do
+            for subchk in chk.Chcs do
                 char.CreateSubChar(EnumHelper.asEnum<SubCategory>(subchk.Key).Value, subchk.Name) |> ignore
 
-                for chc in subchk.GetChcs() do
+                for chc in subchk.Chcs do
                     let rule = new Rule()
                     rule.Repo <- chc.RuleRepo
                     rule.Key <- chc.RuleRepo + ":" + chc.RuleKey
                     rule.ConfigKey <- chc.RuleKey + "@" + chc.RuleRepo
                     rule.EnableSetDeafaults <- false
 
-                    for prop in chc.GetProps() do
+                    for prop in chc.Props do
                         if prop.Key.Equals("remediationFactor") then
                             rule.Category <- (EnumHelper.asEnum<Category>(chk.Key)).Value
                             rule.Subcategory <- (EnumHelper.asEnum<SubCategory>(subchk.Key)).Value
                             try
-                                rule.RemediationFactorVal <- Int32.Parse(prop.Val)
+                                rule.RemediationFactorVal <- Int32.Parse(prop.Val.Value)
                             with
                             | ex -> ()
                             try
@@ -125,7 +125,7 @@ type SqaleModel() =
 
                         if prop.Key.Equals("offset") then
                             try
-                                rule.RemediationOffsetVal <- Int32.Parse(prop.Val)
+                                rule.RemediationOffsetVal <- Int32.Parse(prop.Val.Value)
                             with
                             | ex -> ()
                             try
