@@ -177,7 +177,6 @@
             $(OutputPath)UserCredentialsDialog.dll;
             $(OutputPath)VSSonarPlugins.dll;
             $(OutputPath)FSharp.Core.dll;
-            $(OutputPath)PropertyChanged.dll
     </PackageFiles>
   </PropertyGroup>
   <Import Project="$(MSBuildFolder)\CreatePackage.targets" />
