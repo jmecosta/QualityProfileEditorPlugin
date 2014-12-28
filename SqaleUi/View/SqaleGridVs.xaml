@@ -126,7 +126,7 @@
                       Margin="0, 0, 0, 0"
                       Style="{DynamicResource VirtualisedMetroComboBox}"
                       TextSearch.TextPath="Name"
-                      controls:TextboxHelper.Watermark="Quality Profile"
+                      controls:TextBoxHelper.Watermark="Quality Profile"
                       IsEditable="True"
                       SelectedItem="{Binding SelectedProfile}"
                       ItemsSource="{Binding QualityProfilesForProject}"
