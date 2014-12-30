@@ -19,6 +19,7 @@ namespace SqaleUi
     using System.Reflection;
     using System.Windows.Controls;
     using System.Windows.Media;
+    using System.Collections.Generic;
 
     using ExtensionTypes;
 
@@ -28,6 +29,8 @@ namespace SqaleUi
     using SqaleUi.ViewModel;
 
     using VSSonarPlugins;
+    using System.Security.Permissions;
+    using System.Runtime.Serialization;
 
     /// <summary>
     /// The quality editor plugin.
@@ -35,6 +38,17 @@ namespace SqaleUi
     [Export(typeof(IPlugin))]
     public class QualityEditorPlugin : IMenuCommandPlugin
     {
+        public QualityEditorPlugin()
+        {
+            this.Desc = new PluginDescription
+            {
+                Description = "Quality Editor Plugin",
+                Name = "QualityEditorPlugin",
+                SupportedExtensions = "*",
+                Version = this.GetVersion(),
+                AssemblyPath = this.GetAssemblyPath()
+            };
+        }
         #region Public Properties
 
         /// <summary>
@@ -45,6 +59,43 @@ namespace SqaleUi
         #endregion
 
         #region Public Methods and Operators
+
+        public IPluginsOptions GetPluginControlOptions(ISonarConfiguration configuration)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// The generate token id.
+        /// </summary>
+        /// <param name="configuration">
+        /// The configuration.
+        /// </param>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
+        public string GenerateTokenId(ISonarConfiguration configuration)
+        {
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// The get licenses.
+        /// </summary>
+        /// <param name="configuration">
+        /// The configuration.
+        /// </param>
+        /// <returns>
+        /// The
+        ///     <see>
+        ///         <cref>Dictionary</cref>
+        ///     </see>
+        ///     .
+        /// </returns>
+        public Dictionary<string, VsLicense> GetLicenses(ISonarConfiguration configuration)
+        {
+            return new Dictionary<string, VsLicense>();
+        }
 
         /// <summary>
         /// The get assembly path.
@@ -86,33 +137,9 @@ namespace SqaleUi
         /// <returns>
         /// The <see cref="PluginDescription"/>.
         /// </returns>
-        public PluginDescription GetPluginDescription(IConfigurationHelper vsinter)
+        public PluginDescription GetPluginDescription()
         {
-            string isEnabled = vsinter.ReadOptionFromApplicationData(GlobalIds.PluginEnabledControlId, "QualityEditorPlugin");
-
-            var desc = new PluginDescription
-                           {
-                               Description = "Quality Editor Plugin", 
-                               Enabled = true, 
-                               Name = "QualityEditorPlugin", 
-                               SupportedExtensions = "*", 
-                               Version = this.GetVersion()
-                           };
-
-            if (string.IsNullOrEmpty(isEnabled))
-            {
-                desc.Enabled = true;
-            }
-            else if (isEnabled.Equals("true", StringComparison.CurrentCultureIgnoreCase))
-            {
-                desc.Enabled = true;
-            }
-            else
-            {
-                desc.Enabled = false;
-            }
-
-            return desc;
+            return this.Desc;
         }
 
         /// <summary>
@@ -172,5 +199,7 @@ namespace SqaleUi
         }
 
         #endregion
+
+        public PluginDescription Desc { get; set; }
     }
 }
