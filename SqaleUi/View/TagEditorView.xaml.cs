@@ -34,7 +34,7 @@ namespace SqaleUi.View
     /// <summary>
     /// Interaction logic for TagEditorView.xaml
     /// </summary>
-    public partial class TagEditorView : Window
+    public partial class TagEditorView
     {
         public TagEditorView()
         {

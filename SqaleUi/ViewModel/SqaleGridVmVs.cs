@@ -127,7 +127,7 @@ namespace SqaleUi.ViewModel
             this.CanAddNewRuleCommand = true;
             this.CanRemoveRuleCommand = false;
             this.AddNewRuleCommand = new RelayCommand(this.ExecuteAddNewRuleCommand, () => this.CanAddNewRuleCommand);
-            this.RemoveRuleCommand = new RelayCommand(this.ExecuteRemoveRuleCommand, () => this.CanRemoveRuleCommand);
+            this.RemoveRuleCommand = new RelayCommand(this.ExecuteRemoveRuleCommand);
 
             // import export
             this.CanExportSaqleModelCommand = true;

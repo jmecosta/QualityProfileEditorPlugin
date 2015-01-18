@@ -34,7 +34,7 @@ namespace SqaleUi.View
     /// <summary>
     /// Interaction logic for QualityProfileViewer.xaml
     /// </summary>
-    public partial class ProjectProfileViewer : Window
+    public partial class ProjectProfileViewer
     {
         public ProjectProfileViewer()
         {

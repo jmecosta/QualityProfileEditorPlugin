@@ -8,7 +8,7 @@
     mc:Ignorable="d"
 	x:Class="SqaleUi.CreateRuleWindow"
 	x:Name="Window"
-	Title="CreateRuleWindow">
+	Title="Rule Creator Dialog">
 
 	<Window.Resources>
 

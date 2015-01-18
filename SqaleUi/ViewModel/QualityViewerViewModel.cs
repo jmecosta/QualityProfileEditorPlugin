@@ -139,14 +139,7 @@ namespace SqaleUi.ViewModel
             set
             {
                 this.selectedProfile = value;
-                if (value == null)
-                {
-                    this.CanExecuteImportProfileCommand = false;
-                }
-                else
-                {
-                    this.CanExecuteImportProfileCommand = true;
-                }
+                this.CanExecuteImportProfileCommand = value != null;
             }
         }
 
@@ -208,10 +201,7 @@ namespace SqaleUi.ViewModel
             this.Model.MergeRulesIntoProject(this.SelectedProfile.Rules);
             this.Model.SetConnectedToServer(true);
 
-            if (window != null)
-            {
-                window.Hide();
-            }
+            window?.Hide();
         }
 
         /// <summary>
@@ -239,7 +229,7 @@ namespace SqaleUi.ViewModel
                     {
                         foreach (Profile profile1 in profiles)
                         {
-                            if (profile1.Name.Equals(profile1.Name) && profile1.Language.Equals(profile.Language))
+                            if (profile1.Name.Equals(profile.Name) && profile1.Language.Equals(profile.Language))
                             {
                                 profile.Key = profile1.Key;
                             }
@@ -258,14 +248,8 @@ namespace SqaleUi.ViewModel
         /// </summary>
         private void StartCommand()
         {
-            try
-            {
-                this.ImportProfileCommand = new RelayCommand<Window>(this.ExecuteImportProfileCommand);
-                this.RefreshDataCommand = new RelayCommand(this.ExecuteRefreshDataCommand);
-            }
-            catch (Exception)
-            {
-            }
+            this.ImportProfileCommand = new RelayCommand<Window>(this.ExecuteImportProfileCommand);
+            this.RefreshDataCommand = new RelayCommand(this.ExecuteRefreshDataCommand);
         }
 
         #endregion

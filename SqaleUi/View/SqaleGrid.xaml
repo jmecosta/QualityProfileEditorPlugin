@@ -111,7 +111,7 @@
             <Button Margin="0,0,0,0" ToolTip="Create New Rule" Content="{DynamicResource AddSign}"
                     Background="Transparent" Command="{Binding AddNewRuleCommand}" />
             <Button Margin="0,0,5,0" ToolTip="Remove Selected Rule" Content="{DynamicResource RemoveSign}"
-                    Background="Transparent" Command="{Binding RemoveRuleCommand}" />
+                    Background="Transparent" Command="{Binding RemoveRuleCommand}" IsEnabled="{Binding CanRemoveRuleCommand}" />
 
             <Button Margin="0,0,0,0" ToolTip="Import Xml Rule Definition" Content="{DynamicResource ImportXmlProfile}"
                     Background="Transparent" Command="{Binding ImportXmlProfileCommand}" />
@@ -123,10 +123,10 @@
 
             <Button Margin="0,0,0,0" ToolTip="Modify Server Profile"
                     Content="{DynamicResource ImportServerQualityProfile}" Background="Transparent"
-                    Command="{Binding ImportServerQualityProfileCommand}" />
+                    Command="{Binding ImportServerQualityProfileCommand}" IsEnabled="{Binding IsConnected}" />
             <Button Margin="0,0,5,0" ToolTip="Modify Profile For Project"
                     Content="{DynamicResource ImportQualityProfileFromProject}" Background="Transparent"
-                    Command="{Binding ImportServerQualityProfileFromProjectCommand}" />
+                    Command="{Binding ImportServerQualityProfileFromProjectCommand}" IsEnabled="{Binding IsConnected}" />
 
             <Button Margin="0,0,0,0" ToolTip="Export Sqale Model" Content="{DynamicResource ExportSqaleModel}"
                     Background="Transparent" Command="{Binding ExportSaqleModelCommand}" />
@@ -766,7 +766,7 @@
                 <TextBlock TextWrapping="Wrap" Text="Profile: " HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Border>
             <Border Grid.Column="3">
-                <TextBlock TextWrapping="Wrap" Text="{Binding SelectedProfile}" HorizontalAlignment="Center"
+                <TextBlock TextWrapping="Wrap" Text="{Binding SelectedProfile.Name}" HorizontalAlignment="Center"
                            VerticalAlignment="Center" />
             </Border>
         </Grid>

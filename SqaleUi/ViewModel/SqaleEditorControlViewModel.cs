@@ -23,12 +23,15 @@ namespace SqaleUi.ViewModel
     using System.Windows;
     using System.Windows.Forms;
     using System.Windows.Input;
+    using System.Runtime;
 
     using ExtensionHelpers;
 
     using ExtensionTypes;
 
     using GalaSoft.MvvmLight.Command;
+
+    using MahApps.Metro.Controls;
 
     using PropertyChanged;
 
@@ -76,6 +79,8 @@ namespace SqaleUi.ViewModel
             this.ConnectedToServer = false;
 
             this.InitCommanding();
+
+            this.StatusMessage = "OffLine -> Press Icon on the right to connect to Server";
         }
 
         public ISonarRestService RestService { get; set; }
@@ -99,46 +104,108 @@ namespace SqaleUi.ViewModel
             this.CanExecuteSaveAsProjectCommand = false;
             this.CanExecuteCloseProjectCommand = false;
 
-            this.NewProjectCommand = new RelayCommand(this.ExecuteNewProjectCommand, () => this.CanExecuteNewProjectCommand);
-            this.OpenProjectCommand = new RelayCommand(this.ExecuteOpenProjectCommand, () => this.CanExecuteOpenProjectCommand);
-            this.SaveProjectCommand = new RelayCommand(this.ExecuteSaveProjectCommand, () => this.CanExecuteSaveProjectCommand);
-            this.SaveAsProjectCommand = new RelayCommand(this.ExecuteSaveAsProjectCommand, () => this.CanExecuteSaveAsProjectCommand);
-            this.CloseProjectCommand = new RelayCommand(this.ExecuteCloseProjectCommand, () => this.CanExecuteCloseProjectCommand);
+            this.NewProjectCommand = new RelayCommand(this.ExecuteNewProjectCommand);
+            this.OpenProjectCommand = new RelayCommand(this.ExecuteOpenProjectCommand);
+            this.SaveProjectCommand = new RelayCommand(this.ExecuteSaveProjectCommand);
+            this.SaveAsProjectCommand = new RelayCommand(this.ExecuteSaveAsProjectCommand);
+            this.CloseProjectCommand = new RelayCommand(this.ExecuteCloseProjectCommand);
 
             this.CreateWorkAreaCommand = new RelayCommand<object>(item => this.CreateNewWorkArea(false, !this.Tabs[0].ConnectedToSonarServer));
             this.DeleteWorkAreaCommand = new RelayCommand(this.RemoveCurrentSelectedTab);
+
+            this.ConnectCommand = new RelayCommand(this.OnConnectCommand);
+            this.ConnectedToServerCommand = new RelayCommand(this.OnConnectedToServerCommand);
+            this.DisconnectToServerCommand = new RelayCommand(this.OnDisconnectToServerCommand);
+            this.SelectedNewServerCommand = new RelayCommand(this.OnSelectedNewServerCommand);
 
 
             this.OpenVsWindow = new RelayCommand(this.OnOpenVsWindow);
         }
 
-        private void OnOpenVsWindow()
+        private void OnSelectedNewServerCommand()
         {
-
-            bool userCancel = true;
-            bool resetServer = false;
-            while (userCancel && !this.CreateSonarConnection(resetServer))
+            this.ServerAddress = PromptUserData.Prompt("Server Address", "Insert Server Address", "http://localhost:9000");
+            if (!string.IsNullOrEmpty(this.ServerAddress))
             {
-                DialogResult result = MessageBox.Show("Cannot Connect, try again?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                this.VsHelper.WriteOptionInApplicationData("QualityEditorPlugin", "ServerAddress", this.ServerAddress);
+            }            
+        }
 
-                userCancel = result == DialogResult.Yes;
-                resetServer = true;
+        private void OnDisconnectToServerCommand()
+        {
+            this.Configuration = null;
+            this.IsConnected = false;
+            this.StatusMessage = "OffLine -> Press Icon on the right to connect to Server";
+        }
+
+        private void OnConnectedToServerCommand()
+        {
+            if (!this.CreateSonarConnection(false))
+            {
+                MessageBox.Show("Cannot Authenticate against: " + this.ServerAddress + " check you settings or change server address");
+                this.Configuration = null;
+                this.IsConnected = false;
+                return;
             }
 
-            List<Resource> projects =
-                this.RestService.GetProjectsList(this.Configuration);
+            if (this.ServerAddress == null)
+            {
+                MessageBox.Show("Server address not Set");
+                return;
+            }
 
-            var window = new Window();
-            var model = new SqaleGridVmVs(projects[0], this.RestService, this.Configuration);
+            this.IsConnected = true;
+            this.StatusMessage = "OnLine";
+        }
+
+        private void OnConnectCommand()
+        {
+            if (this.IsConnected)
+            {
+                this.OnConnectedToServerCommand();
+                foreach (var tab in this.Tabs)
+                {
+                    tab.IsConnected = this.IsConnected;
+                    tab.Configuration = this.Configuration;
+                }
+            }
+            else
+            {                
+                this.OnDisconnectToServerCommand();
+            }
+        }
+
+        public bool IsConnected { get; set; }
+
+        public RelayCommand ConnectCommand { get; set; }
+
+        public RelayCommand SelectedNewServerCommand { get; set; }
+
+        public RelayCommand DisconnectToServerCommand { get; set; }
+
+        public ICommand ConnectedToServerCommand { get; set; }
+
+        private void OnOpenVsWindow()
+        {
+            var modelProject = new ProjectViewModel(this.RestService, this.Configuration);
+            ProjectViewer projectSelector = new ProjectViewer(modelProject);
+            projectSelector.ShowDialog();
+
+            var window = new MetroWindow();
+            window.Height = 600;
+            window.Width = 800;
+            window.Title = "Project Quality Editor";
+            var model = new SqaleGridVmVs(modelProject.SelectedProject, this.RestService, this.Configuration);
             var grid = new SqaleGridVs(model);
             window.Content = grid;
-            window.SizeToContent = SizeToContent.WidthAndHeight;
             window.ShowDialog();
         }
 
         #endregion
 
         #region Public Properties
+
+        public string StatusMessage { get; set; }
 
         /// <summary>
         ///     Gets a value indicating whether can execute new project command.
@@ -186,6 +253,7 @@ namespace SqaleUi.ViewModel
         /// </summary>
         public bool IsRemoveTabEnabled { get; set; }
 
+        public RelayCommand EstablishConnectionCommand { get; private set; }
 
         /// <summary>
         ///     Gets the new project command.

@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SqaleEditorControl.xaml.cs" company="Copyright © 2014 jmecsoftware">
+// <copyright file="projectprofileviewer.xaml.cs" company="Copyright © 2014 jmecsoftware">
 //     Copyright (C) 2014 [jmecsoftware, jmecsoftware2014@tekla.com]
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -14,30 +14,22 @@
 
 namespace SqaleUi.View
 {
-    using System.Windows.Controls;
-
-    using ExtensionTypes;
-
     using SqaleUi.ViewModel;
 
-    using VSSonarPlugins;
-
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    ///     Interaction logic for QualityProfileViewer.xaml
     /// </summary>
-    public partial class SqaleEditorControl : UserControl
+    public partial class ProjectViewer
     {
-
-        public SqaleEditorControl()
+        public ProjectViewer()
         {
             InitializeComponent();
-
-            this.DataContext = new SqaleEditorControlViewModel();
         }
 
-        public SqaleEditorControl(SqaleEditorControlViewModel model)
+        public ProjectViewer(ProjectViewModel model)
         {
             InitializeComponent();
+
             this.DataContext = model;
         }
     }

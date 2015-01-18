@@ -19,7 +19,7 @@ namespace SqaleUi.View
     /// <summary>
 	/// Interaction logic for PromptUserData.xaml
 	/// </summary>
-    public partial class PromptUserData : Window
+    public partial class PromptUserData
     {
         public enum InputType
         {
@@ -33,18 +33,18 @@ namespace SqaleUi.View
         {
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(PromptDialog_Loaded);
-            txtQuestion.Text = question;
+            this.TxtQuestion.Text = question;
             Title = title;
-            txtResponse.Text = defaultValue;
+            this.TxtResponse.Text = defaultValue;
             _inputType = inputType;
             if (_inputType == InputType.Password)
-                txtResponse.Visibility = Visibility.Collapsed;
+                this.TxtResponse.Visibility = Visibility.Collapsed;
 
         }
 
         void PromptDialog_Loaded(object sender, RoutedEventArgs e)
         {
-                txtResponse.Focus();
+                this.TxtResponse.Focus();
         }
 
         public static string Prompt(string question, string title, string defaultValue = "", InputType inputType = InputType.Text)
@@ -60,7 +60,7 @@ namespace SqaleUi.View
         {
             get
             {
-                    return txtResponse.Text;
+                    return this.TxtResponse.Text;
             }
         }
 

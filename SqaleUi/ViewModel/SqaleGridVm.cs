@@ -165,7 +165,7 @@ namespace SqaleUi.ViewModel
             this.SendToWorkAreaCommand = new RelayCommand(this.ExecuteSendToWorkAreaCommand, () => this.CanSendToWorkAreaCommand);
             this.SendToProject = new RelayCommand(this.ExecuteSendToProject, () => this.CanSendToProject);
             this.AddNewRuleCommand = new RelayCommand(this.ExecuteAddNewRuleCommand, () => this.CanAddNewRuleCommand);
-            this.RemoveRuleCommand = new RelayCommand(this.ExecuteRemoveRuleCommand, () => this.CanRemoveRuleCommand);
+            this.RemoveRuleCommand = new RelayCommand(this.ExecuteRemoveRuleCommand);
 
             // import export
             this.CanImportXmlProfileCommand = true;
@@ -569,6 +569,8 @@ namespace SqaleUi.ViewModel
         ///     Gets or sets the v shelper.
         /// </summary>
         public IConfigurationHelper VShelper { get; set; }
+
+        public bool IsConnected { get; set; }
 
         #endregion
 
@@ -1311,11 +1313,6 @@ namespace SqaleUi.ViewModel
 
             if (this.Configuration == null)
             {
-                this.mainModel.ConnectToSonar(this);
-            }
-
-            if (this.Configuration == null)
-            {
                 this.CanImportFromSonarServer = true;
                 return;
             }
@@ -1350,11 +1347,6 @@ namespace SqaleUi.ViewModel
             }
 
             this.CanImportFromSonarServer = false;
-
-            if (this.Configuration == null)
-            {
-                this.mainModel.ConnectToSonar(this);
-            }
 
             if (this.Configuration == null)
             {

@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ImportLogView.xaml.cs" company="Copyright © 2014 jmecsoftware">
+// <copyright file="SqaleEditorControl.xaml.cs" company="Copyright © 2014 jmecsoftware">
 //     Copyright (C) 2014 [jmecsoftware, jmecsoftware2014@tekla.com]
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -14,19 +14,24 @@
 
 namespace SqaleUi.View
 {
-    using System.Windows;
-
-    using SqaleUi.ViewModel;
+    using ViewModel;
 
     /// <summary>
-    ///     Interaction logic for ImportLogView.xaml
+    /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class ImportLogView
+    public partial class SqaleEditorWindow
     {
-        public ImportLogView(ImportLogViewModel model)
+
+        public SqaleEditorWindow()
         {
             InitializeComponent();
 
+            this.DataContext = new SqaleEditorControlViewModel();
+        }
+
+        public SqaleEditorWindow(SqaleEditorControlViewModel model)
+        {
+            InitializeComponent();
             this.DataContext = model;
         }
     }
