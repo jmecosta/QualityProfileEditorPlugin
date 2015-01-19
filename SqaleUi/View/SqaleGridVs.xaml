@@ -103,11 +103,11 @@
     </UserControl.Resources>
 
     <UserControl.Background>
-        <SolidColorBrush Color="{Binding BackgroundColor}"/>
+        <SolidColorBrush Color="{Binding BackGroundColor, FallbackValue=Black}"/>
     </UserControl.Background>
 
     <UserControl.Foreground>
-        <SolidColorBrush Color="{Binding ForeGroundColor}"/>
+        <SolidColorBrush Color="{Binding ForeGroundColor, FallbackValue=White}"/>
     </UserControl.Foreground>
     
     <UserControl.DataContext>
@@ -134,12 +134,12 @@
                       ItemTemplate="{DynamicResource ProjectSelectionComboBoxDataTemplate}"
                       />
             <Button Margin="5,0,0,0" ToolTip="Create New Rule" Content="{DynamicResource AddSign}"
-                    Command="{Binding AddNewRuleCommand}" />
+                    Command="{Binding AddNewRuleCommand}" IsEnabled="{Binding CanAddNewRuleCommand}"/>
             <Button Margin="0,0,5,0" ToolTip="Remove Selected Rule" Content="{DynamicResource RemoveSign}"
                     Command="{Binding RemoveRuleCommand}" />
 
             <Button Margin="0,0,0,0" ToolTip="Export Sqale Model" Content="{DynamicResource ExportSqaleModel}"
-                    Command="{Binding ExportSaqleModelCommand}" />
+                    Command="{Binding ExportSaqleModelCommand}" IsEnabled="{Binding CanExportSaqleModelCommand}"/>
             <TextBlock Margin="2">
                 <Hyperlink
                     Command="{Binding DataContext.FilterClearAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">

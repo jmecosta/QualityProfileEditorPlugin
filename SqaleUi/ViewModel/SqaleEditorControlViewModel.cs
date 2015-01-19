@@ -24,6 +24,7 @@ namespace SqaleUi.ViewModel
     using System.Windows.Forms;
     using System.Windows.Input;
     using System.Runtime;
+    using System.Windows.Media;
 
     using ExtensionHelpers;
 
@@ -81,6 +82,8 @@ namespace SqaleUi.ViewModel
             this.InitCommanding();
 
             this.StatusMessage = "OffLine -> Press Icon on the right to connect to Server";
+            this.BackGroundColor = Colors.Black;
+            this.ForeGroundColor = Colors.White;
         }
 
         public ISonarRestService RestService { get; set; }
@@ -196,6 +199,7 @@ namespace SqaleUi.ViewModel
             window.Width = 800;
             window.Title = "Project Quality Editor";
             var model = new SqaleGridVmVs(modelProject.SelectedProject, this.RestService, this.Configuration);
+            model.UpdateColors(this.BackGroundColor, this.ForeGroundColor);
             var grid = new SqaleGridVs(model);
             window.Content = grid;
             window.ShowDialog();
@@ -386,6 +390,9 @@ namespace SqaleUi.ViewModel
         /// <summary>
         /// The connect to sonar.
         /// </summary>
+        /// <param name="model">
+        /// The model.
+        /// </param>
         public void ConnectToSonar(ISqaleGridVm model)
         {
             bool userCancel = true;
@@ -635,5 +642,9 @@ namespace SqaleUi.ViewModel
             }
 
         }
+
+        public Color BackGroundColor { get; set; }
+
+        public Color ForeGroundColor { get; set; }
     }
 }

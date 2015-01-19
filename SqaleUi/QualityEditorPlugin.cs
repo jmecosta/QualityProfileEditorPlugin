@@ -112,8 +112,7 @@ namespace SqaleUi
         {
             if (this.Editor != null)
             {
-                this.Model.ForeGroundColor = foregroundColor;
-                this.Model.BackgroundColor = backgroundColor;
+                this.Model.UpdateColors(backgroundColor, foregroundColor);
             }
         }
 

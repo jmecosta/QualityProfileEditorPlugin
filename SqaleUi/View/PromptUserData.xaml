@@ -21,6 +21,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
+    
     <StackPanel Margin="5">
         <TextBlock Name="TxtQuestion" Margin="5" />
         <TextBox Name="TxtResponse" Margin="5" />

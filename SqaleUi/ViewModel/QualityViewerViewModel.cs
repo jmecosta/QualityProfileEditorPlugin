@@ -18,6 +18,7 @@ namespace SqaleUi.ViewModel
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Windows;
+    using System.Windows.Media;
 
     using ExtensionTypes;
 
@@ -33,7 +34,7 @@ namespace SqaleUi.ViewModel
     ///     The server project viewer view model.
     /// </summary>
     [ImplementPropertyChanged]
-    public class QualityViewerViewModel
+    public class QualityViewerViewModel : IViewModelTheme
     {
         #region Fields
 
@@ -252,6 +253,15 @@ namespace SqaleUi.ViewModel
             this.RefreshDataCommand = new RelayCommand(this.ExecuteRefreshDataCommand);
         }
 
+        public void UpdateColors(Color background, Color foreground)
+        {
+            this.BackGroundColor = background;
+            this.ForeGroundColor = foreground;
+        }
+
+        public Color BackGroundColor { get; set; }
+
+        public Color ForeGroundColor { get; set; }
         #endregion
     }
 }

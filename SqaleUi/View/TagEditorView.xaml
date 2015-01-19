@@ -35,7 +35,13 @@
     <Window.DataContext>
         <Binding Source="{StaticResource TagEditorViewModelDataSource}" />
     </Window.DataContext>
+    <Window.Background>
+        <SolidColorBrush Color="{Binding BackGroundColor}" />
+    </Window.Background>
 
+    <Window.Foreground>
+        <SolidColorBrush Color="{Binding ForeGroundColor}" />
+    </Window.Foreground>
     <Grid d:DataContext="{d:DesignData /SampleData/TagEditorViewModelSampleData.xaml}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="120*" />

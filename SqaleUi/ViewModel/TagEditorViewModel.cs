@@ -1,17 +1,11 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="tageditorviewmodel.cs" company="Copyright © 2014 jmecsoftware">
-//     Copyright (C) 2014 [jmecsoftware, jmecsoftware2014@tekla.com]
+//   Copyright (C) 2014 [jmecsoftware, jmecsoftware2014@tekla.com]
 // </copyright>
+// <summary>
+//   The tag editor view model.
+// </summary>
 // --------------------------------------------------------------------------------------------------------------------
-// This program is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
-// as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
-// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details. 
-// You should have received a copy of the GNU Lesser General Public License along with this program; if not, write to the Free
-// Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-// --------------------------------------------------------------------------------------------------------------------
-
 namespace SqaleUi.ViewModel
 {
     using System.Collections.Generic;
@@ -19,6 +13,7 @@ namespace SqaleUi.ViewModel
     using System.Linq;
     using System.Windows;
     using System.Windows.Input;
+    using System.Windows.Media;
 
     using ExtensionTypes;
 
@@ -34,7 +29,7 @@ namespace SqaleUi.ViewModel
     ///     The tag editor view model.
     /// </summary>
     [ImplementPropertyChanged]
-    public class TagEditorViewModel
+    public class TagEditorViewModel : IViewModelTheme
     {
         #region Fields
 
@@ -54,12 +49,12 @@ namespace SqaleUi.ViewModel
         private readonly ISonarRestService service;
 
         /// <summary>
-        /// The selected tag in rule.
+        ///     The selected tag in rule.
         /// </summary>
         private string selectedTagInRule;
 
         /// <summary>
-        /// The selected tag in server.
+        ///     The selected tag in server.
         /// </summary>
         private string selectedTagInServer;
 
@@ -139,7 +134,7 @@ namespace SqaleUi.ViewModel
         public bool CanExecuteRefreshTags { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether can execute remove selected.
+        ///     Gets or sets a value indicating whether can execute remove selected.
         /// </summary>
         public bool CanExecuteRemoveSelected { get; set; }
 
@@ -149,12 +144,12 @@ namespace SqaleUi.ViewModel
         public ICommand RefreshTagsCommand { get; set; }
 
         /// <summary>
-        /// Gets or sets the remove selected command.
+        ///     Gets or sets the remove selected command.
         /// </summary>
         public RelayCommand RemoveSelectedCommand { get; set; }
 
         /// <summary>
-        /// Gets or sets the selected tag in rule.
+        ///     Gets or sets the selected tag in rule.
         /// </summary>
         public string SelectedTagInRule
         {
@@ -178,7 +173,7 @@ namespace SqaleUi.ViewModel
         }
 
         /// <summary>
-        /// Gets or sets the selected tag in server.
+        ///     Gets or sets the selected tag in server.
         /// </summary>
         public string SelectedTagInServer
         {
@@ -212,7 +207,7 @@ namespace SqaleUi.ViewModel
         public RelayCommand<List<string>> SelectionChangedCommand { get; private set; }
 
         /// <summary>
-        /// Gets or sets the tags in rule.
+        ///     Gets or sets the tags in rule.
         /// </summary>
         public ObservableCollection<string> TagsInRule { get; set; }
 
@@ -221,20 +216,20 @@ namespace SqaleUi.ViewModel
         #region Public Methods and Operators
 
         /// <summary>
-        /// The refresh available tags in server.
+        ///     The refresh available tags in server.
         /// </summary>
         public void RefreshAvailableTagsInServer()
         {
-            List<string> tags = this.service.GetAllTags(this.conf);
+            var tags = this.service.GetAllTags(this.conf);
             this.AvailableTags.Clear();
-            foreach (string tag in tags)
+            foreach (var tag in tags)
             {
                 this.AvailableTags.Add(tag);
             }
         }
 
         /// <summary>
-        /// The refresh tags in rule.
+        ///     The refresh tags in rule.
         /// </summary>
         public void RefreshTagsInRule()
         {
@@ -244,7 +239,7 @@ namespace SqaleUi.ViewModel
             }
 
             this.TagsInRule.Clear();
-            foreach (string tag in this.model.SelectedRule.Tags)
+            foreach (var tag in this.model.SelectedRule.Tags)
             {
                 this.TagsInRule.Add(tag);
             }
@@ -283,7 +278,7 @@ namespace SqaleUi.ViewModel
 
             var newList = new List<string>();
 
-            foreach (string tag in this.TagsInRule)
+            foreach (var tag in this.TagsInRule)
             {
                 if (tag.EndsWith(this.SelectedTagInServer))
                 {
@@ -300,7 +295,7 @@ namespace SqaleUi.ViewModel
         }
 
         /// <summary>
-        /// The execute remove selected.
+        ///     The execute remove selected.
         /// </summary>
         private void ExecuteRemoveSelected()
         {
@@ -311,7 +306,7 @@ namespace SqaleUi.ViewModel
 
             var newList = new List<string>();
 
-            foreach (string tag in this.TagsInRule)
+            foreach (var tag in this.TagsInRule)
             {
                 if (tag == null || tag.Equals(this.SelectedTagInRule))
                 {
@@ -335,7 +330,7 @@ namespace SqaleUi.ViewModel
         /// </param>
         private void SetTagsInRule(List<string> newList)
         {
-            List<string> errorMessage = this.service.UpdateTags(this.conf, this.model.SelectedRule, newList);
+            var errorMessage = this.service.UpdateTags(this.conf, this.model.SelectedRule, newList);
 
             if (errorMessage.Count == 0)
             {
@@ -346,6 +341,31 @@ namespace SqaleUi.ViewModel
                 MessageBox.Show("Error: " + errorMessage.Aggregate(this.AggregateList));
             }
         }
+
+        /// <summary>
+        /// The update colors.
+        /// </summary>
+        /// <param name="background">
+        /// The background.
+        /// </param>
+        /// <param name="foreground">
+        /// The foreground.
+        /// </param>
+        public void UpdateColors(Color background, Color foreground)
+        {
+            this.BackGroundColor = background;
+            this.ForeGroundColor = foreground;
+        }
+
+        /// <summary>
+        /// Gets or sets the back ground color.
+        /// </summary>
+        public Color BackGroundColor { get; set; }
+
+        /// <summary>
+        /// Gets or sets the fore ground color.
+        /// </summary>
+        public Color ForeGroundColor { get; set; }
 
         #endregion
     }

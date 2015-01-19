@@ -95,7 +95,13 @@
         </ResourceDictionary>
 
     </UserControl.Resources>
+    <UserControl.Background>
+        <SolidColorBrush Color="{Binding BackGroundColor, FallbackValue=Black}" />
+    </UserControl.Background>
 
+    <UserControl.Foreground>
+        <SolidColorBrush Color="{Binding ForeGroundColor, FallbackValue=White}" />
+    </UserControl.Foreground>
     <Grid x:Name="LayoutRoot">
         <Grid.RowDefinitions>
             <RowDefinition Height="25" />

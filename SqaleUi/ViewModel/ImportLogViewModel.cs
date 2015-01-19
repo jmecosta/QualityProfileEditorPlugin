@@ -20,6 +20,8 @@ using System.Threading.Tasks;
 
 namespace SqaleUi.ViewModel
 {
+    using System.Windows.Media;
+
     using PropertyChanged;
 
     using SqaleManager;
@@ -28,7 +30,7 @@ namespace SqaleUi.ViewModel
     /// The import log view model.
     /// </summary>
     [ImplementPropertyChanged]
-    public class ImportLogViewModel
+    public class ImportLogViewModel : IViewModelTheme
     {
         public ImportLogViewModel()
         {
@@ -36,5 +38,15 @@ namespace SqaleUi.ViewModel
         }
 
         public List<ImportLogEntry> ImportLog { get; set; }
+
+        public void UpdateColors(Color background, Color foreground)
+        {
+            this.BackGroundColor = background;
+            this.ForeGroundColor = foreground;
+        }
+
+        public Color BackGroundColor { get; set; }
+
+        public Color ForeGroundColor { get; set; }
     }
 }

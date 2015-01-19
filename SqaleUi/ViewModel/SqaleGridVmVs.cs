@@ -48,7 +48,7 @@ namespace SqaleUi.ViewModel
     ///     The filtering sub view model.
     /// </summary>
     [ImplementPropertyChanged]
-    public class SqaleGridVmVs : ViewModelBase, IFilterOption, IDataModel, ISqaleGridVm
+    public class SqaleGridVmVs : ViewModelBase, IFilterOption, IDataModel, ISqaleGridVm, IViewModelTheme
     {
         #region Fields
 
@@ -126,16 +126,16 @@ namespace SqaleUi.ViewModel
             // project options
             this.CanAddNewRuleCommand = true;
             this.CanRemoveRuleCommand = false;
-            this.AddNewRuleCommand = new RelayCommand(this.ExecuteAddNewRuleCommand, () => this.CanAddNewRuleCommand);
+            this.AddNewRuleCommand = new RelayCommand(this.ExecuteAddNewRuleCommand);
             this.RemoveRuleCommand = new RelayCommand(this.ExecuteRemoveRuleCommand);
 
             // import export
             this.CanExportSaqleModelCommand = true;
-            this.ExportSaqleModelCommand = new RelayCommand(this.ExecuteExportSaqleModelCommand, () => this.CanExportSaqleModelCommand);
+            this.ExportSaqleModelCommand = new RelayCommand(this.ExecuteExportSaqleModelCommand);
 
             this.InitProfiles();
 
-            this.BackgroundColor = Colors.Black;
+            this.BackGroundColor = Colors.Black;
             this.ForeGroundColor = Colors.White;
         }
 
@@ -143,14 +143,8 @@ namespace SqaleUi.ViewModel
 
         #region Public Properties
 
-        /// <summary>
-        /// Gets or sets the background color.
-        /// </summary>
-        public Color BackgroundColor { get; set; }
+        public Color BackGroundColor { get; set; }
 
-        /// <summary>
-        /// Gets or sets the fore ground color.
-        /// </summary>
         public Color ForeGroundColor { get; set; }
 
         /// <summary>
@@ -961,6 +955,7 @@ namespace SqaleUi.ViewModel
             if (this.CreateRulesModel == null)
             {
                 this.CreateRulesModel = new CreateRuleViewModel(this, this.SelectedProfile);
+                this.CreateRulesModel.UpdateColors(this.BackGroundColor, this.ForeGroundColor);
             }
 
             var rulecreationWindow = new CreateRuleWindow(this.CreateRulesModel);
@@ -1297,6 +1292,12 @@ namespace SqaleUi.ViewModel
             this.ProfileRules.Clear();
 
             this.InitProfiles();
+        }
+
+        public void UpdateColors(Color background, Color foreground)
+        {
+            this.BackGroundColor = background;
+            this.ForeGroundColor = foreground;
         }
     }
 }

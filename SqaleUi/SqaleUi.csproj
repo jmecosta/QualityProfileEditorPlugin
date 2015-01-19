@@ -113,7 +113,7 @@
     <Compile Include="helpers\BoolenInverter.cs" />
     <Compile Include="Menus\ISqaleGridVm.cs" />
     <Compile Include="ViewModel\CreateRuleViewModel.cs" />
-    <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\IViewModelTheme.cs" />
     <Compile Include="ViewModel\ProjectViewModel.cs" />
     <Compile Include="ViewModel\SqaleGridVmVs.cs" />
     <Compile Include="ViewModel\TagEditorViewModel.cs" />
@@ -130,7 +130,6 @@
     <Compile Include="Menus\IMenuItem.cs" />
     <Compile Include="helpers\ViewModelLocator.cs" />
     <Compile Include="ViewModel\CustomRuleSectorViewModel.cs" />
-    <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\CustomRuleSelector.xaml.cs">
       <DependentUpon>CustomRuleSelector.xaml</DependentUpon>
     </Compile>

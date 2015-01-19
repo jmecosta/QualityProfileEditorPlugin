@@ -41,7 +41,13 @@
 	<Window.DataContext>
 		<Binding Source="{StaticResource QualityViewerViewModelDataSource}"/>
 	</Window.DataContext>
+    <Window.Background>
+        <SolidColorBrush Color="{Binding BackGroundColor}" />
+    </Window.Background>
 
+    <Window.Foreground>
+        <SolidColorBrush Color="{Binding ForeGroundColor}" />
+    </Window.Foreground>
 	<Grid>
 		<Grid.RowDefinitions>			
             <RowDefinition Height="3*"/>

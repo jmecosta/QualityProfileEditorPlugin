@@ -18,6 +18,7 @@ namespace SqaleUi.ViewModel
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Windows;
+    using System.Windows.Media;
 
     using ExtensionTypes;
 
@@ -31,7 +32,7 @@ namespace SqaleUi.ViewModel
     ///     The create rule view model.
     /// </summary>
     [ImplementPropertyChanged]
-    public class CreateRuleViewModel
+    public class CreateRuleViewModel : IViewModelTheme
     {
         #region Fields
 
@@ -50,6 +51,8 @@ namespace SqaleUi.ViewModel
         public CreateRuleViewModel()
         {
             this.TemplateRules = new ObservableCollection<Rule>();
+            this.BackGroundColor = Colors.Black;
+            this.ForeGroundColor = Colors.White;
         }
 
         /// <summary>
@@ -60,6 +63,8 @@ namespace SqaleUi.ViewModel
         /// </param>
         public CreateRuleViewModel(ISqaleGridVm model)
         {
+            this.BackGroundColor = Colors.Black;
+            this.ForeGroundColor = Colors.White;
             this.Model = model;
             this.Profile = new Profile();
             this.TemplateRules = new ObservableCollection<Rule>();
@@ -242,6 +247,16 @@ namespace SqaleUi.ViewModel
                 }
             }
         }
+
+        public void UpdateColors(Color background, Color foreground)
+        {
+            this.BackGroundColor = background;
+            this.ForeGroundColor = foreground;
+        }
+
+        public Color BackGroundColor { get; set; }
+
+        public Color ForeGroundColor { get; set; }
 
         #endregion
     }

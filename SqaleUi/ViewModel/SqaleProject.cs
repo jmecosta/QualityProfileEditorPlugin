@@ -33,9 +33,5 @@ namespace SqaleUi
         public SqaleManager Manager { get; set; }
 
         public SqaleModel Model { get; set; }
-
-
-
-        
     }
 }

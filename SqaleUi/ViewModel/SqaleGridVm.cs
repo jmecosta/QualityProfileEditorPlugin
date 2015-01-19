@@ -1,17 +1,11 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="sqalegridvm.cs" company="Copyright © 2014 jmecsoftware">
-//     Copyright (C) 2014 [jmecsoftware, jmecsoftware2014@tekla.com]
+//   Copyright (C) 2014 [jmecsoftware, jmecsoftware2014@tekla.com]
 // </copyright>
+// <summary>
+//   The filtering sub view model.
+// </summary>
 // --------------------------------------------------------------------------------------------------------------------
-// This program is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
-// as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
-// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details. 
-// You should have received a copy of the GNU Lesser General Public License along with this program; if not, write to the Free
-// Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-// --------------------------------------------------------------------------------------------------------------------
-
 namespace SqaleUi.ViewModel
 {
     using System;
@@ -49,7 +43,7 @@ namespace SqaleUi.ViewModel
     ///     The filtering sub view model.
     /// </summary>
     [ImplementPropertyChanged]
-    public class SqaleGridVm : ViewModelBase, IFilterOption, IDataModel, ISqaleGridVm
+    public class SqaleGridVm : ViewModelBase, IFilterOption, IDataModel, ISqaleGridVm, IViewModelTheme
     {
         #region Fields
 
@@ -192,12 +186,12 @@ namespace SqaleUi.ViewModel
         #region Public Properties
 
         /// <summary>
-        /// Gets or sets the background color.
+        /// Gets or sets the back ground colour.
         /// </summary>
-        public Color BackgroundColor { get; set; }
+        public Color BackGroundColor { get; set; }
 
         /// <summary>
-        /// Gets or sets the fore ground color.
+        /// Gets or sets the fore ground colour.
         /// </summary>
         public Color ForeGroundColor { get; set; }
 
@@ -570,6 +564,9 @@ namespace SqaleUi.ViewModel
         /// </summary>
         public IConfigurationHelper VShelper { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether is connected.
+        /// </summary>
         public bool IsConnected { get; set; }
 
         #endregion
@@ -591,6 +588,21 @@ namespace SqaleUi.ViewModel
         public string AggregateErrorStrings(string arg1, string arg2)
         {
             return arg1 + "\r\n" + arg2;
+        }
+
+        /// <summary>
+        /// The update colours.
+        /// </summary>
+        /// <param name="background">
+        /// The background.
+        /// </param>
+        /// <param name="foreground">
+        /// The foreground.
+        /// </param>
+        public void UpdateColors(Color background, Color foreground)
+        {
+            this.BackGroundColor = background;
+            this.ForeGroundColor = foreground;
         }
 
         /// <summary>

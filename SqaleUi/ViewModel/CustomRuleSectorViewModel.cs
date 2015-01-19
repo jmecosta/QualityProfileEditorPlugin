@@ -16,6 +16,7 @@ namespace SqaleUi.ViewModel
 {
     using System.Collections.ObjectModel;
     using System.Windows;
+    using System.Windows.Media;
 
     using ExtensionTypes;
 
@@ -27,7 +28,7 @@ namespace SqaleUi.ViewModel
     ///     The custom rule sector view model.
     /// </summary>
     [ImplementPropertyChanged]
-    public class CustomRuleSectorViewModel
+    public class CustomRuleSectorViewModel : IViewModelTheme
     {
         #region Constructors and Destructors
 
@@ -89,5 +90,15 @@ namespace SqaleUi.ViewModel
         }
 
         #endregion
+
+        public void UpdateColors(Color background, Color foreground)
+        {
+            this.BackGroundColor = background;
+            this.ForeGroundColor = foreground;
+        }
+
+        public Color BackGroundColor { get; set; }
+
+        public Color ForeGroundColor { get; set; }
     }
 }
