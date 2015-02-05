@@ -202,7 +202,7 @@ namespace SqaleUi.ViewModel
             this.Model.MergeRulesIntoProject(this.SelectedProfile.Rules);
             this.Model.SetConnectedToServer(true);
 
-            window?.Hide();
+            window.Hide();
         }
 
         /// <summary>

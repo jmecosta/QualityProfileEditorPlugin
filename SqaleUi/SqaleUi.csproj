@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SqaleUi</RootNamespace>
     <AssemblyName>SqaleUi</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ExpressionBlendVersion>12.0.50716.0</ExpressionBlendVersion>
     <TargetFrameworkProfile />
@@ -21,7 +21,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\BuildDrop\</OutputPath>
+    <OutputPath>..\BuildDrop\$(FSharpFolder)\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -29,7 +29,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\BuildDrop\</OutputPath>
+    <OutputPath>..\BuildDrop\$(FSharpFolder)\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -43,11 +43,11 @@
     </Reference>
     <Reference Include="ExtensionHelpers, Version=$(VSSonarExtensionVersion)">
       <SpecificVersion>True</SpecificVersion>
-      <HintPath>..\References\ExtensionHelpers.dll</HintPath>
+      <HintPath>..\References\$(FSharpFolder)\ExtensionHelpers.dll</HintPath>
     </Reference>
     <Reference Include="ExtensionTypes, Version=$(VSSonarExtensionVersion)">
       <SpecificVersion>True</SpecificVersion>
-      <HintPath>..\References\ExtensionTypes.dll</HintPath>
+      <HintPath>..\References\$(FSharpFolder)\ExtensionTypes.dll</HintPath>
     </Reference>
     <Reference Include="FSharp.Core, Version=4.4.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -82,7 +82,7 @@
     </Reference>
     <Reference Include="SonarRestService, Version=$(VSSonarExtensionVersion), Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>True</SpecificVersion>
-      <HintPath>..\References\SonarRestService.dll</HintPath>
+      <HintPath>..\References\$(FSharpFolder)\SonarRestService.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -105,7 +105,7 @@
       <HintPath>..\References\UserCredentialsDialog.dll</HintPath>
     </Reference>
     <Reference Include="VSSonarPlugins">
-      <HintPath>..\References\VSSonarPlugins.dll</HintPath>
+      <HintPath>..\References\$(FSharpFolder)\VSSonarPlugins.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>

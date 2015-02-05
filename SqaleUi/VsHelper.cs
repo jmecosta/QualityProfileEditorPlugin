@@ -545,5 +545,15 @@ namespace ExtensionHelpers
         {
             return string.Empty;
         }
+
+        public string ActiveConfiguration()
+        {
+            return "";
+        }
+
+        public string ActivePlatform()
+        {
+            return "";
+        }
     }
 }

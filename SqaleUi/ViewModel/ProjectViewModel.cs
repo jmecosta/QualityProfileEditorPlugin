@@ -138,7 +138,7 @@ namespace SqaleUi.ViewModel
         /// </param>
         private void ExecuteImportProfileCommand(Window window)
         {
-            window?.Hide();
+            window.Hide();
         }
 
         /// <summary>

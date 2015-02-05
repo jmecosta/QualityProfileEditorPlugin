@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SqaleEditor</RootNamespace>
     <AssemblyName>SqaleEditor</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -22,7 +22,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\BuildDrop\</OutputPath>
+    <OutputPath>..\BuildDrop\$(FSharpFolder)\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -31,7 +31,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\BuildDrop\</OutputPath>
+    <OutputPath>..\BuildDrop\$(FSharpFolder)\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -39,16 +39,13 @@
   <ItemGroup>
     <Reference Include="ExtensionHelpers, Version=$(VSSonarExtensionVersion)">
       <SpecificVersion>True</SpecificVersion>
-      <HintPath>..\References\ExtensionHelpers.dll</HintPath>
+      <HintPath>..\References\$(FSharpFolder)\ExtensionHelpers.dll</HintPath>
     </Reference>
-    <Reference Include="FSharp.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\References\FSharp.Core.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="FSharp.Core">
     </Reference>
     <Reference Include="FSharp.Data, Version=1.1.10.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\References\FSharp.Data.dll</HintPath>
+      <HintPath>..\References\$(FSharpFolder)\FSharp.Data.dll</HintPath>
     </Reference>
     <Reference Include="GalaSoft.MvvmLight, Version=5.0.2.32240, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -157,10 +154,8 @@
             $(OutputPath)FSharp.Data.dll;
             $(OutputPath)GalaSoft.MvvmLight.Extras.dll;
             $(OutputPath)GalaSoft.MvvmLight.dll;
-            $(OutputPath)log4net.dll;
             $(OutputPath)Microsoft.Practices.ServiceLocation.dll;
             $(OutputPath)RestSharp.dll;
-            $(OutputPath)Rhino.Licensing.dll;
             $(OutputPath)SonarRestService.dll;
             $(OutputPath)SqaleEditor.exe;
             $(OutputPath)SqaleManager.dll;
