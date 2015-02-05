@@ -17,6 +17,7 @@ BuildDrop
 *.sln.docstates
 
 # Build results
+ObjDrop
 [Dd]ebug/
 [Rr]elease/
 x64/
