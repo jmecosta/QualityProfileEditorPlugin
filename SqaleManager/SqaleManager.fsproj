@@ -68,7 +68,6 @@
       <HintPath>..\References\VSSonarPlugins.dll</HintPath>
     </Reference>
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion)">
-      <SpecificVersion>True</SpecificVersion>
     </Reference>
     <Reference Include="FSharp.Data, Version=2.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>True</SpecificVersion>
