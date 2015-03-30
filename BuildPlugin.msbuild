@@ -9,8 +9,8 @@
     <Target Name="RestoreNuget"><NugetRestoreTask NugetExe="$(MSBuildFolder)\Nuget.exe" SolutionFile="QualityEditorPlugin.sln"/></Target>
 
     <Target Name="BuildPlugin" DependsOnTargets="RestoreNuget">
+        <MSBuild Projects="@(QualityEditorPlugin)" Properties="Configuration=Release;VSVersion=11.0" BuildInParallel="true" StopOnFirstFailure="true" />
         <MSBuild Projects="@(QualityEditorPlugin)" Properties="Configuration=Release;VSVersion=12.0" BuildInParallel="true" StopOnFirstFailure="true" />
-        <MSBuild Projects="@(QualityEditorPlugin)" Properties="Configuration=Release;VSVersion=13.0" BuildInParallel="true" StopOnFirstFailure="true" />
         <MSBuild Projects="@(QualityEditorPlugin)" Properties="Configuration=Release;VSVersion=14.0" BuildInParallel="true" StopOnFirstFailure="true" />
         
     </Target>

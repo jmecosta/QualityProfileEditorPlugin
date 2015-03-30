@@ -91,12 +91,13 @@
     <Reference Include="Foq">
       <HintPath>..\References\$(FSharpFolder)\Foq.dll</HintPath>
     </Reference>
-    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion)">
+    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <SpecificVersion>True</SpecificVersion>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="FSharp.Data, Version=2.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="FSharp.Data, Version=2.1.1.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\references\$(FSharpFolder)\FSharp.Data.dll</HintPath>
       <SpecificVersion>True</SpecificVersion>
-      <HintPath>..\References\$(FSharpFolder)\FSharp.Data.dll</HintPath>
     </Reference>
     <Reference Include="FsUnit.NUnit">
       <HintPath>..\References\$(FSharpFolder)\FsUnit.NUnit.dll</HintPath>
