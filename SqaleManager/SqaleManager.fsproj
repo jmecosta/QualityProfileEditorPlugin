@@ -67,12 +67,12 @@
       <SpecificVersion>True</SpecificVersion>
       <HintPath>..\References\VSSonarPlugins.dll</HintPath>
     </Reference>
-    <Reference Include="FSharp.Core">
-      <Private>True</Private>
+    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion)">
+      <SpecificVersion>True</SpecificVersion>
     </Reference>
-    <Reference Include="FSharp.Data">
+    <Reference Include="FSharp.Data, Version=2.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>True</SpecificVersion>
       <HintPath>..\References\$(FSharpFolder)\FSharp.Data.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="FSharp.Data.DesignTime">
       <HintPath>..\References\$(FSharpFolder)\FSharp.Data.DesignTime.dll</HintPath>
