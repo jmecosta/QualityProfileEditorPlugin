@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <Tailcalls>false</Tailcalls>
-    <OutputPath>..\BuildDrop\$(FSharpFolder)\</OutputPath>
+    <OutputPath>$(PluginsOutputPath)</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -30,7 +30,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <Tailcalls>true</Tailcalls>
-    <OutputPath>..\BuildDrop\$(FSharpFolder)\</OutputPath>
+    <OutputPath>$(PluginsOutputPath)</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -63,9 +63,9 @@
     <None Include="SqaleManager.licenseheader" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="ExtensionTypes, Version=$(VSSonarExtensionVersion)">
+    <Reference Include="VSSonarPlugins, Version=$(VSSonarExtensionVersion)">
       <SpecificVersion>True</SpecificVersion>
-      <HintPath>..\References\$(FSharpFolder)\ExtensionTypes.dll</HintPath>
+      <HintPath>..\References\VSSonarPlugins.dll</HintPath>
     </Reference>
     <Reference Include="FSharp.Core">
       <Private>True</Private>

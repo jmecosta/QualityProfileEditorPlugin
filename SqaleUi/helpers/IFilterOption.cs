@@ -14,7 +14,7 @@
 
 namespace SqaleUi.helpers
 {
-    using ExtensionTypes;
+    using VSSonarPlugins.Types;
 
     public interface IFilterOption
     {

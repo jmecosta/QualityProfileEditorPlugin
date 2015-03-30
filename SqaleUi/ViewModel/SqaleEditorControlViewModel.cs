@@ -28,7 +28,7 @@ namespace SqaleUi.ViewModel
 
     using ExtensionHelpers;
 
-    using ExtensionTypes;
+    using VSSonarPlugins.Types;
 
     using GalaSoft.MvvmLight.Command;
 
@@ -75,7 +75,26 @@ namespace SqaleUi.ViewModel
             this.Tabs.CollectionChanged += TabsHaveChanged;
 
             this.RestService = new SonarRestService(new JsonSonarConnector());
-            this.VsHelper = new ConfigurationHelper();
+            this.Project = null;
+            this.ConnectedToServer = false;
+
+            this.InitCommanding();
+
+            this.StatusMessage = "OffLine -> Press Icon on the right to connect to Server";
+            this.BackGroundColor = Colors.Black;
+            this.ForeGroundColor = Colors.White;
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the SqaleEditorControlViewModel class.
+        /// </summary>
+        public SqaleEditorControlViewModel(IConfigurationHelper helper)
+        {
+            this.Tabs = new ObservableCollection<SqaleGridVm>();
+            this.Tabs.CollectionChanged += TabsHaveChanged;
+
+            this.RestService = new SonarRestService(new JsonSonarConnector());
+            this.VsHelper = helper;
             this.Project = null;
             this.ConnectedToServer = false;
 
@@ -130,8 +149,8 @@ namespace SqaleUi.ViewModel
             this.ServerAddress = PromptUserData.Prompt("Server Address", "Insert Server Address", "http://localhost:9000");
             if (!string.IsNullOrEmpty(this.ServerAddress))
             {
-                this.VsHelper.WriteOptionInApplicationData("QualityEditorPlugin", "ServerAddress", this.ServerAddress);
-            }            
+                this.VsHelper.WriteOptionInApplicationData(Context.MenuPluginProperties, "QualityEditorPlugin", "ServerAddress", this.ServerAddress);
+            }
         }
 
         private void OnDisconnectToServerCommand()
@@ -422,7 +441,13 @@ namespace SqaleUi.ViewModel
             if (this.Configuration == null)
             {
                 // find server address
-                this.ServerAddress = this.VsHelper.ReadOptionFromApplicationData("QualityEditorPlugin", "ServerAddress");
+                try
+                {
+                    this.ServerAddress = this.VsHelper.ReadSetting(Context.MenuPluginProperties, "QualityEditorPlugin", "ServerAddress").Value;
+                }
+                catch (Exception)
+                {
+                }
 
                 if (string.IsNullOrEmpty(this.ServerAddress) || resetServer)
                 {
@@ -432,7 +457,7 @@ namespace SqaleUi.ViewModel
                         return false;
                     }
 
-                    this.VsHelper.WriteOptionInApplicationData("QualityEditorPlugin", "ServerAddress", this.ServerAddress);
+                    this.VsHelper.WriteOptionInApplicationData(Context.MenuPluginProperties, "QualityEditorPlugin", "ServerAddress", this.ServerAddress);
                 }
 
                 using (var dialog = new UserCredentialsDialog())
@@ -608,7 +633,6 @@ namespace SqaleUi.ViewModel
         }
 
         #endregion
-
 
         public IConfigurationHelper VsHelper { get; set; }
 

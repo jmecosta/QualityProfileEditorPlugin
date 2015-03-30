@@ -18,7 +18,7 @@ open System.Xml.Linq
 open System.IO
 open System.Reflection
 open System.ComponentModel
-open ExtensionTypes
+open VSSonarPlugins.Types
 
 type ImportLogEntry() = 
     member val line = -1 with get, set

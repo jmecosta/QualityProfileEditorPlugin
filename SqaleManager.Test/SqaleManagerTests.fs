@@ -20,7 +20,7 @@ open Foq
 open FSharp.Data
 open System.Xml.Linq
 open System.IO
-open ExtensionTypes
+open VSSonarPlugins.Types
 
 
 type RootConfigurationPropsChecksTests() = 
@@ -206,7 +206,7 @@ type RootConfigurationPropsChecksTests() =
     member test.``Get C++ Profile`` () = 
         let manager = new SqaleManager()
         let model = manager.GetDefaultSqaleModel()
-        manager.AddProfileDefinitionFromServerToModel(model, "c++", "DefaultTeklaC++", new ExtensionTypes.ConnectionConfiguration("http://sonar", "jocs1", "jocs1"))
+        manager.AddProfileDefinitionFromServerToModel(model, "c++", "DefaultTeklaC++", new ConnectionConfiguration("http://sonar", "jocs1", "jocs1"))
         manager.SaveSqaleModelAsXmlProject(model, "cxx-model-project-updated.xml")
         ()
 

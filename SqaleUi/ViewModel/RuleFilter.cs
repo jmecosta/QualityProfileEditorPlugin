@@ -17,7 +17,7 @@ namespace SqaleUi.ViewModel
     using System;
     using System.Linq;
 
-    using ExtensionTypes;
+    using VSSonarPlugins.Types;
 
     using SqaleUi.helpers;
 

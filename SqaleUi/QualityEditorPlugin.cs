@@ -21,7 +21,7 @@ namespace SqaleUi
     using System.Windows.Media;
     using System.Collections.Generic;
 
-    using ExtensionTypes;
+    using VSSonarPlugins.Types;
 
     using SonarRestService;
 
@@ -60,7 +60,7 @@ namespace SqaleUi
 
         #region Public Methods and Operators
 
-        public IPluginsOptions GetPluginControlOptions(ISonarConfiguration configuration)
+        public IPluginControlOption GetPluginControlOptions(ISonarConfiguration configuration)
         {
             return null;
         }
@@ -77,6 +77,11 @@ namespace SqaleUi
         public string GenerateTokenId(ISonarConfiguration configuration)
         {
             return string.Empty;
+        }
+
+        public IPluginControlOption GetPluginControlOptions(Resource project, ISonarConfiguration configuration)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -139,6 +144,15 @@ namespace SqaleUi
         public PluginDescription GetPluginDescription()
         {
             return this.Desc;
+        }
+
+        public void ResetDefaults()
+        {
+        }
+
+        public void AssociateProject(Resource project, ISonarConfiguration configuration)
+        {
+            this.Model.Project = project;
         }
 
         /// <summary>

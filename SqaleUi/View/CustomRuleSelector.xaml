@@ -4,7 +4,7 @@
     xmlns:ViewModel="clr-namespace:SqaleUi.ViewModel" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
-    xmlns:extensionTypes="clr-namespace:ExtensionTypes;assembly=ExtensionTypes"
+    xmlns:extensionTypes="clr-namespace:VSSonarPlugins.Types;assembly=VSSonarPlugins"
     xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
     mc:Ignorable="d"
     x:Class="SqaleUi.CustomRuleSelector"

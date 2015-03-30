@@ -22,7 +22,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\BuildDrop\$(FSharpFolder)\</OutputPath>
+    <OutputPath>$(PluginsOutputPath)</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -31,15 +31,15 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\BuildDrop\$(FSharpFolder)\</OutputPath>
+    <OutputPath>$(PluginsOutputPath)</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ExtensionHelpers, Version=$(VSSonarExtensionVersion)">
+    <Reference Include="VSSonarPlugins, Version=$(VSSonarExtensionVersion)">
       <SpecificVersion>True</SpecificVersion>
-      <HintPath>..\References\$(FSharpFolder)\ExtensionHelpers.dll</HintPath>
+      <HintPath>..\References\VSSonarPlugins.dll</HintPath>
     </Reference>
     <Reference Include="FSharp.Core">
     </Reference>
@@ -149,8 +149,6 @@
   <Import Project="$(MSBuildFolder)\AssemblyPatcherTask.targets" />
   <PropertyGroup>
     <PackageFiles>
-            $(OutputPath)ExtensionTypes.dll;
-            $(OutputPath)ExtensionHelpers.dll;
             $(OutputPath)FSharp.Data.dll;
             $(OutputPath)GalaSoft.MvvmLight.Extras.dll;
             $(OutputPath)GalaSoft.MvvmLight.dll;

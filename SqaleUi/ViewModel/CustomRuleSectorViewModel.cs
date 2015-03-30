@@ -18,7 +18,7 @@ namespace SqaleUi.ViewModel
     using System.Windows;
     using System.Windows.Media;
 
-    using ExtensionTypes;
+    using VSSonarPlugins.Types;
 
     using GalaSoft.MvvmLight.Command;
 

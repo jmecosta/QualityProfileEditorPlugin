@@ -24,7 +24,7 @@ namespace ExtensionHelpers
     using EnvDTE;
     using EnvDTE80;
 
-    using ExtensionTypes;
+    using VSSonarPlugins.Types;
 
     using Microsoft.VisualStudio.Text.Editor;
 

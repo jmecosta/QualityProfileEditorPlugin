@@ -24,7 +24,7 @@ open System.Text
 open System.Xml.Linq
 open SonarRestService
 open System.ComponentModel 
-open ExtensionTypes
+open VSSonarPlugins.Types
 
 type SqaleManager() =
     let content = new StringBuilder()
@@ -379,7 +379,7 @@ type SqaleManager() =
                 importLog.Add(entryLog)
         model                 
 
-    member x.AddProfileDefinitionFromServerToModel(model : SqaleModel, language : string, profile : string, conectionConf : ExtensionTypes.ConnectionConfiguration) =
+    member x.AddProfileDefinitionFromServerToModel(model : SqaleModel, language : string, profile : string, conectionConf : ConnectionConfiguration) =
         let service = SonarRestService(new JsonSonarConnector()) 
         let profile = (service :> ISonarRestService).GetEnabledRulesInProfile(conectionConf , language, profile)
         let rules = (service :> ISonarRestService).GetRules(conectionConf , language)

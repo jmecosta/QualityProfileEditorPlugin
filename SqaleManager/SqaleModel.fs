@@ -15,7 +15,7 @@ namespace SqaleManager
 
 open System
 open System.IO
-open ExtensionTypes
+open VSSonarPlugins.Types
 open SonarRestService
 
 type SqaleModel() =
