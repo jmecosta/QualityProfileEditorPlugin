@@ -138,6 +138,11 @@ namespace ExtensionHelpers
             return null;
         }
 
+        public VsProjectItem VsProjectItem(string projectFileName, Resource associatedProject)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// The get file real path for solution.
         /// </summary>
@@ -455,6 +460,16 @@ namespace ExtensionHelpers
         }
 
         public void RestartVisualStudio()
+        {
+            throw new NotImplementedException();
+        }
+
+        public VsFileItem VsFileItem(string filename, Resource associatedProject, Resource fileResource)
+        {
+            throw new NotImplementedException();
+        }
+
+        public VsFileItem VsFileItem(string fullPath, string projectFullPath, Resource associatedProject, Resource fileResource)
         {
             throw new NotImplementedException();
         }
