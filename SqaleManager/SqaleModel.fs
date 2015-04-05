@@ -48,7 +48,7 @@ type SqaleModel() =
             x.GetChar(key)
     
     member x.CreateRuleInProfile(rule : Rule) =
-        profile.CreateRule(rule)
+        profile.AddRule(rule)
       
     member x.LoadSqaleModelFromString(str : string) =
         let sqale = SqaleModelType.Parse(str)
@@ -86,7 +86,7 @@ type SqaleModel() =
                             | ex -> ()
 
                     rule.EnableSetDeafaults <- true
-                    profile.CreateRule(rule) |> ignore
+                    profile.AddRule(rule) |> ignore
 
     member x.LoadSqaleModelFromFile(path : string) =
         let sqale = SqaleModelType.Parse(File.ReadAllText(path))
@@ -134,7 +134,7 @@ type SqaleModel() =
                             | ex -> ()
 
                     rule.EnableSetDeafaults <- true
-                    profile.CreateRule(rule) |> ignore
+                    profile.AddRule(rule) |> ignore
 
 
     

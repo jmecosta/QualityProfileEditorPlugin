@@ -1294,7 +1294,7 @@ namespace SqaleUi.ViewModel
                 SqaleModel tempModel = this.SqaleManager.GetDefaultSqaleModel();
                 this.SqaleManager.AddProfileDefinition(tempModel, filedialog.FileName);
 
-                this.AddRulesFromProfileToWorkArea(tempModel.GetProfile().Rules);
+                this.AddRulesFromProfileToWorkArea(tempModel.GetProfile().GetAllRules());
             }
             catch (Exception ex)
             {
@@ -1406,7 +1406,7 @@ namespace SqaleUi.ViewModel
             {
                 SqaleModel tempModel = this.SqaleManager.ParseSqaleModelFromXmlFile(filedialog.FileName);
 
-                this.AddRulesFromSqaleModeToWorkArea(tempModel.GetProfile().Rules);
+                this.AddRulesFromSqaleModeToWorkArea(tempModel.GetProfile().GetAllRules());
             }
             catch (Exception ex)
             {
@@ -1435,7 +1435,7 @@ namespace SqaleUi.ViewModel
                 string repo = PromptUserData.Prompt("Specify Repository Name", "Repo Name", Path.GetFileNameWithoutExtension(filedialog.FileName));
                 this.SqaleManager.AddAProfileFromFileToSqaleModel(repo, tempModel, filedialog.FileName);
 
-                this.AddRulesFromRulesXmlDefinitionToWorkArea(tempModel.GetProfile().Rules);
+                this.AddRulesFromRulesXmlDefinitionToWorkArea(tempModel.GetProfile().GetAllRules());
             }
             catch (Exception ex)
             {
@@ -1482,7 +1482,7 @@ namespace SqaleUi.ViewModel
                 profile.Name = project.QualityViewerModel.SelectedProfile.Name;
                 project.RestService.GetTemplateRules(project.Configuration, profile);
 
-                foreach (Rule rule in profile.Rules)
+                foreach (Rule rule in profile.GetAllRules())
                 {
                     model.CustomRules.Add(rule);
                 }

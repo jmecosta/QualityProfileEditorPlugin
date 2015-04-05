@@ -549,7 +549,7 @@ namespace SqaleUi.ViewModel
             }
 
             var model = project.SqaleManager.ImportSqaleProjectFromFile(fileName);
-            foreach (var rule in model.GetProfile().Rules)
+            foreach (var rule in model.GetProfile().GetAllRules())
             {
                 project.ProfileRules.Add(rule);
             }

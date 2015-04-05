@@ -50,7 +50,7 @@ type SqaleManager() =
         let model = x.GetDefaultSqaleModel()
 
         for rule in rules do
-            model.GetProfile().Rules.Add(rule)
+            model.GetProfile().AddRule(rule)
 
         model
 
@@ -62,7 +62,7 @@ type SqaleManager() =
     member x.GetRepositoriesInModel(model : SqaleModel) =
         let mutable repos : string list = []
 
-        for rule in model.GetProfile().Rules do
+        for rule in model.GetProfile().GetAllRules() do
             try
                 Array.find (fun elem -> elem.Equals(rule.Repo)) (List.toArray repos) |> ignore
             with
@@ -73,7 +73,7 @@ type SqaleManager() =
     member x.WriteProfileToFile(model : SqaleModel, repo : string, fileName : string) =
         let mutable rules : Rule list = []
 
-        for ruleinprofile in model.GetProfile().Rules do
+        for ruleinprofile in model.GetProfile().GetAllRules() do
             if ruleinprofile.Repo.Equals(repo) then
                 rules <- rules @ [ruleinprofile]
 
@@ -202,7 +202,7 @@ type SqaleManager() =
             addLine(sprintf """                </prop>""", file)
 
         let writeRulesChcToFile (charName : Category, subcharName : SubCategory, file : string) = 
-            for rule in model.GetProfile().Rules do
+            for rule in model.GetProfile().GetAllRules() do
                 if rule.Category.Equals(charName) && rule.Subcategory.Equals(subcharName) then
                     addLine(sprintf """            <chc>""", fileToWrite)
                     addLine(sprintf """                <rule-repo>%s</rule-repo>""" rule.Repo, file)
@@ -249,26 +249,27 @@ type SqaleManager() =
         model.language <- profile.Language
         model.profileName <- profile.Name
         for rule in profile.Rules do
-            if not(model.GetProfile().IsRulePresent(rule.Key)) then
+            let ruletoUpdate = model.GetProfile().GetRule(rule.Key)
+            if ruletoUpdate <> null then
+                ruletoUpdate.Severity <- (Enum.Parse(typeof<Severity>, rule.Priority) :?> Severity)
+                ruletoUpdate.Repo <- rule.RepositoryKey
+            else
                 let ruletoUpdate = new Rule()
                 ruletoUpdate.Severity <- (Enum.Parse(typeof<Severity>, rule.Priority) :?> Severity)
                 ruletoUpdate.Repo <- rule.RepositoryKey
                 ruletoUpdate.Key <- rule.Key
-                model.GetProfile().Rules.Add(ruletoUpdate)
-            else
-                let ruletoUpdate = model.GetProfile().GetRule(rule.Key)
-                ruletoUpdate.Severity <- (Enum.Parse(typeof<Severity>, rule.Priority) :?> Severity)
-                ruletoUpdate.Repo <- rule.RepositoryKey
+                model.GetProfile().AddRule(ruletoUpdate)
+
 
     member x.CombineWithDefaultProfileDefinition(model : SqaleModel, file : string) = 
         let profile = ProfileDefinition.Parse(File.ReadAllText(file))
         model.language <- profile.Language
         model.profileName <- profile.Name
         for rule in profile.Rules do
-            if model.GetProfile().IsRulePresent(rule.RepositoryKey + ":"+ rule.Key) then
-                let ruletoUpdate = model.GetProfile().GetRule(rule.RepositoryKey + ":"+ rule.Key)
+            let ruletoUpdate = model.GetProfile().GetRule(rule.RepositoryKey + ":"+ rule.Key)
+            if ruletoUpdate <> null then
                 ruletoUpdate.Severity <- (Enum.Parse(typeof<Severity>, rule.Priority) :?> Severity)
-                ruletoUpdate.Repo <- rule.RepositoryKey                
+                ruletoUpdate.Repo <- rule.RepositoryKey
             
     member x.SaveSqaleModelAsXmlProject(model : SqaleModel, fileToWrite : string) =
 
@@ -294,7 +295,7 @@ type SqaleManager() =
          //   addLine(sprintf """    </characteristic>""", fileToWrite)
         
         addLine(sprintf """    <rules>""", fileToWrite)
-        for rule in model.GetProfile().Rules do
+        for rule in model.GetProfile().GetAllRules() do
             addLine(sprintf """    <rule key="%s">""" (rule.Key.Split(':').[1]), fileToWrite)           
             addLine(sprintf """        <name>%s</name>""" (EncodeStringAsXml(rule.Name)), fileToWrite)
             if String.IsNullOrEmpty(EnumHelper.getEnumDescription(rule.Subcategory)) then
@@ -384,7 +385,7 @@ type SqaleManager() =
         let profile = (service :> ISonarRestService).GetEnabledRulesInProfile(conectionConf , language, profile)
         let rules = (service :> ISonarRestService).GetRules(conectionConf , language)
 
-        for rule in profile.[0].Rules do
+        for rule in profile.[0].GetAllRules() do
             let createdRule = new Rule()
             createdRule.Repo <- rule.Repo            
             createdRule.Key <- rule.Key
@@ -401,7 +402,7 @@ type SqaleManager() =
         ()
 
     member x.MergeSqaleDataModels(sourceModel : SqaleModel, externalModel : SqaleModel) = 
-        for rule in externalModel.GetProfile().Rules do
+        for rule in externalModel.GetProfile().GetAllRules() do
             if not(rule.Category.Equals("undefined")) then
                 let ruleinModel = sourceModel.GetProfile().GetRule(rule.Key)
                 if ruleinModel <> null then

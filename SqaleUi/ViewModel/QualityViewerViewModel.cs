@@ -191,7 +191,7 @@ namespace SqaleUi.ViewModel
         /// </param>
         private void ExecuteImportProfileCommand(Window window)
         {
-            if (this.SelectedProfile.Rules == null || this.SelectedProfile.Rules.Count == 0 || this.Model.ProfileRules.Count == 0)
+            if (this.SelectedProfile.GetAllRules().Count == 0 || this.Model.ProfileRules.Count == 0)
             {
                 this.Service.GetRulesForProfileUsingRulesApp(this.Configuration, this.SelectedProfile, true);
 
@@ -199,7 +199,7 @@ namespace SqaleUi.ViewModel
             }
 
             this.Model.SelectedProfile = this.SelectedProfile;
-            this.Model.MergeRulesIntoProject(this.SelectedProfile.Rules);
+            this.Model.MergeRulesIntoProject(this.SelectedProfile.GetAllRules());
             this.Model.SetConnectedToServer(true);
 
             window.Hide();

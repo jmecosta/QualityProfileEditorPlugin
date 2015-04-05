@@ -224,7 +224,7 @@ namespace SqaleUi.ViewModel
                 this.Profile.Key = this.Model.QualityViewerModel.SelectedProfile.Key;
                 this.Profile.Language = this.Model.QualityViewerModel.SelectedProfile.Language;
                 this.Model.RestService.GetTemplateRules(this.Model.Configuration, this.Profile);
-                foreach (Rule rule in this.Profile.Rules)
+                foreach (Rule rule in this.Profile.GetAllRules())
                 {
                     this.TemplateRules.Add(rule);
                 }
@@ -232,16 +232,11 @@ namespace SqaleUi.ViewModel
             else
             {
                 var profileTag = new Profile();
-                if (profileTag.Rules == null)
-                {
-                    profileTag.Rules = new List<Rule>();
-                }
-
                 profileTag.Key = this.Profile.Key;
                 profileTag.Language = this.Profile.Language;
 
                 this.Model.RestService.GetTemplateRules(this.Model.Configuration, profileTag);
-                foreach (var rule in profileTag.Rules)
+                foreach (var rule in profileTag.GetAllRules())
                 {
                     this.TemplateRules.Add(rule);
                 }

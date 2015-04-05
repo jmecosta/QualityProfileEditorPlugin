@@ -678,13 +678,14 @@ namespace SqaleUi.ViewModel
         {
             if (this.SelectedProfile != null)
             {
-                if (this.SelectedProfile.Rules == null || this.SelectedProfile.Rules.Count == 0 || this.ProfileRules.Count == 0)
+                if (this.SelectedProfile.GetAllRules().Count == 0 || this.ProfileRules.Count == 0)
                 {
                     this.RestService.GetRulesForProfileUsingRulesApp(this.Configuration, this.SelectedProfile, true);
                     this.RestService.GetRulesForProfileUsingRulesApp(this.Configuration, this.SelectedProfile, false);
                 }
 
-                this.MergeRulesIntoProject(this.SelectedProfile.Rules);
+                this.ProfileRules.Clear();
+                this.MergeRulesIntoProject(this.SelectedProfile.GetAllRules());
                 this.SetConnectedToServer(true);
             }
         }
