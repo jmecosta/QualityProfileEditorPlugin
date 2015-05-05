@@ -20,6 +20,7 @@ open Foq
 open FSharp.Data
 open System.Xml.Linq
 open System.IO
+open VSSonarPlugins
 open VSSonarPlugins.Types
 
 
@@ -38,14 +39,14 @@ type RootConfigurationPropsChecksTests() =
             
     [<Test>]
     member test.``It Creates a Default Model`` () = 
-        let manager = new SqaleManager()
+        let manager = new SqaleManager(Mock<ISonarRestService>().Create(), Mock<ISonarConfiguration>().Create())
         let def = manager.GetDefaultSqaleModel()
         def.GetCharacteristics().Length |> should equal 8
         def.GetProfile().GetAllRules().Count |> should equal 0
 
     [<Test>]
     member test.``Should Load Profile into Model With New Format`` () = 
-        let manager = new SqaleManager()
+        let manager = new SqaleManager(Mock<ISonarRestService>().Create(), Mock<ISonarConfiguration>().Create())
         let def = manager.GetDefaultSqaleModel()
         manager.AddAProfileFromFileToSqaleModel("intel", def, "samples/intel-profile.xml")
         let rules = def.GetProfile().GetAllRules()
@@ -59,14 +60,14 @@ type RootConfigurationPropsChecksTests() =
 
     [<Test>]
     member test.``Should Load Profile into Model With Old Format`` () = 
-        let manager = new SqaleManager()
+        let manager = new SqaleManager(Mock<ISonarRestService>().Create(), Mock<ISonarConfiguration>().Create())
         let def = manager.GetDefaultSqaleModel()
         manager.AddAProfileFromFileToSqaleModel("cppcheck", def, "samples/cppcheck.xml")
         def.GetProfile().GetAllRules().Count |> should equal 305
 
     [<Test>]
     member test.``Should Load Model From CSharp Xml File`` () = 
-        let manager = new SqaleManager()
+        let manager = new SqaleManager(Mock<ISonarRestService>().Create(), Mock<ISonarConfiguration>().Create())
         let model = manager.ParseSqaleModelFromXmlFile("samples/CSharpSqaleModel.xml")
         model.GetCharacteristics().Length |> should equal 8
         let rules = model.GetProfile().GetAllRules()
@@ -82,17 +83,17 @@ type RootConfigurationPropsChecksTests() =
 
     [<Test>]
     member test.``Should Get Correct Number Of Repositories From Model`` () = 
-        let manager = new SqaleManager()
+        let manager = new SqaleManager(Mock<ISonarRestService>().Create(), Mock<ISonarConfiguration>().Create())
         let model = manager.ParseSqaleModelFromXmlFile("samples/CSharpSqaleModel.xml")
         manager.GetRepositoriesInModel(model).Length |> should equal 6
     
     [<Test>]
     member test.``Should Create Xml Profile`` () = 
-        let manager = new SqaleManager()
+        let manager = new SqaleManager(Mock<ISonarRestService>().Create(), Mock<ISonarConfiguration>().Create())
         let model = manager.ParseSqaleModelFromXmlFile("samples/CSharpSqaleModel.xml")
 
         manager.WriteProfileToFile(model, "fxcop", rulesinFile)
-        let managerNew = new SqaleManager()
+        let managerNew = new SqaleManager(Mock<ISonarRestService>().Create(), Mock<ISonarConfiguration>().Create())
         let newModel = managerNew.GetDefaultSqaleModel()
         managerNew.AddAProfileFromFileToSqaleModel("fxcop", newModel, rulesinFile)
         let newrules = model.GetProfile().GetAllRules()
@@ -100,7 +101,7 @@ type RootConfigurationPropsChecksTests() =
 
     [<Test>]
     member test.``Should Create Write A Sqale Model To Xml Correctly And Read It`` () = 
-        let manager = new SqaleManager()
+        let manager = new SqaleManager(Mock<ISonarRestService>().Create(), Mock<ISonarConfiguration>().Create())
         let def = manager.GetDefaultSqaleModel()
 
         let rule = new Rule()
@@ -134,7 +135,7 @@ type RootConfigurationPropsChecksTests() =
 
     [<Test>]
     member test.``Should Serialize the model Correctly And Read It`` () = 
-        let manager = new SqaleManager()
+        let manager = new SqaleManager(Mock<ISonarRestService>().Create(), Mock<ISonarConfiguration>().Create())
         let def = manager.GetDefaultSqaleModel()
 
         let rule = new Rule()
@@ -170,7 +171,7 @@ type RootConfigurationPropsChecksTests() =
 
     [<Test>]
     member test.``Read A ProfileDefinition`` () = 
-        let manager = new SqaleManager()
+        let manager = new SqaleManager(Mock<ISonarRestService>().Create(), Mock<ISonarConfiguration>().Create())
         let model = manager.GetDefaultSqaleModel()
         manager.AddAProfileFromFileToSqaleModel("cppcheck", model, "samples/cppcheck.xml")
         manager.CombineWithDefaultProfileDefinition(model, "samples/default-profile.xml")
@@ -181,7 +182,7 @@ type RootConfigurationPropsChecksTests() =
 
     [<Test>]
     member test.``Should Save Model As XML`` () = 
-        let manager = new SqaleManager()
+        let manager = new SqaleManager(Mock<ISonarRestService>().Create(), Mock<ISonarConfiguration>().Create())
         let model = manager.GetDefaultSqaleModel()
         manager.AddAProfileFromFileToSqaleModel("cppcheck", model, "samples/cppcheck.xml")
         manager.AddAProfileFromFileToSqaleModel("pclint", model, "samples/pclint.xml")
@@ -196,14 +197,14 @@ type RootConfigurationPropsChecksTests() =
 
     //[<Test>]
     member test.``Read Cxx Project`` () = 
-        let manager = new SqaleManager()
+        let manager = new SqaleManager(Mock<ISonarRestService>().Create(), Mock<ISonarConfiguration>().Create())
         let model = manager.ImportSqaleProjectFromFile("cxx-model-project.xml")
         model.GetCharacteristics().Length |> should equal 8
         manager.WriteSqaleModelToFile(model, "cxx-model.xml")
 
     //[<Test>]
     member test.``Get C++ Profile`` () = 
-        let manager = new SqaleManager()
+        let manager = new SqaleManager(Mock<ISonarRestService>().Create(), Mock<ISonarConfiguration>().Create())
         let model = manager.GetDefaultSqaleModel()
         manager.AddProfileDefinitionFromServerToModel(model, "c++", "DefaultTeklaC++", new ConnectionConfiguration("http://sonar", "jocs1", "jocs1"))
         manager.SaveSqaleModelAsXmlProject(model, "cxx-model-project-updated.xml")
@@ -211,7 +212,7 @@ type RootConfigurationPropsChecksTests() =
 
     //[<Test>]
     member test.``Read A Project and Merge Info From Another Project`` () = 
-        let manager = new SqaleManager()
+        let manager = new SqaleManager(Mock<ISonarRestService>().Create(), Mock<ISonarConfiguration>().Create())
         let model = manager.ImportSqaleProjectFromFile("cxx-model-project.xml")
         let modelToMerge = manager.ImportSqaleProjectFromFile("cppcheck-model-project.xml")
         manager.MergeSqaleDataModels(model, modelToMerge)

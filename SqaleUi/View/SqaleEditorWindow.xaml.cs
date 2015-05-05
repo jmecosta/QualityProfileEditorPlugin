@@ -28,7 +28,7 @@ namespace SqaleUi.View
         {
             InitializeComponent();
 
-            this.DataContext = new SqaleEditorControlViewModel(new ConfigurationHelper());
+            this.DataContext = new SqaleEditorControlViewModel(new ConfigurationHelper(), null, null);
         }
 
         public SqaleEditorWindow(SqaleEditorControlViewModel model)

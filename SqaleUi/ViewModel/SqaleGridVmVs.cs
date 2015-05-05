@@ -99,7 +99,7 @@ namespace SqaleUi.ViewModel
             this.Project = resource;
             this.RestService = restService;
             this.Configuration = configuration;
-            this.SqaleManager = new SqaleManager();
+            this.SqaleManager = new SqaleManager(restService, configuration);
 
             this.ProfileRules = new ItemsChangeObservableCollection<Rule>(this);
             this.Profile = new CollectionViewSource { Source = this.ProfileRules }.View;

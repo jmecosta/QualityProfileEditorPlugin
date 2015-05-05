@@ -11,7 +11,7 @@
         
         <!-- Version settings -->
         <MajorVersionNumber           Condition="'$(MajorVersionNumber)'==''">3</MajorVersionNumber>
-        <MinorVersionNumber           Condition="'$(MinorVersionNumber)'==''">0</MinorVersionNumber>
+        <MinorVersionNumber           Condition="'$(MinorVersionNumber)'==''">1</MinorVersionNumber>
         <BuildNumber                  Condition="'$(BuildNumber)'==''">0</BuildNumber>
         <RevisionNumber               Condition="'$(RevisionNumber)'==''">0</RevisionNumber>
         <AssemblyPatcherTaskOn        Condition="'$(AssemblyPatcherTaskOn)'==''">false</AssemblyPatcherTaskOn>
@@ -40,7 +40,7 @@
     
     <!-- Basic settings -->
     <PropertyGroup>
-        <VSSonarExtensionVersion                                     Condition="'$(VSSonarExtensionVersion)'==''">3.0.0.0</VSSonarExtensionVersion>
+        <VSSonarExtensionVersion                                     Condition="'$(VSSonarExtensionVersion)'==''">3.1.0.0</VSSonarExtensionVersion>
         <VSSonarExtensionPluginsVersion                              Condition="'$(VSSonarExtensionPluginsVersion)'==''">$(MajorVersionNumber).$(MinorVersionNumber).$(BuildNumber).$(RevisionNumber)</VSSonarExtensionPluginsVersion>
     </PropertyGroup>
     

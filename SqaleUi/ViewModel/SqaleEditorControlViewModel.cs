@@ -61,6 +61,8 @@ namespace SqaleUi.ViewModel
         ///     The selected tab.
         /// </summary>
         private SqaleGridVm selectedTab;
+        private ISonarConfiguration configuration;
+        private ISonarRestService service;
 
         #endregion
 
@@ -88,8 +90,10 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     Initializes a new instance of the SqaleEditorControlViewModel class.
         /// </summary>
-        public SqaleEditorControlViewModel(IConfigurationHelper helper)
+        public SqaleEditorControlViewModel(IConfigurationHelper helper, ISonarRestService service, ISonarConfiguration configuration)
         {
+            this.service = service;
+            this.configuration = configuration;
             this.Tabs = new ObservableCollection<SqaleGridVm>();
             this.Tabs.CollectionChanged += TabsHaveChanged;
 
@@ -338,7 +342,7 @@ namespace SqaleUi.ViewModel
         /// </returns>
         public SqaleGridVm CreateNewWorkArea(bool showContextMenu, bool allowServerConnection = true)
         {
-            var newWorkArea = new SqaleGridVm(this, new SqaleManager())
+            var newWorkArea = new SqaleGridVm(this, new SqaleManager(this.service, this.configuration), this.service, this.configuration)
                                   {
                                       Header = "Non Saved Data: " + this.Tabs.Count, 
                                       ShowContextMenu = showContextMenu, 
@@ -361,7 +365,7 @@ namespace SqaleUi.ViewModel
         /// </param>
         public void CreateWorkAreaWithDataSet(ObservableCollection<Rule> profileRules)
         {
-            var newWorkAread = new SqaleGridVm(this, new SqaleManager()) { Header = "Non Saved Data: " + this.Tabs.Count };
+            var newWorkAread = new SqaleGridVm(this, new SqaleManager(this.service, this.configuration), this.service, this.configuration) { Header = "Non Saved Data: " + this.Tabs.Count };
             newWorkAread.CanSendToWorkAreaCommand = false;
             foreach (Rule profileRule in profileRules)
             {
@@ -524,7 +528,7 @@ namespace SqaleUi.ViewModel
 
         public void CreateNewProject(string fileName, ISonarConfiguration configuration, Resource resource, IConfigurationHelper vshelper)
         {
-            var project = new SqaleGridVm(this, new SqaleManager())
+            var project = new SqaleGridVm(this, new SqaleManager(this.service, this.configuration), this.service, this.configuration)
                               {
                                   Header = "Project",
                                   ShowContextMenu = true,

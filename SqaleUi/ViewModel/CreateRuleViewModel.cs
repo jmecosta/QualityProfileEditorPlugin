@@ -20,6 +20,7 @@ namespace SqaleUi.ViewModel
     using System.Windows;
     using System.Windows.Media;
 
+    using VSSonarPlugins;
     using VSSonarPlugins.Types;
 
     using GalaSoft.MvvmLight.Command;
@@ -61,14 +62,16 @@ namespace SqaleUi.ViewModel
         /// <param name="model">
         /// The model.
         /// </param>
-        public CreateRuleViewModel(ISqaleGridVm model)
+        public CreateRuleViewModel(ISqaleGridVm model, ISonarRestService service, ISonarConfiguration configuration)
         {
             this.BackGroundColor = Colors.Black;
             this.ForeGroundColor = Colors.White;
             this.Model = model;
-            this.Profile = new Profile();
+            this.Profile = new Profile(this.service, this.configuration);
             this.TemplateRules = new ObservableCollection<Rule>();
             this.ExecuteRefreshCustomRuleCommand();
+            this.service = service;
+            this.configuration = configuration;
 
             this.CanExecuteCreateCustomRuleCommand = false;
             this.CreateCustomRuleCommand = new RelayCommand(this.ExecuteCreateCustomRuleCommand);
@@ -231,7 +234,7 @@ namespace SqaleUi.ViewModel
             }
             else
             {
-                var profileTag = new Profile();
+                var profileTag = new Profile(this.service, this.configuration);
                 profileTag.Key = this.Profile.Key;
                 profileTag.Language = this.Profile.Language;
 
@@ -254,5 +257,8 @@ namespace SqaleUi.ViewModel
         public Color ForeGroundColor { get; set; }
 
         #endregion
+
+        public ISonarConfiguration configuration { get; set; }
+        public ISonarRestService service { get; set; }
     }
 }

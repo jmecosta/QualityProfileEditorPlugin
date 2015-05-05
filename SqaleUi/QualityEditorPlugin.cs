@@ -38,8 +38,10 @@ namespace SqaleUi
     [Export(typeof(IPlugin))]
     public class QualityEditorPlugin : IMenuCommandPlugin
     {
-        public QualityEditorPlugin()
+        private readonly ISonarRestService service;
+        public QualityEditorPlugin(ISonarRestService service)
         {
+            this.service = service;
             this.Desc = new PluginDescription
             {
                 Description = "Quality Editor Plugin",
@@ -175,7 +177,7 @@ namespace SqaleUi
             if (this.Editor == null)
             {
                 this.Model = new SqaleGridVmVs(project, new SonarRestService(new JsonSonarConnector()), configuration);
-                this.Editor = new SqaleGridVs(this.Model);                
+                this.Editor = new SqaleGridVs(this.Model);
             }
 
             return this.Editor;

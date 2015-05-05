@@ -24,9 +24,10 @@ open System.Text
 open System.Xml.Linq
 open SonarRestService
 open System.ComponentModel 
+open VSSonarPlugins
 open VSSonarPlugins.Types
 
-type SqaleManager() =
+type SqaleManager(service : ISonarRestService, conf : ISonarConfiguration) =
     let content = new StringBuilder()
     let importLog = new System.Collections.Generic.List<ImportLogEntry>()
     let SqaleDefaultModelDefinitionPath = "defaultmodel.xml"
@@ -37,7 +38,7 @@ type SqaleManager() =
         
     member x.GetDefaultSqaleModel() = 
 
-        let model = new SqaleModel()
+        let model = new SqaleModel(service, conf)
         let chars = SqaleDefaultModel.Model
         for char in chars do
             let charInModel = model.CreateAChar(char.Key, char.Name)
@@ -55,7 +56,7 @@ type SqaleManager() =
         model
 
     member x.ParseSqaleModelFromXmlFile(file : string) =
-        let model = new SqaleModel()
+        let model = new SqaleModel(service, conf)
         model.LoadSqaleModelFromFile(file)
         model
 

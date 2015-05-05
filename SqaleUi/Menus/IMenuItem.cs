@@ -17,6 +17,7 @@ namespace SqaleUi.Menus
     using System.Collections.ObjectModel;
     using System.Windows.Input;
 
+    using VSSonarPlugins;
     using VSSonarPlugins.Types;
 
     using GalaSoft.MvvmLight.Command;

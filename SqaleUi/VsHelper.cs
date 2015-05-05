@@ -570,5 +570,11 @@ namespace ExtensionHelpers
         {
             return "";
         }
+
+
+        public VsProjectItem GetProjectByNameInSolution(string projectName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

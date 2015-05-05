@@ -17,6 +17,7 @@ namespace SqaleUi.ViewModel
     using System.Collections.ObjectModel;
     using System.Windows;
 
+    using VSSonarPlugins;
     using VSSonarPlugins.Types;
 
     using GalaSoft.MvvmLight.Command;

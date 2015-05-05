@@ -26,6 +26,7 @@ namespace SqaleUi.ViewModel
 
     using PropertyChanged;
 
+    using VSSonarPlugins;
     using SonarRestService;
 
     using SqaleUi.Menus;

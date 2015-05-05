@@ -16,10 +16,11 @@ namespace SqaleManager
 open System
 open System.IO
 open VSSonarPlugins.Types
+open VSSonarPlugins
 open SonarRestService
 
-type SqaleModel() =
-    let profile : Profile = new Profile()
+type SqaleModel(service : ISonarRestService, conf : ISonarConfiguration) =
+    let profile : Profile = new Profile(service, conf)
     let mutable characteristics : Characteristic list = []
 
     member val profileName = "" with get, set

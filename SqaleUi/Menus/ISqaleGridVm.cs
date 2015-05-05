@@ -16,6 +16,7 @@ namespace SqaleUi.Menus
 {
     using System.Collections.Generic;
 
+    using VSSonarPlugins;
     using VSSonarPlugins.Types;
 
     using SonarRestService;

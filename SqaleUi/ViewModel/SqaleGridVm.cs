@@ -61,6 +61,8 @@ namespace SqaleUi.ViewModel
         ///     The selected rule.
         /// </summary>
         private Rule selectedRule;
+        private ISonarConfiguration configuration;
+        private ISonarRestService service;
 
         #endregion
 
@@ -95,8 +97,10 @@ namespace SqaleUi.ViewModel
         /// <param name="manager">
         /// The manager.
         /// </param>
-        public SqaleGridVm(SqaleEditorControlViewModel mainModel, SqaleManager manager)
+        public SqaleGridVm(SqaleEditorControlViewModel mainModel, SqaleManager manager, ISonarRestService service, ISonarConfiguration configuration)
         {
+            this.service = service;
+            this.configuration = configuration;
             this.mainModel = mainModel;
             this.SqaleManager = manager;
             this.ProfileRules = new ItemsChangeObservableCollection<Rule>(this);
@@ -1230,7 +1234,7 @@ namespace SqaleUi.ViewModel
             {
                 if (this.CreateRulesModel == null)
                 {
-                    this.CreateRulesModel = new CreateRuleViewModel(this);
+                    this.CreateRulesModel = new CreateRuleViewModel(this, this.service, this.configuration);
                 }
 
                 var rulecreationWindow = new CreateRuleWindow(this.CreateRulesModel);
@@ -1477,7 +1481,7 @@ namespace SqaleUi.ViewModel
             if (project.ConnectedToSonarServer)
             {
                 var model = new CustomRuleSectorViewModel();
-                var profile = new Profile();
+                var profile = new Profile(this.service, this.configuration);
                 profile.Key = project.QualityViewerModel.SelectedProfile.Key;
                 profile.Name = project.QualityViewerModel.SelectedProfile.Name;
                 project.RestService.GetTemplateRules(project.Configuration, profile);

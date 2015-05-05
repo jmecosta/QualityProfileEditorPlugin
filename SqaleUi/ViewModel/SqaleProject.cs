@@ -16,6 +16,8 @@ namespace SqaleUi
 {
     using System.Collections.ObjectModel;
     using System.IO;
+    using VSSonarPlugins;
+    using VSSonarPlugins.Types;
 
     using SqaleManager;
 
@@ -25,9 +27,9 @@ namespace SqaleUi
     public class SqaleProject
     {
 
-        public SqaleProject()
+        public SqaleProject(ISonarRestService service, ISonarConfiguration configuration)
         {
-            this.Manager = new SqaleManager();
+            this.Manager = new SqaleManager(service, configuration);
         }
 
         public SqaleManager Manager { get; set; }
