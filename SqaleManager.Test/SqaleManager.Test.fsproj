@@ -83,42 +83,28 @@
     </Content>
     <None Include="SqaleManager.Test.licenseheader" />
     <None Include="packages.config" />
+    <None Include="Foq.Usage.fsx" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="nunit.core">
-      <HintPath>..\packages\NUnitTestAdapter.2.0.0\lib\nunit.core.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="nunit.core.interfaces">
-      <HintPath>..\packages\NUnitTestAdapter.2.0.0\lib\nunit.core.interfaces.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    <Reference Include="Foq">
+      <HintPath>..\packages\Foq.1.7.1\Lib\net45\Foq.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="nunit.util">
-      <HintPath>..\packages\NUnitTestAdapter.2.0.0\lib\nunit.util.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="FSharp.Data">
+      <HintPath>..\packages\FSharp.Data.2.2.5\lib\net40\FSharp.Data.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="NUnit.VisualStudio.TestAdapter">
-      <HintPath>..\packages\NUnitTestAdapter.2.0.0\lib\NUnit.VisualStudio.TestAdapter.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.3.0.0-beta-3\lib\net45\nunit.framework.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="VSSonarPlugins, Version=$(VSSonarExtensionVersion)">
       <SpecificVersion>True</SpecificVersion>
       <HintPath>..\References\VSSonarPlugins.dll</HintPath>
     </Reference>
-    <Reference Include="Foq">
-      <HintPath>..\References\$(FSharpFolder)\Foq.dll</HintPath>
-    </Reference>
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <SpecificVersion>True</SpecificVersion>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="FSharp.Data, Version=2.1.1.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\references\$(FSharpFolder)\FSharp.Data.dll</HintPath>
-      <SpecificVersion>True</SpecificVersion>
     </Reference>
     <Reference Include="FsUnit.NUnit">
       <HintPath>..\References\$(FSharpFolder)\FsUnit.NUnit.dll</HintPath>

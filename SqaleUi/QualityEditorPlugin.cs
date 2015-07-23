@@ -39,6 +39,9 @@ namespace SqaleUi
     public class QualityEditorPlugin : IMenuCommandPlugin
     {
         private readonly ISonarRestService service;
+
+        List<string> dlls = new List<string>();
+
         public QualityEditorPlugin(ISonarRestService service)
         {
             this.service = service;
@@ -211,6 +214,20 @@ namespace SqaleUi
         public void UpdateConfiguration(ISonarConfiguration configuration, Resource project, IVsEnvironmentHelper vshelper)
         {
             this.Model.UpdateConfiguration(configuration, project, vshelper);
+        }
+
+        public IList<string> DllLocations()
+        {
+            return this.dlls;
+        }
+
+        public void SetDllLocation(string path)
+        {
+            this.dlls.Add(path);
+        }
+
+        public void Dispose()
+        {
         }
 
         #endregion

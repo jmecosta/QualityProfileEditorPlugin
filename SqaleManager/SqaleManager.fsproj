@@ -50,6 +50,14 @@
     </Otherwise>
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <Import Project="$(MSBuildFolder)\AssemblyPatcherTask.targets" />
   <ItemGroup>
     <Compile Include="TypeProviders.fs" />
     <Compile Include="QualityTypes.fs" />
@@ -61,22 +69,19 @@
       </SubType>
     </Compile>
     <None Include="SqaleManager.licenseheader" />
+    <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="FSharp.Data">
+      <HintPath>..\packages\FSharp.Data.2.2.5\lib\net40\FSharp.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="VSSonarPlugins, Version=$(VSSonarExtensionVersion)">
       <SpecificVersion>True</SpecificVersion>
       <HintPath>..\References\VSSonarPlugins.dll</HintPath>
     </Reference>
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <SpecificVersion>True</SpecificVersion>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="FSharp.Data, Version=2.1.1.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\references\$(FSharpFolder)\FSharp.Data.dll</HintPath>
-      <SpecificVersion>True</SpecificVersion>
-    </Reference>
-    <Reference Include="FSharp.Data.DesignTime">
-      <HintPath>..\References\$(FSharpFolder)\FSharp.Data.DesignTime.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
@@ -94,12 +99,4 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-  <Import Project="$(MSBuildFolder)\AssemblyPatcherTask.targets" />
 </Project>
