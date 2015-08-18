@@ -91,9 +91,10 @@
       <HintPath>..\packages\Foq.1.7.1\Lib\net45\Foq.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FSharp.Data">
-      <HintPath>..\packages\FSharp.Data.2.2.5\lib\net40\FSharp.Data.dll</HintPath>
+    <Reference Include="FSharp.Data, Version=$(TargetFSharpDataVersion), Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\References\$(FSharpFolder)\FSharp.Data.dll</HintPath>
       <Private>True</Private>
+      <SpecificVersion>True</SpecificVersion>
     </Reference>
     <Reference Include="nunit.framework, Version=3.0.5674.19278, Culture=neutral, PublicKeyToken=2638cd05610744eb">
       <HintPath>..\packages\NUnit.3.0.0-beta-3\lib\net45\nunit.framework.dll</HintPath>

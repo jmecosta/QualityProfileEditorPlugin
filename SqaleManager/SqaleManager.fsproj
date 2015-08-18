@@ -73,9 +73,10 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="FSharp.Data">
-      <HintPath>..\packages\FSharp.Data.2.2.5\lib\net40\FSharp.Data.dll</HintPath>
+    <Reference Include="FSharp.Data, Version=$(TargetFSharpDataVersion), Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\References\$(FSharpFolder)\FSharp.Data.dll</HintPath>
       <Private>True</Private>
+      <SpecificVersion>True</SpecificVersion>
     </Reference>
     <Reference Include="VSSonarPlugins, Version=$(VSSonarExtensionVersion)">
       <SpecificVersion>True</SpecificVersion>
