@@ -206,7 +206,7 @@ type RootConfigurationPropsChecksTests() =
     member test.``Get C++ Profile`` () = 
         let manager = new SqaleManager(Mock<ISonarRestService>().Create(), Mock<ISonarConfiguration>().Create())
         let model = manager.GetDefaultSqaleModel()
-        manager.AddProfileDefinitionFromServerToModel(model, "c++", "DefaultTeklaC++", new ConnectionConfiguration("http://sonar", "jocs1", "jocs1"))
+        manager.AddProfileDefinitionFromServerToModel(model, "c++", "DefaultTeklaC++", new ConnectionConfiguration("http://sonar", "jocs1", "jocs1", 4.5))
         manager.SaveSqaleModelAsXmlProject(model, "cxx-model-project-updated.xml")
         ()
 
