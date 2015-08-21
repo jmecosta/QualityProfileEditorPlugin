@@ -473,7 +473,7 @@ namespace SqaleUi.ViewModel
                             dialog.ConfirmCredentials(true);
                         }
 
-                        this.Configuration = new ConnectionConfiguration(this.ServerAddress, dialog.User, dialog.PasswordToString());
+                        this.Configuration = new ConnectionConfiguration(this.ServerAddress, dialog.User, dialog.PasswordToString(), 4.5);
                         this.ConnectedToServer = true;
                     }
                     else
