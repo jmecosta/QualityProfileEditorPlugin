@@ -1,4 +1,4 @@
-VSSonarQubeQualityEditorPlugin
+QualityEditorPlugin [![Build status](https://ci.appveyor.com/api/projects/status/ej9loegehd743voj?svg=true)](https://ci.appveyor.com/project/jorgecosta/qualityprofileeditorplugin)
 ==============================
 
 Plugin for VSSonarExtension to manage quality profiles. A standalone version of the plugin is available also.
