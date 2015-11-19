@@ -1056,7 +1056,7 @@ namespace SqaleUi.ViewModel
             List<Profile> profiles = this.RestService.GetProfilesUsingRulesApp(this.Configuration);
             foreach (SonarProject sonarProject in projects)
             {
-                if (!sonarProject.Key.Equals(this.Project.Key))
+                if (this.Project == null || !sonarProject.Key.Equals(this.Project.Key))
                 {
                     continue;
                 }
