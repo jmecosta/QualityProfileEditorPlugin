@@ -1,18 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
-    <Import Project="configuration.props" Condition="'$(MSBuildFolder)'==''"/>
-    <Import Project="$(MSBuildFolder)\TeklaNuget.tasks" Condition="'$(NugetRestoreTaskIncluded)'!='yes'"/>
-    <ItemGroup>
-        <QualityEditorPlugin Include="QualityEditorPlugin.sln" />
-    </ItemGroup>
-    
-    <Target Name="RestoreNuget"><NugetRestoreTask NugetExe="$(MSBuildFolder)\Nuget.exe" SolutionFile="QualityEditorPlugin.sln"/></Target>
+    <Import Project="$(MSBuildThisFileDirectory)configuration.props" Condition="'$(MSBuildFolder)'==''"/>
 
-    <Target Name="BuildPlugin" DependsOnTargets="RestoreNuget">
-        <MSBuild Projects="@(QualityEditorPlugin)" Properties="Configuration=Release;VSVersion=11.0" BuildInParallel="true" StopOnFirstFailure="true" />
-        <MSBuild Projects="@(QualityEditorPlugin)" Properties="Configuration=Release;VSVersion=12.0" BuildInParallel="true" StopOnFirstFailure="true" />
-        <MSBuild Projects="@(QualityEditorPlugin)" Properties="Configuration=Release;VSVersion=14.0" BuildInParallel="true" StopOnFirstFailure="true" />
-        
+    <Target Name="BuildPlugin">       
+        <MSBuild Projects="QualityEditorPlugin.sln" Properties="Configuration=Release;VisualStudioVersion=$(VisualStudioVersion)" BuildInParallel="true" StopOnFirstFailure="true" />
+        <Copy Condition="'$(SkipCopy)'!='Yes'" SourceFiles="$(MSBuildThisFileDirectory)BuildDrop/$(OutVsFolder)/QualityEditorPlugin.VSQ" DestinationFiles="$(EndVSQFile)"/>        
     </Target>
     
     <Target Name="Build" DependsOnTargets="BuildPlugin">

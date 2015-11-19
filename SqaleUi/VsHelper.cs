@@ -576,5 +576,25 @@ namespace ExtensionHelpers
         {
             throw new NotImplementedException();
         }
+
+        public VsProjectItem GetProjectByNameInSolution(string projectName, string solutionPath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetGuidForProject(string projectPath, string solutionPath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public VsProjectItem GetProjectByGuidInSolution(string projectGuid, string solutionPath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string EvaluatedValueForIncludeFile(string msbuildProjectFile, string filePath)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

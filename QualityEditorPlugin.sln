@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+# Visual Studio 2014
+VisualStudioVersion = 14.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "SqaleManager", "SqaleManager\SqaleManager.fsproj", "{D4B15DF6-2E17-4E95-B54E-D472FB13EB39}"
 EndProject

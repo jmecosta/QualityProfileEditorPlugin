@@ -86,6 +86,8 @@
     <Reference Include="System.Windows" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.ObjectModel" />
+    <Reference Include="System.Runtime" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.1.2.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -109,7 +111,6 @@
     <Compile Include="Menus\ISqaleGridVm.cs" />
     <Compile Include="ViewModel\CreateRuleViewModel.cs" />
     <Compile Include="ViewModel\IViewModelTheme.cs" />
-    <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ProjectViewModel.cs" />
     <Compile Include="ViewModel\SqaleGridVmVs.cs" />
     <Compile Include="ViewModel\TagEditorViewModel.cs" />
@@ -124,9 +125,7 @@
     <Compile Include="ViewModel\QualityViewerViewModel.cs" />
     <Compile Include="ViewModel\SqaleGridVm.cs" />
     <Compile Include="Menus\IMenuItem.cs" />
-    <Compile Include="helpers\ViewModelLocator.cs" />
     <Compile Include="ViewModel\CustomRuleSectorViewModel.cs" />
-    <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\ConfigurationHelper.cs" />
     <Compile Include="View\CustomRuleSelector.xaml.cs">
       <DependentUpon>CustomRuleSelector.xaml</DependentUpon>
@@ -264,7 +263,6 @@
     <DesignData Include="SampleData\TagEditorViewModelSampleData.xaml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(MSBuildFolder)\AssemblyPatcherTask.targets" />
   <PropertyGroup>
     <PackageFiles>
             $(OutputPath)SqaleManager.dll;

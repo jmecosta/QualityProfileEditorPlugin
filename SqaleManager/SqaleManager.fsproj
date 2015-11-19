@@ -58,7 +58,6 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Import Project="$(MSBuildFolder)\AssemblyPatcherTask.targets" />
   <ItemGroup>
     <Compile Include="TypeProviders.fs" />
     <Compile Include="QualityTypes.fs" />

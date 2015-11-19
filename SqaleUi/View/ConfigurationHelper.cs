@@ -58,7 +58,6 @@ namespace SqaleUi.View
             bool sync = false,
             bool skipIfExist = false)
         {
-            throw new NotImplementedException();
         }
     }
 }
