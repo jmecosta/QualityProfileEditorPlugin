@@ -2,6 +2,11 @@
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
     <Import Project="$(MSBuildThisFileDirectory)configuration.props" Condition="'$(MSBuildFolder)'==''"/>
 
+    <PropertyGroup>
+        <!-- Basic settings -->
+        <SkipCopy Condition="'$(SkipCopy)'==''">Yes</SkipCopy>
+    </PropertyGroup>  
+    
     <Target Name="BuildPlugin">       
         <MSBuild Projects="QualityEditorPlugin.sln" Properties="Configuration=Release;VisualStudioVersion=$(VisualStudioVersion)" BuildInParallel="true" StopOnFirstFailure="true" />
         <Copy Condition="'$(SkipCopy)'!='Yes'" SourceFiles="$(MSBuildThisFileDirectory)BuildDrop/$(OutVsFolder)/QualityEditorPlugin.VSQ" DestinationFiles="$(EndVSQFile)"/>        
