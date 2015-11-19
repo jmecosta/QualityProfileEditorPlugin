@@ -113,3 +113,7 @@ Backup*/
 UpgradeLog*.XML
 
 .sonar/
+buildlog2013.txt
+buildlog2015.txt
+QualityEditorPlugin2013.VSQ
+QualityEditorPlugin2015.VSQ

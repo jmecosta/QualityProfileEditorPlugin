@@ -9,7 +9,7 @@
     
     <Target Name="BuildPlugin">       
         <MSBuild Projects="QualityEditorPlugin.sln" Properties="Configuration=Release;VisualStudioVersion=$(VisualStudioVersion)" BuildInParallel="true" StopOnFirstFailure="true" />
-        <Copy Condition="'$(SkipCopy)'!='Yes'" SourceFiles="$(MSBuildThisFileDirectory)BuildDrop/$(OutVsFolder)/QualityEditorPlugin.VSQ" DestinationFiles="$(EndVSQFile)"/>        
+        <Copy Condition="'$(SkipCopy)'!='Yes'" SourceFiles="$(MSBuildThisFileDirectory)BuildDrop/$(OutFolder)/SqaleUi.VSQ" DestinationFiles="$(EndVSQFile)"/>        
     </Target>
     
     <Target Name="Build" DependsOnTargets="BuildPlugin">
