@@ -6,9 +6,9 @@
         <ReferencesFolder        Condition="'$(ReferencesFolder)'==''">$(MSBuildThisFileDirectory)references</ReferencesFolder>
         <MSBuildFolder           Condition="'$(MSBuildFolder)'==''">$(MSBuildThisFileDirectory)Msbuild</MSBuildFolder>
         
-        <GallioPath              Condition="'$(GallioPath)'==''">$(MSBuildThisFileDirectory)Msbuild\Gallio</GallioPath>
-        <OpenCoverPath           Condition="'$(OpenCoverPath)'==''">$(MSBuildThisFileDirectory)Msbuild\OpenCover</OpenCoverPath>
-        
+        <LegalCopyright        Condition="'$(LegalCopyright)' == ''">Copyright © 2015 jmecsoftware.com</LegalCopyright>
+        <CompanyName           Condition="'$(CompanyName)' == ''">jmecsoftware.com</CompanyName>
+    
         <!-- Version settings -->
         <MajorVersionNumber           Condition="'$(MajorVersionNumber)'==''">4</MajorVersionNumber>
         <MinorVersionNumber           Condition="'$(MinorVersionNumber)'==''">1</MinorVersionNumber>

@@ -23,9 +23,9 @@ open System.Runtime.InteropServices
 [<assembly: AssemblyTitle("SqaleManager")>]
 [<assembly: AssemblyDescription("")>]
 [<assembly: AssemblyConfiguration("")>]
-[<assembly: AssemblyCompany("")>]
+[<assembly: AssemblyCompany("jmecsoftware.com")>]
 [<assembly: AssemblyProduct("SqaleManager")>]
-[<assembly: AssemblyCopyright("Copyright ©  2011")>]
+[<assembly: AssemblyCopyright("Copyright © 2015 jmecsoftware.com")>]
 [<assembly: AssemblyTrademark("")>]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

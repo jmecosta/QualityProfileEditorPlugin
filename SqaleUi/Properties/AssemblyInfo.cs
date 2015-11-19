@@ -22,9 +22,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("SqaleUi")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("jmecsoftware.com")]
 [assembly: AssemblyProduct("SqaleUi")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyCopyright("Copyright © 2015 jmecsoftware.com")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

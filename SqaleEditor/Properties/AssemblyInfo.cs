@@ -23,9 +23,9 @@ using System.Windows;
 [assembly: AssemblyTitle("SqaleEditor")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("jmecsoftware.com")]
 [assembly: AssemblyProduct("SqaleEditor")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyCopyright("Copyright © 2015 jmecsoftware.com")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
