@@ -199,7 +199,7 @@ namespace SqaleUi.ViewModel
                 rule.Name = this.Name;
                 rule.Key = this.Key;
                 rule.Severity = this.SelectedSeverity;
-                rule.Description = this.Description;
+                rule.HtmlDescription = this.Description;
 
                 List<string> errors = this.Model.RestService.CreateRule(this.Model.Configuration, rule, this.SelectedRule);
 

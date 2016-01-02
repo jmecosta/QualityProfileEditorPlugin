@@ -93,18 +93,29 @@
       <HintPath>..\packages\Foq.1.7.1\Lib\net45\Foq.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FSharp.Data, Version=$(TargetFSharpDataVersion), Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\References\$(FSharpFolder)\FSharp.Data.dll</HintPath>
+    <Reference Include="FSharp.Data">
+      <HintPath>..\packages\VSSonarExtensionPlugin$(VSSonarExtensionVersion)\lib\FSharp.Data.dll</HintPath>
       <Private>True</Private>
-      <SpecificVersion>True</SpecificVersion>
+    </Reference>
+    <Reference Include="FSharp.Data.DesignTime">
+      <HintPath>..\packages\VSSonarExtensionPlugin$(VSSonarExtensionVersion)\lib\FSharp.Data.DesignTime.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.3.0.0\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="VSSonarPlugins, Version=$(VSSonarExtensionVersion)">
-      <SpecificVersion>True</SpecificVersion>
-      <HintPath>..\References\VSSonarPlugins.dll</HintPath>
+    <Reference Include="RestSharp">
+      <HintPath>..\packages\VSSonarExtensionPlugin$(VSSonarExtensionVersion)\lib\RestSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SonarRestService">
+      <HintPath>..\packages\VSSonarExtensionPlugin$(VSSonarExtensionVersion)\lib\SonarRestService.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="VSSonarPlugins">
+      <HintPath>..\packages\VSSonarExtensionPlugin$(VSSonarExtensionVersion)\lib\VSSonarPlugins.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <SpecificVersion>True</SpecificVersion>
@@ -123,6 +134,10 @@
       <Project>{d4b15df6-2e17-4e95-b54e-d472fb13eb39}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <Reference Include="VSSonarQubeCmdExecutor">
+      <HintPath>..\packages\VSSonarExtensionPlugin$(VSSonarExtensionVersion)\lib\VSSonarQubeCmdExecutor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <Import Project="..\packages\AssemblyPatcherTask.1.0.5\build\AssemblyPatcherTask.targets" Condition="Exists('..\packages\AssemblyPatcherTask.1.0.5\build\AssemblyPatcherTask.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

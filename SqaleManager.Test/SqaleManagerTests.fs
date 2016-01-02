@@ -56,7 +56,7 @@ type RootConfigurationPropsChecksTests() =
         Assert.That(rules.[2].Repo, Is.EqualTo("intel"))
         Assert.That(rules.[2].Category, Is.EqualTo(Category.RELIABILITY))
         Assert.That(rules.[2].ConfigKey, Is.EqualTo("intelXe.CrossThreadStackAccess@INTEL"))
-        Assert.That(rules.[2].Description, Is.EqualTo("Occurs when a thread accesses a different thread's stack."))
+        Assert.That(rules.[2].HtmlDescription, Is.EqualTo("Occurs when a thread accesses a different thread's stack."))
 
     [<Test>]
     member test.``Should Load Profile into Model With Old Format`` () = 
@@ -108,7 +108,7 @@ type RootConfigurationPropsChecksTests() =
         rule.Key <- "Example:RuleKey"
         rule.Name <- "Rule Name"
         rule.ConfigKey <- "Rule Name@Example"
-        rule.Description <- "this is description"
+        rule.HtmlDescription <- "this is description"
         rule.Category <- Category.MAINTAINABILITY
         rule.Subcategory <- SubCategory.READABILITY
         rule.RemediationFactorVal <- 10
@@ -142,7 +142,7 @@ type RootConfigurationPropsChecksTests() =
         rule.Key <- "RuleKey"
         rule.Name <- "Rule Name"
         rule.ConfigKey <- "Rule Name@Example"
-        rule.Description <- "this is description"
+        rule.HtmlDescription <- "this is description"
         rule.Category <- Category.MAINTAINABILITY
         rule.Subcategory <- SubCategory.READABILITY
         rule.RemediationFactorVal <- 10
@@ -160,7 +160,7 @@ type RootConfigurationPropsChecksTests() =
         Assert.That(rules.[0].Key, Is.EqualTo("RuleKey"))
         Assert.That(rules.[0].Name, Is.EqualTo("Rule Name"))
         Assert.That(rules.[0].ConfigKey, Is.EqualTo("Rule Name@Example"))
-        Assert.That(rules.[0].Description, Is.EqualTo("this is description"))
+        Assert.That(rules.[0].HtmlDescription, Is.EqualTo("this is description"))
         Assert.That(rules.[0].Category, Is.EqualTo(Category.MAINTAINABILITY))
         Assert.That(rules.[0].Subcategory, Is.EqualTo(SubCategory.READABILITY))
         Assert.That(rules.[0].RemediationFactorVal, Is.EqualTo(10))

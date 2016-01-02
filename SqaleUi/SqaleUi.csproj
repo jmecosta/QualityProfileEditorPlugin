@@ -46,6 +46,12 @@
       <SpecificVersion>True</SpecificVersion>
       <Private>True</Private>
     </Reference>
+    <Reference Include="FSharp.Data">
+      <HintPath>..\packages\VSSonarExtensionPlugin$(VSSonarExtensionVersion)\lib\FSharp.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="FSharp.Data.DesignTime">
+      <HintPath>..\packages\VSSonarExtensionPlugin$(VSSonarExtensionVersion)\lib\FSharp.Data.DesignTime.dll</HintPath>
+    </Reference>
     <Reference Include="GalaSoft.MvvmLight, Version=5.1.1.35049, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MvvmLightLibs.5.1.1.0\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
@@ -75,9 +81,11 @@
       <HintPath>..\packages\PropertyChanged.Fody.1.49.0\Lib\portable-net4+sl4+wp8+win8+wpa81+MonoAndroid16+MonoTouch40\PropertyChanged.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SonarRestService, Version=$(VSSonarExtensionVersion), Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>True</SpecificVersion>
-      <HintPath>..\References\$(FSharpFolder)\SonarRestService.dll</HintPath>
+    <Reference Include="RestSharp">
+      <HintPath>..\packages\VSSonarExtensionPlugin$(VSSonarExtensionVersion)\lib\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="SonarRestService">
+      <HintPath>..\packages\VSSonarExtensionPlugin$(VSSonarExtensionVersion)\lib\SonarRestService.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -101,9 +109,11 @@
     <Reference Include="UserCredentialsDialog">
       <HintPath>..\References\UserCredentialsDialog.dll</HintPath>
     </Reference>
-    <Reference Include="VSSonarPlugins, Version=$(VSSonarExtensionVersion)">
-      <SpecificVersion>True</SpecificVersion>
-      <HintPath>..\References\VSSonarPlugins.dll</HintPath>
+    <Reference Include="VSSonarPlugins">
+      <HintPath>..\packages\VSSonarExtensionPlugin$(VSSonarExtensionVersion)\lib\VSSonarPlugins.dll</HintPath>
+    </Reference>
+    <Reference Include="VSSonarQubeCmdExecutor">
+      <HintPath>..\packages\VSSonarExtensionPlugin$(VSSonarExtensionVersion)\lib\VSSonarQubeCmdExecutor.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>

@@ -709,7 +709,7 @@ namespace SqaleUi.ViewModel
                 {
                     if (rule.Enabled)
                     {
-                        List<string> reply = this.RestService.ActivateRule(this.Configuration, rule, this.SelectedProfile.Key);
+                        List<string> reply = this.RestService.ActivateRule(this.Configuration, rule.Key, rule.Severity.ToString(), this.SelectedProfile.Key);
                         if (reply != null && reply.Count != 0)
                         {
                             MessageBox.Show("Cannot Update Status Of Data in Server: " + reply.Aggregate(this.AggregateErrorStrings));
@@ -728,7 +728,7 @@ namespace SqaleUi.ViewModel
 
                 if (propertyChangedEventArgs.PropertyName.Equals("Severity") && rule.Enabled)
                 {
-                    this.RestService.ActivateRule(this.Configuration, rule, this.SelectedProfile.Key);
+                    this.RestService.ActivateRule(this.Configuration, rule.Key, rule.Severity.ToString(), this.SelectedProfile.Key);
                 }
 
                 if (propertyChangedEventArgs.PropertyName.Equals("Subcategory"))
@@ -871,7 +871,8 @@ namespace SqaleUi.ViewModel
                               {
                                   Category = rule.Category, 
                                   ConfigKey = rule.ConfigKey, 
-                                  Description = rule.Description, 
+                                  HtmlDescription = rule.HtmlDescription,
+                                  MarkDownDescription = rule.MarkDownDescription, 
                                   Key = rule.Key, 
                                   Name = rule.Name, 
                                   RemediationFactorTxt = rule.RemediationFactorTxt, 

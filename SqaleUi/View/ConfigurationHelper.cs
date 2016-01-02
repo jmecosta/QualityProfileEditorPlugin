@@ -10,6 +10,19 @@ namespace SqaleUi.View
 
     class ConfigurationHelper : IConfigurationHelper
     {
+        public string ApplicationPath
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public SonarQubeProperties ReadSetting(Context context, string owner, string key)
         {
             return new SonarQubeProperties() {Value = ""};

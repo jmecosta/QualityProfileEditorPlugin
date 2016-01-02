@@ -68,7 +68,7 @@ namespace SqaleUi.ViewModel
 
             var include = ((Rule)parameter).ConfigKey.IndexOf(this.filterOption.FilterTermConfigKey, StringComparison.InvariantCultureIgnoreCase)
                            >= 0
-                           && ((Rule)parameter).Description.IndexOf(
+                           && ((Rule)parameter).HtmlDescription.IndexOf(
                                this.filterOption.FilterTermDescription, 
                                StringComparison.InvariantCultureIgnoreCase) >= 0
                            && ((Rule)parameter).Key.IndexOf(this.filterOption.FilterTermKey, StringComparison.InvariantCultureIgnoreCase) >= 0

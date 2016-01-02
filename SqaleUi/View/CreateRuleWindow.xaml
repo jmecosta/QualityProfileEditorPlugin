@@ -9,7 +9,7 @@
     mc:Ignorable="d"
     x:Class="SqaleUi.CreateRuleWindow"
     x:Name="Window"
-    Title="Rule Creator Dialog" BorderThickness="1" Height="440.97" d:DesignWidth="845.612">
+    Title="Rule Creator Dialog" BorderThickness="1" Height="540.97" d:DesignWidth="845.612">
 
     <Window.Resources>
         <viewModel:CreateRuleViewModel x:Key="CreateRuleViewModelDataSource" d:IsDataSource="True" />
@@ -48,6 +48,7 @@
             <RowDefinition Height="25" />
             <RowDefinition Height="25" />
             <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
             <RowDefinition Height="25" />
             <RowDefinition Height="25" />
         </Grid.RowDefinitions>
@@ -80,13 +81,16 @@
         <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Name}" />
         <TextBlock Grid.Row="2" Grid.Column="0" Text="Key" HorizontalAlignment="Right" VerticalAlignment="Top" />
         <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Key}" />
-        <TextBlock Grid.Row="3" Grid.Column="0" Text="Description" HorizontalAlignment="Right" VerticalAlignment="Top" />
-        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Description}" TextWrapping="Wrap"
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Html" HorizontalAlignment="Right" VerticalAlignment="Top" />
+        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding HtmlDescription}" TextWrapping="Wrap"
                  VerticalScrollBarVisibility="Visible" AcceptsReturn="True" />
-        <TextBlock Grid.Row="4" Grid.Column="0" Text="Severity" HorizontalAlignment="Right" VerticalAlignment="Top" />
-        <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding Source={StaticResource GetSeverityEnumValues}}"
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="Markdown" HorizontalAlignment="Right" VerticalAlignment="Top" />
+        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding MarkDownDescription}" TextWrapping="Wrap"
+                 VerticalScrollBarVisibility="Visible" AcceptsReturn="True" />        
+        <TextBlock Grid.Row="5" Grid.Column="0" Text="Severity" HorizontalAlignment="Right" VerticalAlignment="Top" />
+        <ComboBox Grid.Row="5" Grid.Column="1" ItemsSource="{Binding Source={StaticResource GetSeverityEnumValues}}"
                   Width="Auto" SelectedValue="{Binding SelectedSeverity}" />
-        <Button Content="Create Rule" Grid.Row="5" Grid.Column="1" Command="{Binding CreateCustomRuleCommand}"
+        <Button Content="Create Rule" Grid.Row="6" Grid.Column="1" Command="{Binding CreateCustomRuleCommand}"
                 IsEnabled="{Binding CanExecuteCreateCustomRuleCommand}" />
     </Grid>
 </Controls:MetroWindow>

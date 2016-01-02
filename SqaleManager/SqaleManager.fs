@@ -91,7 +91,7 @@ type SqaleManager(service : ISonarRestService, conf : ISonarConfiguration) =
             addLine(sprintf """        <name><![CDATA[%s]]></name>""" rule.Name)
             addLine(sprintf """        <configKey><![CDATA[%s]]></configKey>""" rule.ConfigKey)
             addLine(sprintf """        <category name="%s" />""" (EnumHelper.getEnumDescription(rule.Category)))
-            addLine(sprintf """        <description><![CDATA[  %s  ]]></description>""" rule.Description)
+            addLine(sprintf """        <description><![CDATA[  %s  ]]></description>""" rule.HtmlDescription)
             addLine(sprintf """    </rule>""")
 
         addLine(sprintf """<?xml version="1.0" encoding="ASCII"?>""")
@@ -122,7 +122,7 @@ type SqaleManager(service : ISonarRestService, conf : ISonarConfiguration) =
                     createdRule.Category <- (EnumHelper.asEnum<Category>(rule.Category.Value)).Value                   
                 with
                 | ex -> ()
-                createdRule.Description <- rule.Description
+                createdRule.HtmlDescription <- rule.Description
                 createdRule.Name <- rule.Name
                 createdRule.EnableSetDeafaults <- true
                 if rule.Key.StartsWith(repo + ":") then
@@ -144,7 +144,7 @@ type SqaleManager(service : ISonarRestService, conf : ISonarConfiguration) =
                     createdRule.Category <- (EnumHelper.asEnum<Category>(rule.Category.Name)).Value
                 with
                 | ex -> ()
-                createdRule.Description <- rule.Description.Replace("![CDATA[", "").Replace("]]", "").Trim()
+                createdRule.HtmlDescription <- rule.Description.Replace("![CDATA[", "").Replace("]]", "").Trim()
                 createdRule.Name <- rule.Name.Replace("![CDATA[", "").Replace("]]", "").Trim()
                 if rule.Key.StartsWith(repo + ":") then
                     createdRule.Key <- rule.Key
@@ -328,7 +328,7 @@ type SqaleManager(service : ISonarRestService, conf : ISonarConfiguration) =
                 addLine(sprintf """        <severity>%s</severity>""" (EnumHelper.getEnumDescription(rule.Severity)), fileToWrite)
 
             addLine(sprintf """        <repo>%s</repo>""" rule.Repo, fileToWrite)
-            addLine(sprintf """        <description>%s</description>""" (EncodeStringAsXml(rule.Description).Trim()), fileToWrite)            
+            addLine(sprintf """        <description>%s</description>""" (EncodeStringAsXml(rule.HtmlDescription).Trim()), fileToWrite)            
             addLine(sprintf """    </rule>""", fileToWrite)
         addLine(sprintf """    </rules>""", fileToWrite)
         addLine(sprintf """</sqaleManager>""", fileToWrite)
@@ -364,7 +364,7 @@ type SqaleManager(service : ISonarRestService, conf : ISonarConfiguration) =
                 rule.Name <- item.Name
                 rule.Repo <- item.Repo
                 rule.ConfigKey <- item.Repo + ":" + item.Key
-                rule.Description <- item.Description
+                rule.HtmlDescription <- item.Description
                 rule.Category <- x.GetCategoryFromSubcategoryKey(model, EnumHelper.asEnum<SubCategory>(item.Requirement).Value)
                 rule.Subcategory <- (EnumHelper.asEnum<SubCategory>(item.Requirement)).Value
                 rule.RemediationFactorVal <- Int32.Parse(item.RemediationFactorVal.ToString())
@@ -394,7 +394,7 @@ type SqaleManager(service : ISonarRestService, conf : ISonarConfiguration) =
 
             for ruledef in rules do
                 if ruledef.Key.EndsWith(rule.Key, true, Globalization.CultureInfo.InvariantCulture) then
-                    createdRule.Description <- ruledef.Description
+                    createdRule.HtmlDescription <- ruledef.HtmlDescription
                     createdRule.Name <- ruledef.Name
                     createdRule.ConfigKey <- ruledef.ConfigKey
 

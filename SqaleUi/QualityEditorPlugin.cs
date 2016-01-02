@@ -155,7 +155,7 @@ namespace SqaleUi
         {
         }
 
-        public void AssociateProject(Resource project, ISonarConfiguration configuration)
+        public void AssociateProject(Resource project, ISonarConfiguration configuration, Dictionary<string, Profile> profile)
         {
             this.Model.Project = project;
         }
