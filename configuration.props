@@ -42,7 +42,7 @@
     
     <!-- Basic settings -->
     <PropertyGroup>
-		<VSSonarExtensionVersion                                     Condition="'$(VSVersion)'=='14.0'">$(VSSonarExtensionVersion)</VSSonarExtensionVersion>
+		<VSSonarExtensionVersion                                     Condition="'$(VSVersion)'=='14.0'">4Api.5.0.0</VSSonarExtensionVersion>	
     </PropertyGroup>
     
     </Project>
