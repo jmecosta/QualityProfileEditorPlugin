@@ -1063,7 +1063,7 @@ namespace SqaleUi.ViewModel
                 }
 
                 this.SonarProject = sonarProject;
-                foreach (Profile profile in this.RestService.GetQualityProfilesForProject(this.Configuration, sonarProject.Key))
+                foreach (Profile profile in this.RestService.GetQualityProfilesForProject(this.Configuration, new Resource { Key = sonarProject.Key }))
                 {
                     foreach (Profile profile1 in profiles)
                     {

@@ -227,7 +227,7 @@ namespace SqaleUi.ViewModel
                 List<Profile> profiles = this.Service.GetProfilesUsingRulesApp(this.Configuration);
                 foreach (SonarProject sonarProject in projects)
                 {
-                    foreach (Profile profile in this.Service.GetQualityProfilesForProject(this.Configuration, sonarProject.Key))
+                    foreach (Profile profile in this.Service.GetQualityProfilesForProject(this.Configuration, new Resource { Key = sonarProject.Key }))
                     {
                         foreach (Profile profile1 in profiles)
                         {
