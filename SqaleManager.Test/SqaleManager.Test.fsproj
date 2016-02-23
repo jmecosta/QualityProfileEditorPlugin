@@ -53,6 +53,10 @@
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
     <None Include="app.config" />
+    <Compile Include="AssemblyInfo.fs">
+      <SubType>
+      </SubType>
+    </Compile>    
     <Compile Include="SqaleManagerTests.fs" />
     <Content Include="samples/compiler.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
