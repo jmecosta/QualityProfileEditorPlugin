@@ -596,5 +596,20 @@ namespace ExtensionHelpers
         {
             throw new NotImplementedException();
         }
+
+        public void SetCurrentDocumentInView(string fullName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetCurrentDocumentInView()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DoIHaveAdminRights()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
