@@ -213,6 +213,12 @@ namespace SqaleUi
         /// </param>
         public void UpdateConfiguration(ISonarConfiguration configuration, Resource project, IVsEnvironmentHelper vshelper)
         {
+            if (this.Editor == null)
+            {
+                this.Model = new SqaleGridVmVs(project, new SonarRestService(new JsonSonarConnector()), configuration);
+                this.Editor = new SqaleGridVs(this.Model);
+            }
+
             this.Model.UpdateConfiguration(configuration, project, vshelper);
         }
 
