@@ -239,5 +239,15 @@ namespace SqaleUi
         #endregion
 
         public PluginDescription Desc { get; set; }
+
+
+        /// <summary>
+        /// Called when [connect to sonar].
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
+        public void OnConnectToSonar(ISonarConfiguration configuration)
+        {
+            // nothing
+        }
     }
 }
