@@ -153,10 +153,10 @@
             CanUserSortColumns="True">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseRightButtonUp">
-                    <command:EventToCommand Command="{Binding MouseEventCommand}" PassEventArgsToCommand="True" />
+                    <i:InvokeCommandAction Command="{Binding MouseEventCommand}"  />
                 </i:EventTrigger>
                 <i:EventTrigger EventName="SelectionChanged">
-                    <command:EventToCommand Command="{Binding SelectionChangedCommand}"
+                    <i:InvokeCommandAction Command="{Binding SelectionChangedCommand}"
                                             CommandParameter="{Binding SelectedItems, ElementName=Datagrid}" />
                 </i:EventTrigger>
 

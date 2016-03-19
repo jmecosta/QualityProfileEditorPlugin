@@ -18,8 +18,6 @@ namespace SqaleUi.Menus
     using System.Collections.ObjectModel;
     using System.Windows.Input;
 
-    using GalaSoft.MvvmLight.Command;
-
     using SqaleUi.ViewModel;
 
     /// <summary>

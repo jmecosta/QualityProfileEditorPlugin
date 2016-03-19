@@ -29,6 +29,7 @@ namespace ExtensionHelpers
     using Microsoft.VisualStudio.Text.Editor;
 
     using VSSonarPlugins;
+    using Microsoft.CodeAnalysis;
 
     /// <summary>
     /// The vs properties helper.
@@ -608,6 +609,11 @@ namespace ExtensionHelpers
         }
 
         public bool DoIHaveAdminRights()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Microsoft.CodeAnalysis.Solution GetCurrentRoslynSolution()
         {
             throw new NotImplementedException();
         }

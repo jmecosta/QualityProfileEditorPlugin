@@ -23,15 +23,13 @@ namespace SqaleUi.ViewModel
     using VSSonarPlugins;
     using VSSonarPlugins.Types;
 
-    using GalaSoft.MvvmLight.Command;
-
     using PropertyChanged;
 
     using SqaleUi.Menus;
-
-    /// <summary>
-    ///     The create rule view model.
-    /// </summary>
+    using System.Windows.Input;
+    using ViewModel;    /// <summary>
+                        ///     The create rule view model.
+                        /// </summary>
     [ImplementPropertyChanged]
     public class CreateRuleViewModel : IViewModelTheme
     {
@@ -69,13 +67,13 @@ namespace SqaleUi.ViewModel
             this.Model = model;
             this.Profile = new Profile(this.service, this.configuration);
             this.TemplateRules = new ObservableCollection<Rule>();
-            this.ExecuteRefreshCustomRuleCommand();
+            this.ExecuteRefreshCustomRuleCommand(null);
             this.service = service;
             this.configuration = configuration;
 
             this.CanExecuteCreateCustomRuleCommand = false;
-            this.CreateCustomRuleCommand = new RelayCommand(this.ExecuteCreateCustomRuleCommand);
-            this.RefreshCustomRuleCommand = new RelayCommand(this.ExecuteRefreshCustomRuleCommand);
+            this.CreateCustomRuleCommand = new RelayCommand<object>(this.ExecuteCreateCustomRuleCommand);
+            this.RefreshCustomRuleCommand = new RelayCommand<object>(this.ExecuteRefreshCustomRuleCommand);
         }
 
         /// <summary>
@@ -92,11 +90,11 @@ namespace SqaleUi.ViewModel
             this.Model = model;
             this.Profile = selectedProfile;
             this.TemplateRules = new ObservableCollection<Rule>();
-            this.ExecuteRefreshCustomRuleCommand();
+            this.ExecuteRefreshCustomRuleCommand(null);
 
             this.CanExecuteCreateCustomRuleCommand = false;
-            this.CreateCustomRuleCommand = new RelayCommand(this.ExecuteCreateCustomRuleCommand);
-            this.RefreshCustomRuleCommand = new RelayCommand(this.ExecuteRefreshCustomRuleCommand);
+            this.CreateCustomRuleCommand = new RelayCommand<object>(this.ExecuteCreateCustomRuleCommand);
+            this.RefreshCustomRuleCommand = new RelayCommand<object>(this.ExecuteRefreshCustomRuleCommand);
         }
 
         #endregion
@@ -111,7 +109,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     Gets or sets the create custom rule command.
         /// </summary>
-        public RelayCommand CreateCustomRuleCommand { get; set; }
+        public ICommand CreateCustomRuleCommand { get; set; }
 
         /// <summary>
         /// Gets or sets the description.
@@ -141,7 +139,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         /// Gets or sets the refresh custom rule command.
         /// </summary>
-        public RelayCommand RefreshCustomRuleCommand { get; set; }
+        public ICommand RefreshCustomRuleCommand { get; set; }
 
         /// <summary>
         ///     Gets or sets the selected rule.
@@ -185,7 +183,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     The execute create custom rule command.
         /// </summary>
-        private void ExecuteCreateCustomRuleCommand()
+        private void ExecuteCreateCustomRuleCommand(object data)
         {
             if (string.IsNullOrEmpty(this.Name) || string.IsNullOrEmpty(this.Key) || string.IsNullOrEmpty(this.Description))
             {
@@ -218,7 +216,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         /// The execute refresh custom rule command.
         /// </summary>
-        private void ExecuteRefreshCustomRuleCommand()
+        private void ExecuteRefreshCustomRuleCommand(object data)
         {
             this.TemplateRules.Clear();
             

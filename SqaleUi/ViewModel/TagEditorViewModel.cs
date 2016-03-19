@@ -18,11 +18,7 @@ namespace SqaleUi.ViewModel
     using VSSonarPlugins;
     using VSSonarPlugins.Types;
 
-    using GalaSoft.MvvmLight.Command;
-
     using PropertyChanged;
-
-    using SonarRestService;
 
     using SqaleUi.Menus;
 
@@ -99,13 +95,13 @@ namespace SqaleUi.ViewModel
             this.CanExecuteAddSelectedTags = false;
             this.CanExecuteRefreshTags = false;
             this.CanExecuteRemoveSelected = false;
-            this.AddSelectedTagCommand = new RelayCommand(this.ExecuteAddSelectedTags);
-            this.RefreshTagsCommand = new RelayCommand(this.RefreshAvailableTagsInServer, () => this.CanExecuteRefreshTags);
-            this.RemoveSelectedCommand = new RelayCommand(this.ExecuteRemoveSelected);
+            this.AddSelectedTagCommand = new RelayCommand<object>(this.ExecuteAddSelectedTags);
+            this.RefreshTagsCommand = new RelayCommand<object>(this.RefreshAvailableTagsInServer);
+            this.RemoveSelectedCommand = new RelayCommand<object>(this.ExecuteRemoveSelected);
 
             this.SelectionChangedCommand = new RelayCommand<List<string>>(items => { this.SelectedTags = items; });
 
-            this.RefreshAvailableTagsInServer();
+            this.RefreshAvailableTagsInServer(null);
 
             this.RefreshTagsInRule();
         }
@@ -147,7 +143,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     Gets or sets the remove selected command.
         /// </summary>
-        public RelayCommand RemoveSelectedCommand { get; set; }
+        public ICommand RemoveSelectedCommand { get; set; }
 
         /// <summary>
         ///     Gets or sets the selected tag in rule.
@@ -219,7 +215,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     The refresh available tags in server.
         /// </summary>
-        public void RefreshAvailableTagsInServer()
+        public void RefreshAvailableTagsInServer(object data)
         {
             var tags = this.service.GetAllTags(this.conf);
             this.AvailableTags.Clear();
@@ -270,7 +266,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     The execute add selected tags.
         /// </summary>
-        private void ExecuteAddSelectedTags()
+        private void ExecuteAddSelectedTags(object data)
         {
             if (this.SelectedTagInServer == null)
             {
@@ -298,7 +294,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     The execute remove selected.
         /// </summary>
-        private void ExecuteRemoveSelected()
+        private void ExecuteRemoveSelected(object data)
         {
             if (this.SelectedTagInRule == null)
             {

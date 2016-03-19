@@ -14,7 +14,6 @@
 
 namespace SqaleUi.ViewModel
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Windows;
@@ -22,15 +21,13 @@ namespace SqaleUi.ViewModel
 
     using VSSonarPlugins.Types;
 
-    using GalaSoft.MvvmLight.Command;
-
     using PropertyChanged;
 
     using VSSonarPlugins;
     using SonarRestService;
 
     using SqaleUi.Menus;
-
+    using System.Windows.Input;
     /// <summary>
     ///     The server project viewer view model.
     /// </summary>
@@ -86,7 +83,7 @@ namespace SqaleUi.ViewModel
             this.Projects = new ObservableCollection<SonarProject>();
             this.StartCommand();
 
-            this.ExecuteRefreshDataCommand();
+            this.ExecuteRefreshDataCommand(null);
         }
 
         #endregion
@@ -126,7 +123,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         /// Gets or sets the refresh data command.
         /// </summary>
-        public RelayCommand RefreshDataCommand { get; set; }
+        public ICommand RefreshDataCommand { get; set; }
 
         /// <summary>
         /// Gets or sets the selected profile.
@@ -209,7 +206,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         /// The execute refresh data command.
         /// </summary>
-        private void ExecuteRefreshDataCommand()
+        private void ExecuteRefreshDataCommand(object data)
         {
             this.Projects.Clear();
             this.Profiles.Clear();
@@ -251,7 +248,7 @@ namespace SqaleUi.ViewModel
         private void StartCommand()
         {
             this.ImportProfileCommand = new RelayCommand<Window>(this.ExecuteImportProfileCommand);
-            this.RefreshDataCommand = new RelayCommand(this.ExecuteRefreshDataCommand);
+            this.RefreshDataCommand = new RelayCommand<object>(this.ExecuteRefreshDataCommand);
         }
 
         public void UpdateColors(Color background, Color foreground)

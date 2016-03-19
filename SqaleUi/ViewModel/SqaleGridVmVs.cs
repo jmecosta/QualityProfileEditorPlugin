@@ -29,12 +29,7 @@ namespace SqaleUi.ViewModel
 
     using VSSonarPlugins.Types;
 
-    using GalaSoft.MvvmLight;
-    using GalaSoft.MvvmLight.Command;
-
     using PropertyChanged;
-
-    using SonarRestService;
 
     using SqaleManager;
 
@@ -48,7 +43,7 @@ namespace SqaleUi.ViewModel
     ///     The filtering sub view model.
     /// </summary>
     [ImplementPropertyChanged]
-    public class SqaleGridVmVs : ViewModelBase, IFilterOption, IDataModel, ISqaleGridVm, IViewModelTheme
+    public class SqaleGridVmVs : IFilterOption, IDataModel, ISqaleGridVm, IViewModelTheme
     {
         #region Fields
 
@@ -75,11 +70,6 @@ namespace SqaleUi.ViewModel
             this.ProfileRules = new ItemsChangeObservableCollection<Rule>(this);
             this.Profile = new CollectionViewSource { Source = this.ProfileRules }.View;
             this.RulesCounter = "0";
-
-            if (this.IsInDesignMode)
-            {
-                this.ProfileRules.Add(new Rule());
-            }
         }
 
         /// <summary>
@@ -126,12 +116,12 @@ namespace SqaleUi.ViewModel
             // project options
             this.CanAddNewRuleCommand = true;
             this.CanRemoveRuleCommand = false;
-            this.AddNewRuleCommand = new RelayCommand(this.ExecuteAddNewRuleCommand);
-            this.RemoveRuleCommand = new RelayCommand(this.ExecuteRemoveRuleCommand);
+            this.AddNewRuleCommand = new RelayCommand<object>(this.ExecuteAddNewRuleCommand);
+            this.RemoveRuleCommand = new RelayCommand<object>(this.ExecuteRemoveRuleCommand);
 
             // import export
             this.CanExportSaqleModelCommand = true;
-            this.ExportSaqleModelCommand = new RelayCommand(this.ExecuteExportSaqleModelCommand);
+            this.ExportSaqleModelCommand = new RelayCommand<object>(this.ExecuteExportSaqleModelCommand);
 
             this.InitProfiles();
 
@@ -947,7 +937,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     The execute add new rule command.
         /// </summary>
-        private void ExecuteAddNewRuleCommand()
+        private void ExecuteAddNewRuleCommand(object data)
         {
             if (this.SelectedProfile == null)
             {
@@ -968,7 +958,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     The execute export saqle model command.
         /// </summary>
-        private void ExecuteExportSaqleModelCommand()
+        private void ExecuteExportSaqleModelCommand(object data)
         {
             if (this.ProfileRules.Count == 0)
             {
@@ -995,7 +985,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     The execute remove rule command.
         /// </summary>
-        private void ExecuteRemoveRuleCommand()
+        private void ExecuteRemoveRuleCommand(object data)
         {
             if (this.SelectedRule != null)
             {

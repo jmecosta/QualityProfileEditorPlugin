@@ -20,10 +20,8 @@ namespace SqaleUi.ViewModel
 
     using VSSonarPlugins.Types;
 
-    using GalaSoft.MvvmLight.Command;
-
     using PropertyChanged;
-
+    using System.Windows.Input;
     /// <summary>
     ///     The custom rule sector view model.
     /// </summary>
@@ -53,7 +51,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         /// Gets or sets the select rule command.
         /// </summary>
-        public RelayCommand<Window> SelectRuleCommand { get; set; }
+        public ICommand SelectRuleCommand { get; set; }
 
         /// <summary>
         /// Gets or sets the selected rule.

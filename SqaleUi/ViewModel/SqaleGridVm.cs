@@ -24,9 +24,6 @@ namespace SqaleUi.ViewModel
 
     using VSSonarPlugins.Types;
 
-    using GalaSoft.MvvmLight;
-    using GalaSoft.MvvmLight.Command;
-
     using PropertyChanged;
 
     using SonarRestService;
@@ -39,11 +36,83 @@ namespace SqaleUi.ViewModel
 
     using VSSonarPlugins;
 
+    public class RelayCommand<T> : ICommand
+    {
+        #region Fields
+
+        readonly Action<T> _execute = null;
+        readonly Predicate<T> _canExecute = null;
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="DelegateCommand{T}"/>.
+        /// </summary>
+        /// <param name="execute">Delegate to execute when Execute is called on the command.  This can be null to just hook up a CanExecute delegate.</param>
+        /// <remarks><seealso cref="CanExecute"/> will always return true.</remarks>
+        public RelayCommand(Action<T> execute)
+            : this(execute, null)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new command.
+        /// </summary>
+        /// <param name="execute">The execution logic.</param>
+        /// <param name="canExecute">The execution status logic.</param>
+        public RelayCommand(Action<T> execute, Predicate<T> canExecute)
+        {
+            if (execute == null)
+                throw new ArgumentNullException("execute");
+
+            _execute = execute;
+            _canExecute = canExecute;
+        }
+
+        #endregion
+
+        #region ICommand Members
+
+        ///<summary>
+        ///Defines the method that determines whether the command can execute in its current state.
+        ///</summary>
+        ///<param name="parameter">Data used by the command.  If the command does not require data to be passed, this object can be set to null.</param>
+        ///<returns>
+        ///true if this command can be executed; otherwise, false.
+        ///</returns>
+        public bool CanExecute(object parameter)
+        {
+            return _canExecute == null ? true : _canExecute((T)parameter);
+        }
+
+        ///<summary>
+        ///Occurs when changes occur that affect whether or not the command should execute.
+        ///</summary>
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        ///<summary>
+        ///Defines the method to be called when the command is invoked.
+        ///</summary>
+        ///<param name="parameter">Data used by the command. If the command does not require data to be passed, this object can be set to <see langword="null" />.</param>
+        public void Execute(object parameter)
+        {
+            _execute((T)parameter);
+        }
+
+        #endregion
+    }
+
     /// <summary>
     ///     The filtering sub view model.
     /// </summary>
     [ImplementPropertyChanged]
-    public class SqaleGridVm : ViewModelBase, IFilterOption, IDataModel, ISqaleGridVm, IViewModelTheme
+    public class SqaleGridVm : IFilterOption, IDataModel, ISqaleGridVm, IViewModelTheme
     {
         #region Fields
 
@@ -76,11 +145,6 @@ namespace SqaleUi.ViewModel
             this.ProfileRules = new ItemsChangeObservableCollection<Rule>(this);
             this.Profile = new CollectionViewSource { Source = this.ProfileRules }.View;
             this.RulesCounter = "0";
-
-            if (this.IsInDesignMode)
-            {
-                this.ProfileRules.Add(new Rule());
-            }
         }
 
         /// <summary>
@@ -160,29 +224,27 @@ namespace SqaleUi.ViewModel
             this.CanSendToProject = false;
             this.CanAddNewRuleCommand = true;
             this.CanRemoveRuleCommand = false;
-            this.SendToWorkAreaCommand = new RelayCommand(this.ExecuteSendToWorkAreaCommand, () => this.CanSendToWorkAreaCommand);
-            this.SendToProject = new RelayCommand(this.ExecuteSendToProject, () => this.CanSendToProject);
-            this.AddNewRuleCommand = new RelayCommand(this.ExecuteAddNewRuleCommand, () => this.CanAddNewRuleCommand);
-            this.RemoveRuleCommand = new RelayCommand(this.ExecuteRemoveRuleCommand);
+            this.SendToWorkAreaCommand = new RelayCommand<object>(this.ExecuteSendToWorkAreaCommand);
+            this.SendToProject = new RelayCommand<object>(this.ExecuteSendToProject);
+            this.AddNewRuleCommand = new RelayCommand<object>(this.ExecuteAddNewRuleCommand);
+            this.RemoveRuleCommand = new RelayCommand<object>(this.ExecuteRemoveRuleCommand);
 
             // import export
             this.CanImportXmlProfileCommand = true;
             this.CanImportProfileCommand = true;
             this.CanImportSqaleModelCommand = true;
             this.CanExportSaqleModelCommand = true;
-            this.ImportXmlProfileCommand = new RelayCommand(this.ExecuteImportXmlProfileCommand, () => this.CanImportXmlProfileCommand);
-            this.ImportProfileCommand = new RelayCommand(this.ExecuteImportProfileCommand, () => this.CanImportProfileCommand);
-            this.ImportSqaleModelCommand = new RelayCommand(this.ExecuteImportSqaleModelCommand, () => this.CanImportSqaleModelCommand);
-            this.ExportSaqleModelCommand = new RelayCommand(this.ExecuteExportSaqleModelCommand, () => this.CanExportSaqleModelCommand);
+            this.ImportXmlProfileCommand = new RelayCommand<object>(this.ExecuteImportXmlProfileCommand);
+            this.ImportProfileCommand = new RelayCommand<object>(this.ExecuteImportProfileCommand);
+            this.ImportSqaleModelCommand = new RelayCommand<object>(this.ExecuteImportSqaleModelCommand);
+            this.ExportSaqleModelCommand = new RelayCommand<object>(this.ExecuteExportSaqleModelCommand);
 
             // server imports
             this.CanImportFromSonarServer = true;
-            this.ImportServerQualityProfileFromProjectCommand = new RelayCommand(
-                this.ExecuteImportServerQualityProfileFromProjectCommand, 
-                () => this.CanImportFromSonarServer);
-            this.ImportServerQualityProfileCommand = new RelayCommand(
-                this.ExecuteImportServerQualityProfileCommand, 
-                () => this.CanImportFromSonarServer);
+            this.ImportServerQualityProfileFromProjectCommand = new RelayCommand<object>(
+                this.ExecuteImportServerQualityProfileFromProjectCommand);
+            this.ImportServerQualityProfileCommand = new RelayCommand<object>(
+                this.ExecuteImportServerQualityProfileCommand);
         }
 
         #endregion
@@ -287,7 +349,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         /// Gets or sets the filter clear all command.
         /// </summary>
-        public RelayCommand<object> FilterClearAllCommand { get; set; }
+        public ICommand FilterClearAllCommand { get; set; }
 
         /// <summary>
         ///     Gets or sets the filter clear remediation category command.
@@ -531,7 +593,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     Gets the selection changed command.
         /// </summary>
-        public RelayCommand<IList> SelectionChangedCommand { get; private set; }
+        public ICommand SelectionChangedCommand { get; private set; }
 
         /// <summary>
         ///     Gets or sets the send to project.
@@ -1230,7 +1292,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     The execute add new rule command.
         /// </summary>
-        private void ExecuteAddNewRuleCommand()
+        private void ExecuteAddNewRuleCommand(object data)
         {
             if (this.ConnectedToSonarServer)
             {
@@ -1257,7 +1319,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     The execute export saqle model command.
         /// </summary>
-        private void ExecuteExportSaqleModelCommand()
+        private void ExecuteExportSaqleModelCommand(object data)
         {
             if (this.ProfileRules.Count == 0)
             {
@@ -1284,7 +1346,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     The execute import profile command.
         /// </summary>
-        private void ExecuteImportProfileCommand()
+        private void ExecuteImportProfileCommand(object data)
         {
             // Do something 
             var filedialog = new OpenFileDialog { Filter = @"Xml Profile|*.xml" };
@@ -1311,7 +1373,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     The execute import server quality profile command.
         /// </summary>
-        private void ExecuteImportServerQualityProfileCommand()
+        private void ExecuteImportServerQualityProfileCommand(object data)
         {
             if (this.ProfileRules.Count > 0)
             {
@@ -1348,7 +1410,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     The execute import server quality profile command.
         /// </summary>
-        private void ExecuteImportServerQualityProfileFromProjectCommand()
+        private void ExecuteImportServerQualityProfileFromProjectCommand(object data)
         {
             if (this.ProfileRules.Count > 0)
             {
@@ -1397,7 +1459,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     The execute import sqale model command.
         /// </summary>
-        private void ExecuteImportSqaleModelCommand()
+        private void ExecuteImportSqaleModelCommand(object data)
         {
             // Do something 
             var filedialog = new OpenFileDialog { Filter = @"Xml Sqale model|*.xml" };
@@ -1423,7 +1485,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     The execute import xml profile command.
         /// </summary>
-        private void ExecuteImportXmlProfileCommand()
+        private void ExecuteImportXmlProfileCommand(object data)
         {
             // Do something 
             var filedialog = new OpenFileDialog { Filter = @"Rules Xml Definition|*.xml" };
@@ -1452,7 +1514,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     The execute remove rule command.
         /// </summary>
-        private void ExecuteRemoveRuleCommand()
+        private void ExecuteRemoveRuleCommand(object data)
         {
             if (this.SelectedRule != null)
             {
@@ -1473,7 +1535,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     The execute send to project.
         /// </summary>
-        private void ExecuteSendToProject()
+        private void ExecuteSendToProject(object data)
         {
             this.IsDirty = false;
 
@@ -1553,7 +1615,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     The execute send to work area command.
         /// </summary>
-        private void ExecuteSendToWorkAreaCommand()
+        private void ExecuteSendToWorkAreaCommand(object data)
         {
             SqaleGridVm workArea = this.mainModel.CreateNewWorkArea(false, !this.ConnectedToSonarServer);
 

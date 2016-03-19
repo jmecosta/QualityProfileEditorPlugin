@@ -20,12 +20,10 @@ namespace SqaleUi.ViewModel
     using VSSonarPlugins;
     using VSSonarPlugins.Types;
 
-    using GalaSoft.MvvmLight.Command;
-
     using PropertyChanged;
 
     using SonarRestService;
-
+    using System.Windows.Input;
     /// <summary>
     ///     The server project viewer view model.
     /// </summary>
@@ -64,7 +62,7 @@ namespace SqaleUi.ViewModel
             this.RestService = service;
             this.Service = new SonarRestService(new JsonSonarConnector());
             this.StartCommand();
-            this.ExecuteRefreshDataCommand();
+            this.ExecuteRefreshDataCommand(null);
         }
 
         #endregion
@@ -84,7 +82,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     Gets or sets the import profile command.
         /// </summary>
-        public RelayCommand<Window> ImportProfileCommand { get; set; }
+        public ICommand ImportProfileCommand { get; set; }
 
         /// <summary>
         ///     Gets or sets the projects.
@@ -94,7 +92,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     Gets or sets the refresh data command.
         /// </summary>
-        public RelayCommand RefreshDataCommand { get; set; }
+        public ICommand RefreshDataCommand { get; set; }
 
         /// <summary>
         ///     Gets or sets the selected profile.
@@ -145,7 +143,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     The execute refresh data command.
         /// </summary>
-        private void ExecuteRefreshDataCommand()
+        private void ExecuteRefreshDataCommand(object data)
         {
             this.Projects = new ObservableCollection<Resource>(this.RestService.GetProjectsList(this.Configuration));
         }
@@ -156,7 +154,7 @@ namespace SqaleUi.ViewModel
         private void StartCommand()
         {
             this.ImportProfileCommand = new RelayCommand<Window>(this.ExecuteImportProfileCommand);
-            this.RefreshDataCommand = new RelayCommand(this.ExecuteRefreshDataCommand);
+            this.RefreshDataCommand = new RelayCommand<object>(this.ExecuteRefreshDataCommand);
         }
 
         #endregion

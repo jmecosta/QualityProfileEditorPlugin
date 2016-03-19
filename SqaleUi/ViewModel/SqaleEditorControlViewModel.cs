@@ -15,22 +15,14 @@
 namespace SqaleUi.ViewModel
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
-    using System.ComponentModel;
     using System.IO;
-    using System.Windows;
     using System.Windows.Forms;
     using System.Windows.Input;
-    using System.Runtime;
     using System.Windows.Media;
 
-    using ExtensionHelpers;
-
     using VSSonarPlugins.Types;
-
-    using GalaSoft.MvvmLight.Command;
 
     using MahApps.Metro.Controls;
 
@@ -130,25 +122,25 @@ namespace SqaleUi.ViewModel
             this.CanExecuteSaveAsProjectCommand = false;
             this.CanExecuteCloseProjectCommand = false;
 
-            this.NewProjectCommand = new RelayCommand(this.ExecuteNewProjectCommand);
-            this.OpenProjectCommand = new RelayCommand(this.ExecuteOpenProjectCommand);
-            this.SaveProjectCommand = new RelayCommand(this.ExecuteSaveProjectCommand);
-            this.SaveAsProjectCommand = new RelayCommand(this.ExecuteSaveAsProjectCommand);
-            this.CloseProjectCommand = new RelayCommand(this.ExecuteCloseProjectCommand);
+            this.NewProjectCommand = new RelayCommand<object>(this.ExecuteNewProjectCommand);
+            this.OpenProjectCommand = new RelayCommand<object>(this.ExecuteOpenProjectCommand);
+            this.SaveProjectCommand = new RelayCommand<object>(this.ExecuteSaveProjectCommand);
+            this.SaveAsProjectCommand = new RelayCommand<object>(this.ExecuteSaveAsProjectCommand);
+            this.CloseProjectCommand = new RelayCommand<object>(this.ExecuteCloseProjectCommand);
 
             this.CreateWorkAreaCommand = new RelayCommand<object>(item => this.CreateNewWorkArea(false, !this.Tabs[0].ConnectedToSonarServer));
-            this.DeleteWorkAreaCommand = new RelayCommand(this.RemoveCurrentSelectedTab);
+            this.DeleteWorkAreaCommand = new RelayCommand<object>(this.RemoveCurrentSelectedTab);
 
-            this.ConnectCommand = new RelayCommand(this.OnConnectCommand);
-            this.ConnectedToServerCommand = new RelayCommand(this.OnConnectedToServerCommand);
-            this.DisconnectToServerCommand = new RelayCommand(this.OnDisconnectToServerCommand);
-            this.SelectedNewServerCommand = new RelayCommand(this.OnSelectedNewServerCommand);
+            this.ConnectCommand = new RelayCommand<object>(this.OnConnectCommand);
+            this.ConnectedToServerCommand = new RelayCommand<object>(this.OnConnectedToServerCommand);
+            this.DisconnectToServerCommand = new RelayCommand<object>(this.OnDisconnectToServerCommand);
+            this.SelectedNewServerCommand = new RelayCommand<object>(this.OnSelectedNewServerCommand);
 
 
-            this.OpenVsWindow = new RelayCommand(this.OnOpenVsWindow);
+            this.OpenVsWindow = new RelayCommand<object>(this.OnOpenVsWindow);
         }
 
-        private void OnSelectedNewServerCommand()
+        private void OnSelectedNewServerCommand(object data)
         {
             this.ServerAddress = PromptUserData.Prompt("Server Address", "Insert Server Address", "http://localhost:9000");
             if (!string.IsNullOrEmpty(this.ServerAddress))
@@ -157,14 +149,14 @@ namespace SqaleUi.ViewModel
             }
         }
 
-        private void OnDisconnectToServerCommand()
+        private void OnDisconnectToServerCommand(object data)
         {
             this.Configuration = null;
             this.IsConnected = false;
             this.StatusMessage = "OffLine -> Press Icon on the right to connect to Server";
         }
 
-        private void OnConnectedToServerCommand()
+        private void OnConnectedToServerCommand(object data)
         {
             if (!this.CreateSonarConnection(false))
             {
@@ -184,11 +176,11 @@ namespace SqaleUi.ViewModel
             this.StatusMessage = "OnLine";
         }
 
-        private void OnConnectCommand()
+        private void OnConnectCommand(object data)
         {
             if (this.IsConnected)
             {
-                this.OnConnectedToServerCommand();
+                this.OnConnectedToServerCommand(null);
                 foreach (var tab in this.Tabs)
                 {
                     tab.IsConnected = this.IsConnected;
@@ -197,21 +189,21 @@ namespace SqaleUi.ViewModel
             }
             else
             {                
-                this.OnDisconnectToServerCommand();
+                this.OnDisconnectToServerCommand(null);
             }
         }
 
         public bool IsConnected { get; set; }
 
-        public RelayCommand ConnectCommand { get; set; }
+        public ICommand ConnectCommand { get; set; }
 
-        public RelayCommand SelectedNewServerCommand { get; set; }
+        public ICommand SelectedNewServerCommand { get; set; }
 
-        public RelayCommand DisconnectToServerCommand { get; set; }
+        public ICommand DisconnectToServerCommand { get; set; }
 
         public ICommand ConnectedToServerCommand { get; set; }
 
-        private void OnOpenVsWindow()
+        private void OnOpenVsWindow(object data)
         {
             var modelProject = new ProjectViewModel(this.RestService, this.Configuration);
             ProjectViewer projectSelector = new ProjectViewer(modelProject);
@@ -257,9 +249,9 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     Gets the close project command.
         /// </summary>
-        public RelayCommand CloseProjectCommand { get; private set; }
+        public ICommand CloseProjectCommand { get; private set; }
 
-        public RelayCommand OpenVsWindow { get; private set; }
+        public ICommand OpenVsWindow { get; private set; }
         /// <summary>
         /// Gets or sets the create work area command.
         /// </summary>
@@ -280,17 +272,17 @@ namespace SqaleUi.ViewModel
         /// </summary>
         public bool IsRemoveTabEnabled { get; set; }
 
-        public RelayCommand EstablishConnectionCommand { get; private set; }
+        public ICommand EstablishConnectionCommand { get; private set; }
 
         /// <summary>
         ///     Gets the new project command.
         /// </summary>
-        public RelayCommand NewProjectCommand { get; private set; }
+        public ICommand NewProjectCommand { get; private set; }
 
         /// <summary>
         ///     Gets the open project command.
         /// </summary>
-        public RelayCommand OpenProjectCommand { get; private set; }
+        public ICommand OpenProjectCommand { get; private set; }
 
         /// <summary>
         /// Gets or sets the save project command.
@@ -382,10 +374,10 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     The execute close project command.
         /// </summary>
-        private void ExecuteCloseProjectCommand()
+        private void ExecuteCloseProjectCommand(object data)
         {
 
-            this.ExecuteSaveAsProjectCommand();
+            this.ExecuteSaveAsProjectCommand(null);
             this.Tabs.Remove(this.Tabs[0]);
 
             this.CanExecuteNewProjectCommand = true;
@@ -399,7 +391,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     The execute new project command.
         /// </summary>
-        private void ExecuteNewProjectCommand()
+        private void ExecuteNewProjectCommand(object data)
         {
             this.CreateNewProject(string.Empty, this.Configuration, this.Project, this.VsHelper);
             this.CanExecuteNewProjectCommand = false;
@@ -495,7 +487,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         ///     The execute open project command.
         /// </summary>
-        private void ExecuteOpenProjectCommand()
+        private void ExecuteOpenProjectCommand(object data)
         {
             // Do something 
             var filedialog = new OpenFileDialog { Filter = @"Project Model|*.xml" };
@@ -572,11 +564,11 @@ namespace SqaleUi.ViewModel
         /// </summary>
         /// <exception cref="NotImplementedException">
         /// </exception>
-        private void ExecuteSaveProjectCommand()
+        private void ExecuteSaveProjectCommand(object data)
         {
             if (string.IsNullOrEmpty(this.Tabs[0].ProjectFile))
             {
-                this.ExecuteSaveAsProjectCommand();
+                this.ExecuteSaveAsProjectCommand(null);
                 return;
             }
 
@@ -584,7 +576,7 @@ namespace SqaleUi.ViewModel
             this.Tabs[0].SqaleManager.SaveSqaleModelAsXmlProject(modelToExport, this.Tabs[0].ProjectFile);
         }
 
-        private void ExecuteSaveAsProjectCommand()
+        private void ExecuteSaveAsProjectCommand(object data)
         {
             var saveFileDialog = new SaveFileDialog();
 
@@ -613,7 +605,7 @@ namespace SqaleUi.ViewModel
         /// <summary>
         /// The remove current selected tab.
         /// </summary>
-        private void RemoveCurrentSelectedTab()
+        private void RemoveCurrentSelectedTab(object data)
         {
             if (this.SelectedTab.Header.Equals("Project"))
             {

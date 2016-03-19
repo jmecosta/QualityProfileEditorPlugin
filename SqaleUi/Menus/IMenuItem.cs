@@ -20,10 +20,6 @@ namespace SqaleUi.Menus
     using VSSonarPlugins;
     using VSSonarPlugins.Types;
 
-    using GalaSoft.MvvmLight.Command;
-
-    using SonarRestService;
-
     using SqaleUi.View;
     using SqaleUi.ViewModel;
 
@@ -84,7 +80,7 @@ namespace SqaleUi.Menus
             this.model = model;
             this.CommandText = "Change Tags";
             this.IsEnabled = true;
-            this.AssociatedCommand = new RelayCommand(this.OnAssociateCommand);
+            this.AssociatedCommand = new RelayCommand<object>(this.OnAssociateCommand);
 
             this.SubItems = new ObservableCollection<IMenuItem>();
         }
@@ -185,7 +181,7 @@ namespace SqaleUi.Menus
         /// <summary>
         /// The on associate command.
         /// </summary>
-        public void OnAssociateCommand()
+        public void OnAssociateCommand(object data)
         {
             if (this.TagModel == null)
             {
