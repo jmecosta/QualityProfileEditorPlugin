@@ -674,6 +674,11 @@ namespace SqaleUi.ViewModel
                     this.RestService.GetRulesForProfileUsingRulesApp(this.Configuration, this.SelectedProfile, false);
                 }
 
+                foreach (var rule in this.SelectedProfile.GetAllRules())
+                {
+                    this.RestService.UpdateRuleData(this.Configuration, rule);
+                }
+
                 this.ProfileRules.Clear();
                 this.MergeRulesIntoProject(this.SelectedProfile.GetAllRules());
                 this.SetConnectedToServer(true);

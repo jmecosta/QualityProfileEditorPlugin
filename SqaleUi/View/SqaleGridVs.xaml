@@ -691,55 +691,6 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.HeaderTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Description" CanUserSort="True" SortMemberPath="Description"
-                                        MinWidth="400" Width="400" MaxWidth="400">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBox TextAlignment="Justify" MaxHeight="100" MaxWidth="400" TextWrapping="Wrap"
-                                     VerticalScrollBarVisibility="Auto"
-                                     Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                                     Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}"
-                                     ContextMenu="{StaticResource DatagridContextMenu}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                    <!--NAME COLUMN-->
-                    <DataGridTemplateColumn.HeaderTemplate>
-                        <DataTemplate>
-                            <Grid IsHitTestVisible="True">
-                                
-                                <!--FILTER EXPANDER-->
-                                <Expander Header="{TemplateBinding Content}" IsHitTestVisible="True" VerticalAlignment="Top"
-                                          Margin="0 0 0 0" ToolTip="RuleFilter">
-                                    <Border IsHitTestVisible="True" BorderThickness="1" Margin="0 0 0 0">
-                                        <StackPanel Margin="0 2 0 0">
-                                            <!--FILTER TEXTBOX-->
-                                            <TextBox
-                                                Text="{Binding DataContext.FilterTermDescription, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-                                                
-                                                ToolTip="Enter filter term" Width="100" Height="18" FontSize="9"
-                                                BorderThickness="1" />
-                                            <!--FILTER BUTTONS-->
-                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                                <TextBlock Margin="2" FontFamily="Segoe UI">
-                                                    <Hyperlink
-                                                        Command="{Binding DataContext.FilterApplyCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
-                                                        <Run Text="Apply" />
-                                                    </Hyperlink>
-                                                </TextBlock>
-                                                <TextBlock Margin="2">
-                                                    <Hyperlink
-                                                        Command="{Binding DataContext.FilterClearDescriptionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
-                                                        <Run Text="Clear" />
-                                                    </Hyperlink>
-                                                </TextBlock>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </Border>
-                                </Expander>
-                            </Grid>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.HeaderTemplate>
-                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
         <Grid Grid.Row="3">
