@@ -629,32 +629,12 @@ namespace SqaleUi.ViewModel
         /// <param name="rules">
         /// The rules.
         /// </param>
-        public void MergeRulesIntoProject(List<Rule> rules)
+        public void ReplaceRulesIntoProject(List<Rule> rules)
         {
+            this.ProfileRules.Clear();
             foreach (Rule rule in rules)
             {
-                bool found = false;
-                foreach (Rule profileRule in this.ProfileRules)
-                {
-                    if (profileRule.Key.Equals(rule.Key))
-                    {
-                        profileRule.Repo = rule.Repo;
-                        profileRule.RemediationFactorTxt = rule.RemediationFactorTxt;
-                        profileRule.RemediationFactorVal = rule.RemediationFactorVal;
-                        profileRule.RemediationFunction = rule.RemediationFunction;
-                        profileRule.RemediationOffsetTxt = rule.RemediationOffsetTxt;
-                        profileRule.RemediationOffsetVal = rule.RemediationOffsetVal;
-                        profileRule.Category = rule.Category;
-                        profileRule.Subcategory = rule.Subcategory;
-
-                        found = true;
-                    }
-                }
-
-                if (!found)
-                {
-                    this.ProfileRules.Add(rule);
-                }
+                this.ProfileRules.Add(rule);
             }
 
             this.RefreshView();
@@ -680,7 +660,7 @@ namespace SqaleUi.ViewModel
                 }
 
                 this.ProfileRules.Clear();
-                this.MergeRulesIntoProject(this.SelectedProfile.GetAllRules());
+                this.ReplaceRulesIntoProject(this.SelectedProfile.GetAllRules());
                 this.SetConnectedToServer(true);
             }
         }
@@ -1295,6 +1275,10 @@ namespace SqaleUi.ViewModel
         {
             this.BackGroundColor = background;
             this.ForeGroundColor = foreground;
+        }
+
+        public void MergeRulesIntoProject(List<Rule> rules)
+        {
         }
     }
 }
