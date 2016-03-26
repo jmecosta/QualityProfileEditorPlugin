@@ -46,6 +46,27 @@ namespace SqaleUi.View
             InitializeComponent();
 
             this.DataContext = model;
+            this.MouseLeftButtonDown += this.MouseLeftButtonDownPressed;
+        }
+
+        /// <summary>
+        /// Handles the MouseLeftButtonDown event of the YourWindow control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
+        private void MouseLeftButtonDownPressed(object sender, MouseButtonEventArgs e)
+        {
+            DragMove();
+        }
+
+        /// <summary>
+        /// BTNs the ok click.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void BtnOkClick(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }
