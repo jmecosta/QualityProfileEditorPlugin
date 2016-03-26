@@ -314,8 +314,13 @@ namespace SqaleUi.ViewModel
             }
 
             this.SetTagsInRule(newList);
+            this.model.SelectedRule.Tags.Clear();
 
-            this.model.SelectedRule.Tags.Remove(this.SelectedTagInRule);
+            foreach (var tag in newList)
+            {
+                this.model.SelectedRule.Tags.Add(tag);
+            }
+            
             this.RefreshTagsInRule();
         }
 
