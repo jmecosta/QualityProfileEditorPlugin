@@ -213,12 +213,15 @@ namespace SqaleUi.ViewModel
         #region Public Methods and Operators
 
         /// <summary>
-        ///     The refresh available tags in server.
+        /// The refresh available tags in server.
         /// </summary>
+        /// <param name="data">The data.</param>
         public void RefreshAvailableTagsInServer(object data)
         {
             var tags = this.service.GetAllTags(this.conf);
+            tags.Sort();
             this.AvailableTags.Clear();
+
             foreach (var tag in tags)
             {
                 this.AvailableTags.Add(tag);
@@ -236,7 +239,10 @@ namespace SqaleUi.ViewModel
             }
 
             this.TagsInRule.Clear();
-            foreach (var tag in this.model.SelectedRule.Tags)
+            var usorted = new List<string>();
+            usorted.AddRange(this.model.SelectedRule.Tags);
+            usorted.Sort();
+            foreach (var tag in usorted)
             {
                 this.TagsInRule.Add(tag);
             }
