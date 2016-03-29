@@ -145,7 +145,7 @@ namespace SqaleUi.ViewModel
             this.ServerAddress = PromptUserData.Prompt("Server Address", "Insert Server Address", "http://localhost:9000");
             if (!string.IsNullOrEmpty(this.ServerAddress))
             {
-                this.VsHelper.WriteOptionInApplicationData(Context.MenuPluginProperties, "QualityEditorPlugin", "ServerAddress", this.ServerAddress);
+                this.VsHelper.WriteSetting(Context.MenuPluginProperties, "QualityEditorPlugin", "ServerAddress", this.ServerAddress);
             }
         }
 
@@ -453,7 +453,7 @@ namespace SqaleUi.ViewModel
                         return false;
                     }
 
-                    this.VsHelper.WriteOptionInApplicationData(Context.MenuPluginProperties, "QualityEditorPlugin", "ServerAddress", this.ServerAddress);
+                    this.VsHelper.WriteSetting(Context.MenuPluginProperties, "QualityEditorPlugin", "ServerAddress", this.ServerAddress);
                 }
 
                 using (var dialog = new UserCredentialsDialog())

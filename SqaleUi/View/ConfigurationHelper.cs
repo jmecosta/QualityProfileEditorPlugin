@@ -10,27 +10,11 @@ namespace SqaleUi.View
 
     class ConfigurationHelper : IConfigurationHelper
     {
-        public string ApplicationPath
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public string ApplicationPath { get; set; }
 
         public SonarQubeProperties ReadSetting(Context context, string owner, string key)
         {
-            return new SonarQubeProperties() {Value = ""};
-        }
-
-        public IEnumerable<SonarQubeProperties> ReadSettings(Context context, string owner)
-        {
-            throw new NotImplementedException();
+            return new SonarQubeProperties { Value = "" };
         }
 
         public void WriteSetting(SonarQubeProperties prop, bool sync = false, bool skipIfExist = false)
@@ -63,14 +47,14 @@ namespace SqaleUi.View
             throw new NotImplementedException();
         }
 
-        public void WriteOptionInApplicationData(
-            Context context,
-            string owner,
-            string key,
-            string value,
-            bool sync = false,
-            bool skipIfExist = false)
+        public void WriteSetting(Context context, string owner, string key, string value, bool sync = false, bool skipIfExist = false)
         {
+            throw new NotImplementedException();
+        }
+
+        public void ResetAllSettings()
+        {
+            throw new NotImplementedException();
         }
     }
 }
