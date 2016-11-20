@@ -119,3 +119,5 @@ QualityEditorPlugin2013.VSQ
 QualityEditorPlugin2015.VSQ
 .sonarqube/**
 .cxxresults/**
+buildlog2017.txt
+QualityEditorPlugin2017.VSQ
